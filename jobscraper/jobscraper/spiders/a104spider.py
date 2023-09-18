@@ -1,0 +1,85 @@
+import scrapy
+import re
+import json
+import requests
+from bs4 import BeautifulSoup
+
+
+class A104spiderSpider(scrapy.Spider):
+    name = "104spider"
+    allowed_domains = ["www.104.com.tw"]
+
+    def start_requests(self):
+        job_types = ["ios", "android", "frontend", "backend", "data_engineer", "data_analyst", "data_scientist", "dba"]
+        for job_type in job_types:
+            for p in range(1, 51):
+                url = f"https://www.104.com.tw/jobs/search/?keyword={job_type}&page={p}"
+                yield scrapy.Request(url, callback=self.parse)
+
+    def parse(self, response):
+        jobs = response.css('article.job-list-item')
+        for job in jobs:
+            lastupdate = job.css('h2 span.b-tit__date::text').get().strip()
+            if "/" in lastupdate:
+                category = re.search(r'keyword=(\w+)', response.url).group(1)
+                job_title = job.css('h2 a::text, h2 em::text').getall()
+                job_title = ''.join(job_title).strip()
+                location = job.css('ul.job-list-intro li:nth-child(1)::text').get()
+                company = job.css('li:nth-child(2) a::text').get().strip().replace('\n', '')
+                salary = job.css('div.job-list-tag a:nth-child(1)::text').get()
+                education = job.css('ul.job-list-intro li:nth-child(5)::text').get()
+                experience = job.css('ul.job-list-intro li:nth-child(3)::text').get()
+                job_link = 'https:' + job.css('h2 a::attr(href)').get()
+                yield scrapy.Request(
+                    job_link,
+                    callback=self.parse_job_details,
+                    meta={
+                        'category': category,
+                        'job_title': job_title,
+                        'location': location,
+                        'company': company,
+                        'salary': salary,
+                        'education': education,
+                        'experience': experience,
+                        'job_link': job_link
+                    }
+                )
+
+    def parse_job_details(self, response):
+        job_link = response.url
+        req = requests.get(job_link)
+        soup = BeautifulSoup(req.text, 'html.parser')
+        text_ = json.loads("".join(soup.find("script", {"type":"application/ld+json"}).contents))
+        job_description = soup.text.lower()
+        conditions = [
+            "python", "java", "javascript", "ruby", "c#", "c++", "php", "swift", "kotlin", "golang", 
+            "rust", "typescript", "matlab", "perl", "scala", "dart", "lua", "julia", "objective-c",
+            "numpy", "pandas", "tensorflow", "scikit-learn", "keras", "pytorch", "opencv", "react", 
+            "angular", "vue.js", "ruby on rails", ".net framework", "hibernate", "spring framework", 
+            "qt", "express.js", "rubygems", ".net core", "django", "mysql", "ajax", "html", "css",
+            "postgresql", "mongodb", "oracle database", "microsoft sql server", "sqlite", "redis", 
+            "cassandra", "couchbase", "amazon dynamodb", "ruby on rails", "django", "express.js", 
+            "laravel (php)", "flask", "react", "vue.js", "asp.net", "spring boot", "git", "svn", 
+            "mercurial", "cvs", "perforce", "tfs (team foundation server)", "aws", "particle",
+            "docker", "kubernetes", "jenkins", "ansible", "puppet", "chef", "terraform", "vagrant", 
+            "nagios", "microsoft azure", "gcp", "ibm cloud", "oracle cloud", "node.js", "firebase",
+            "hadoop", "spark", "hive", "pig", "kafka", "elasticsearch", "tableau", "splunk", "power bi",
+            "android", "kotlin", "ios", "swift", "flutter", "xamarin", "phonegap/cordova","arduino", 
+            "raspberry pi", "mqtt", "node-red", "tinkercad", "airflow", "github"
+        ]
+
+        skill_set = set()
+        for condition in conditions:
+            if condition in job_description:
+                skill_set.add(condition)
+        yield{
+            'category': response.meta.get('category'),
+            'job_title': response.meta.get('job_title'),
+            'location': response.meta.get('location'),
+            'company': response.meta.get('company'),
+            'salary': response.meta.get('salary'),
+            'education': response.meta.get('education'),
+            'experience': response.meta.get('experience'),
+            'job_link': response.meta.get('job_link'),
+            'skills': skill_set
+        }
