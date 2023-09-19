@@ -3,6 +3,7 @@ import re
 import json
 import requests
 from bs4 import BeautifulSoup
+from jobscraper.items import JobscraperItem
 
 
 class A104spiderSpider(scrapy.Spider):
@@ -76,14 +77,19 @@ class A104spiderSpider(scrapy.Spider):
         for condition in conditions:
             if condition in job_description:
                 skill_set.add(condition)
-        yield{
-            'category': response.meta.get('category'),
-            'job_title': response.meta.get('job_title'),
-            'location': response.meta.get('location'),
-            'company': response.meta.get('company'),
-            'salary': response.meta.get('salary'),
-            'education': response.meta.get('education'),
-            'experience': response.meta.get('experience'),
-            'job_link': response.meta.get('job_link'),
-            'skills': skill_set
-        }
+        
+        a104Item = JobscraperItem()
+
+        a104Item['category'] = response.meta.get('category')
+        a104Item['job_title'] = response.meta.get('job_title')
+        a104Item['location'] = response.meta.get('location')
+        a104Item['company'] = response.meta.get('company')
+        a104Item['min_monthly_salary'] = response.meta.get('salary')
+        a104Item['max_monthly_salary'] = response.meta.get('salary')
+        a104Item['education'] = response.meta.get('education')
+        a104Item['experience'] = response.meta.get('experience')
+        a104Item['job_link'] = response.meta.get('job_link')
+        a104Item['skills'] = list(skill_set)
+        a104Item['source_website'] = "104人力銀行"
+        
+        yield a104Item
