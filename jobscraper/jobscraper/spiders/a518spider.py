@@ -3,55 +3,58 @@ import re
 import json
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import unquote
 
-class A1111spiderSpider(scrapy.Spider):
-    name = "1111spider"
-    allowed_domains = ["www.1111.com.tw"]
+
+class A518spiderSpider(scrapy.Spider):
+    name = "518spider"
+    allowed_domains = ["www.518.com.tw"]
 
     def start_requests(self):
         job_types = [
-            "ios_engineer_工程師", "android_engineer_工程師", "frontend_engineer_前端工程師", 
-            "backend_engineer_後端工程師", "data_engineer_資料工程師", "data_analyst_資料分析師", 
-            "data_scientist_資料科學家", "dba_資料庫管理"
+            "軟體工程師", "前端工程師", "後端工程師", "資料工程師", 
+            "資料分析師", "資料科學家", "資料庫管理"
         ]
         for job_type in job_types:
-            for p in range(1, 21):
-                url = f"https://www.1111.com.tw/search/job?col=da&ks={job_type}&page={p}"
+            for p in range(1, 11):
+                url = f"https://www.518.com.tw/job-index-P-{p}.html?ad={job_type}"
                 yield scrapy.Request(url, callback=self.parse)
-
+    
     def parse(self, response):
-        jobs = response.css('.item__job')
-        for job in jobs:
-            category = re.search(r'ks=(\w+)_', response.url).group(1)
-            job_title = job.xpath('.//h5[@class="card-title title_6"]')
-            job_title = job_title.xpath('string()').get()
-            location = job.css('.job_item_info .job_item_detail a::text').get()
-            company = job.css('.job_item_company::text').get()
-            company = re.search(r'^(.*?) \|', company).group(1)
-            salary = job.css('.job_item_detail_salary::text').get()
-            education = job.css('.item_data .item_group .applicants::text').getall()[1][1::]
-            experience = job.css('.item_data .item_group .applicants::text').getall()[0][1::]
-            job_link = 'https://www.1111.com.tw' + job.css('.job_item_info a::attr(href)').get()
-            yield scrapy.Request(
-                job_link,
-                callback=self.parse_1111_details,
-                meta={
-                    'category': category,
-                    'job_title': job_title,
-                    'location': location,
-                    'company': company,
-                    'salary': salary,
-                    'education': education,
-                    'experience': experience,
-                    'job_link': job_link
-                }
-            )
-    def parse_1111_details(self, response):
+        result = response.css('section.job-content .findmsg p::text').get()
+        if result != "抱歉沒有搜到適合的職缺":
+            jobs = response.css('section.job-content')
+            for job in jobs:
+                category_code = re.search(r'ad=(.+)', response.url).group(1)
+                category = unquote(category_code)
+                job_title = job.css('h2 a.job__title::text').get()
+                company = job.css('span.job__comp__name::text').get()
+                salary = job.css('p.job__salary::text').get()
+                location = job.css('ul.job__summaries li:nth-child(1)::text').get()
+                experience = job.css('ul.job__summaries li:nth-child(2)::text').get()
+                education = job.css('ul.job__summaries li:nth-child(3)::text').get()
+                job_link = job.css('h2 a::attr(href)').get()
+                yield scrapy.Request(
+                    job_link,
+                    callback=self.parse_518_details,
+                    meta={
+                        'category': category,
+                        'job_title': job_title,
+                        'location': location,
+                        'company': company,
+                        'salary': salary,
+                        'education': education,
+                        'experience': experience,
+                        'job_link': job_link
+                    }
+                )
+    
+    def parse_518_details(self, response):
         job_link = response.url
         req = requests.get(job_link)
         soup = BeautifulSoup(req.text, 'html.parser')
-        text_ = json.loads("".join(soup.find("script", {"type":"application/ld+json"}).contents))
         job_description = soup.text.lower()
+        job_description_cleaned = re.sub(r'\s+', '', job_description)
         conditions = [
             "python", "java", "javascript", "ruby", "c#", "c++", "php", "swift", "kotlin", "golang", 
             "rust", "typescript", "matlab", "perl", "scala", "dart", "lua", "julia", "objective-c",
@@ -71,7 +74,7 @@ class A1111spiderSpider(scrapy.Spider):
 
         skill_set = set()
         for condition in conditions:
-            if condition in job_description:
+            if condition in job_description_cleaned:
                 skill_set.add(condition)
         yield{
             'category': response.meta.get('category'),
@@ -82,5 +85,5 @@ class A1111spiderSpider(scrapy.Spider):
             'education': response.meta.get('education'),
             'experience': response.meta.get('experience'),
             'job_link': response.meta.get('job_link'),
-            'skills': skill_set
+            'skills': "Null" if skill_set == set() else skill_set
         }

@@ -10,9 +10,13 @@ class A104spiderSpider(scrapy.Spider):
     allowed_domains = ["www.104.com.tw"]
 
     def start_requests(self):
-        job_types = ["ios", "android", "frontend", "backend", "data_engineer", "data_analyst", "data_scientist", "dba"]
+        job_types = [
+            "ios_engineer_工程師", "android_engineer_工程師", "frontend_engineer_前端工程師", 
+            "backend_engineer_後端工程師", "data_engineer_資料工程師", "data_analyst_資料分析師", 
+            "data_scientist_資料科學家", "dba_資料庫管理"
+        ]
         for job_type in job_types:
-            for p in range(1, 51):
+            for p in range(1, 21):
                 url = f"https://www.104.com.tw/jobs/search/?keyword={job_type}&page={p}"
                 yield scrapy.Request(url, callback=self.parse)
 
@@ -21,7 +25,7 @@ class A104spiderSpider(scrapy.Spider):
         for job in jobs:
             lastupdate = job.css('h2 span.b-tit__date::text').get().strip()
             if "/" in lastupdate:
-                category = re.search(r'keyword=(\w+)', response.url).group(1)
+                category = re.search(r'keyword=(\w+)_', response.url).group(1)
                 job_title = job.css('h2 a::text, h2 em::text').getall()
                 job_title = ''.join(job_title).strip()
                 location = job.css('ul.job-list-intro li:nth-child(1)::text').get()
@@ -32,7 +36,7 @@ class A104spiderSpider(scrapy.Spider):
                 job_link = 'https:' + job.css('h2 a::attr(href)').get()
                 yield scrapy.Request(
                     job_link,
-                    callback=self.parse_job_details,
+                    callback=self.parse_104_details,
                     meta={
                         'category': category,
                         'job_title': job_title,
@@ -45,7 +49,7 @@ class A104spiderSpider(scrapy.Spider):
                     }
                 )
 
-    def parse_job_details(self, response):
+    def parse_104_details(self, response):
         job_link = response.url
         req = requests.get(job_link)
         soup = BeautifulSoup(req.text, 'html.parser')
