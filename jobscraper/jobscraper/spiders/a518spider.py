@@ -4,6 +4,7 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import unquote
+from jobscraper.items import JobscraperItem
 
 
 class A518spiderSpider(scrapy.Spider):
@@ -76,14 +77,19 @@ class A518spiderSpider(scrapy.Spider):
         for condition in conditions:
             if condition in job_description_cleaned:
                 skill_set.add(condition)
-        yield{
-            'category': response.meta.get('category'),
-            'job_title': response.meta.get('job_title'),
-            'location': response.meta.get('location'),
-            'company': response.meta.get('company'),
-            'salary': response.meta.get('salary'),
-            'education': response.meta.get('education'),
-            'experience': response.meta.get('experience'),
-            'job_link': response.meta.get('job_link'),
-            'skills': "Null" if skill_set == set() else skill_set
-        }
+
+        a518Item = JobscraperItem()
+
+        a518Item['category'] = response.meta.get('category')
+        a518Item['job_title'] = response.meta.get('job_title')
+        a518Item['location'] = response.meta.get('location')
+        a518Item['company'] = response.meta.get('company')
+        a518Item['min_monthly_salary'] = response.meta.get('salary')
+        a518Item['max_monthly_salary'] = response.meta.get('salary')
+        a518Item['education'] = response.meta.get('education')
+        a518Item['experience'] = response.meta.get('experience')
+        a518Item['job_link'] = response.meta.get('job_link')
+        a518Item['skills'] = "Null" if skill_set == set() else list(skill_set)
+        a518Item['source_website'] = "518熊班"
+
+        yield a518Item
