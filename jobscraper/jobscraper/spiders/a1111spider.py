@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 class A1111spiderSpider(scrapy.Spider):
     name = "1111spider"
     allowed_domains = ["www.1111.com.tw"]
-    start_urls = ["https://www.1111.com.tw/search/job"]
 
     def start_requests(self):
         job_types = [
