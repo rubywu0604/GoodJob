@@ -87,7 +87,7 @@ class A1111spiderSpider(scrapy.Spider):
         a1111Item['education'] = response.meta.get('education')
         a1111Item['experience'] = response.meta.get('experience')
         a1111Item['job_link'] = response.meta.get('job_link')
-        a1111Item['skills'] = list(skill_set)
+        a1111Item['skills'] = "Null" if skill_set == set() else list(skill_set)
         a1111Item['source_website'] = "1111人力銀行"
 
         yield a1111Item
