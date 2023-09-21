@@ -32,21 +32,19 @@ DROP TABLE IF EXISTS `job`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `job` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `category` varchar(255) NOT NULL,
   `job_title` varchar(255) NOT NULL,
   `location` varchar(255) NOT NULL,
-  `lastupdate` varchar(255) DEFAULT NULL,
   `company` varchar(255) NOT NULL,
-  `annual_salary` int NOT NULL,
-  `monthly_salary` int NOT NULL,
+  `min_monthly_salary` varchar(255) NOT NULL,
+  `max_monthly_salary` varchar(255) NOT NULL,
   `education` varchar(255) NOT NULL,
   `skills` varchar(255) NOT NULL,
-  `work_experience` int DEFAULT '0',
-  `work_type` varchar(255) DEFAULT NULL,
-  `remote_type` varchar(255) DEFAULT NULL,
+  `experience` int DEFAULT '0',
   `job_link` varchar(255) NOT NULL,
   `source_website` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=271 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,30 +54,6 @@ CREATE TABLE `job` (
 LOCK TABLES `job` WRITE;
 /*!40000 ALTER TABLE `job` DISABLE KEYS */;
 /*!40000 ALTER TABLE `job` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `website`
---
-
-DROP TABLE IF EXISTS `website`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `website` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `website` varchar(255) NOT NULL,
-  `url_for_job_page` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `website`
---
-
-LOCK TABLES `website` WRITE;
-/*!40000 ALTER TABLE `website` DISABLE KEYS */;
-/*!40000 ALTER TABLE `website` ENABLE KEYS */;
 UNLOCK TABLES;
 SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -92,4 +66,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-15 11:55:00
+-- Dump completed on 2023-09-21 16:41:08

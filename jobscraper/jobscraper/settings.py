@@ -6,12 +6,16 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-
+import datetime
 BOT_NAME = "jobscraper"
 
 SPIDER_MODULES = ["jobscraper.spiders"]
 NEWSPIDER_MODULE = "jobscraper.spiders"
 
+today = datetime.datetime.today() 
+FEEDS = {
+   f'backupdata{today.strftime("%Y/%m-%d")}.json': {'format': 'json'},
+}
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "jobscraper (+http://www.yourdomain.com)"
@@ -82,8 +86,8 @@ ITEM_PIPELINES = {
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
 HTTPCACHE_ENABLED = True
-HTTPCACHE_EXPIRATION_SECS = 3600
-#HTTPCACHE_DIR = "httpcache"
+HTTPCACHE_EXPIRATION_SECS = 86400
+HTTPCACHE_DIR = "httpcache"
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = "scrapy.extensions.httpcache.FilesystemCacheStorage"
 
