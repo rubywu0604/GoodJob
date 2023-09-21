@@ -36,10 +36,7 @@ class JobscraperPipeline:
         # Normalize salary to monthly pay --> convert to int
         target_salary = ["面議", "~", "至", "年薪", "月薪"]
         for target in target_salary:
-            print("salary", salary)
-            print("target", target)
-            print(salary.find(target))
-            if salary.find(target) != -1:
+            if salary and salary.find(target) > -1:
                 salary = salary.replace(',', '')
                 max_pattern = re.search(r'(~|至)\s*(\d+)', salary)
                 min_pattern = re.search(r'\s*(\d+)\s*(~|至)|(\d+)\s*(萬|元)', salary)
@@ -58,10 +55,10 @@ class JobscraperPipeline:
                         adapter['max_monthly_salary'] = max_pattern.group(2) // 12
                         adapter['min_monthly_salary'] = min_pattern.group(1) // 12
                 break
-                
+
             else:
-                adapter['max_monthly_salary'] = None
-                adapter['min_monthly_salary'] = None
+                adapter['max_monthly_salary'] = "Null"
+                adapter['min_monthly_salary'] = "Null"
 
         # Set experience as year in int number
         adapter['experience'] = experience[0] if experience[0].isdigit() else 0
