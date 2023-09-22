@@ -69,6 +69,7 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 16
 ITEM_PIPELINES = {
    "jobscraper.pipelines.JobscraperPipeline": 300,
 }
+ITEM_ADAPTER = 'jobscraper.adapters.CustomItemAdapter'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
