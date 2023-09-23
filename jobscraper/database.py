@@ -4,13 +4,13 @@ import os
 
 
 class DatabaseRDS:
-    def __init__(self, RDS_HOST, RDS_PORT, RDS_USER, RDS_PASSWORD, RDS_DATABASE):
+    def __init__(self):
         load_dotenv()
-        self.RDS_HOST = RDS_HOST
-        self.RDS_PORT = RDS_PORT
-        self.RDS_USER = RDS_USER
-        self.RDS_PASSWORD = RDS_PASSWORD
-        self.RDS_DATABASE = RDS_DATABASE
+        self.RDS_HOST = os.getenv("RDS_HOSTNAME")
+        self.RDS_PORT = os.getenv("RDS_PORT")
+        self.RDS_USER = os.getenv("RDS_USERNAME")
+        self.RDS_PASSWORD = os.getenv("RDS_PASSWORD")
+        self.RDS_DATABASE = os.getenv("RDS_DATABASE")
 
         try:
             self.conn = pymysql.connect(

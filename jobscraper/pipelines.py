@@ -13,8 +13,6 @@ from jobscraper.database import DatabaseRDS
 class JobscraperPipeline:
     def __init__(self):
         self.db = DatabaseRDS()
-        self.db.delete()
-        self.db.reset_auto_increment()
 
     def _store_data_to_mysql(self, values):
         sql = """INSERT INTO job (

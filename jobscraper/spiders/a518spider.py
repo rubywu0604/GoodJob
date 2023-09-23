@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import unquote
 from jobscraper.items import JobscraperItem
+from jobscraper.database import DatabaseRDS
 
 
 class A518spiderSpider(scrapy.Spider):
@@ -12,6 +13,9 @@ class A518spiderSpider(scrapy.Spider):
     allowed_domains = ["www.518.com.tw"]
 
     def start_requests(self):
+        db = DatabaseRDS()
+        db.delete()
+        db.reset_auto_increment()
         job_types = [
             "軟體工程師", "前端工程師", "後端工程師", "資料工程師", 
             "資料分析師", "資料科學家", "資料庫管理"
