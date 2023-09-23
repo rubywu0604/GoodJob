@@ -1,19 +1,19 @@
 from dotenv import load_dotenv
-import mysql.connector
+import pymysql
 import os
 
 
 class DatabaseRDS:
-    def __init__(self):
+    def __init__(self, RDS_HOST, RDS_PORT, RDS_USER, RDS_PASSWORD, RDS_DATABASE):
         load_dotenv()
-        self.RDS_HOST = os.getenv("RDS_HOSTNAME")
-        self.RDS_PORT = 3306
-        self.RDS_USER = os.getenv("RDS_USERNAME")
-        self.RDS_PASSWORD = os.getenv("RDS_PASSWORD")
-        self.RDS_DATABASE = os.getenv("RDS_DATABASE")
+        self.RDS_HOST = RDS_HOST
+        self.RDS_PORT = RDS_PORT
+        self.RDS_USER = RDS_USER
+        self.RDS_PASSWORD = RDS_PASSWORD
+        self.RDS_DATABASE = RDS_DATABASE
 
         try:
-            self.conn = mysql.connector.connect(
+            self.conn = pymysql.connect(
                 host=self.RDS_HOST,
                 port=self.RDS_PORT,
                 user=self.RDS_USER,
@@ -23,7 +23,7 @@ class DatabaseRDS:
             self.cur = self.conn.cursor()
             print("Connected to Database RDS.")
 
-        except mysql.connector.Error as e:
+        except pymysql.Error as e:
             print("Error connecting to RDS:", e)
             self.conn = None
 
@@ -31,7 +31,7 @@ class DatabaseRDS:
         try:
             self.cur.execute(sql, values)
             return self.cur
-        except mysql.connector.Error as e:
+        except pymysql.Error as e:
             print("Error executing RDS mysql statement:", e)
             return None
 
@@ -39,7 +39,7 @@ class DatabaseRDS:
         try:
             self.cur.executemany(sql, values)
             return self.cur
-        except mysql.connector.Error as e:
+        except pymysql.Error as e:
             print("Error executing RDS mysql statement:", e)
             return None
 

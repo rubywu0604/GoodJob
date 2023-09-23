@@ -30,7 +30,6 @@ jmespath==1.0.1
 json5==0.9.14
 lxml==4.9.3
 matplotlib-inline==0.1.6
-mysql-connector-python==8.1.0
 optional-django==0.1.0
 outcome==1.2.0
 packaging==23.1
@@ -51,6 +50,7 @@ pycparser==2.21
 PyDispatcher==2.0.7
 pyee==8.2.2
 Pygments==2.16.1
+PyMySQL==1.1.0
 pyOpenSSL==23.2.0
 pyppeteer==1.0.2
 pyquery==2.0.0
