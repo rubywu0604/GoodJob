@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-import pymysql
+import mysql.connector
 import os
 
 
@@ -13,7 +13,7 @@ class DatabaseRDS:
         self.RDS_DATABASE = os.getenv("RDS_DATABASE")
 
         try:
-            self.conn = pymysql.connect(
+            self.conn = mysql.connector.connect(
                 host=self.RDS_HOST,
                 port=self.RDS_PORT,
                 user=self.RDS_USER,
@@ -23,7 +23,7 @@ class DatabaseRDS:
             self.cur = self.conn.cursor()
             print("Connected to Database RDS.")
 
-        except pymysql.Error as e:
+        except mysql.connector.Error as e:
             print("Error connecting to RDS:", e)
             self.conn = None
 
@@ -31,7 +31,7 @@ class DatabaseRDS:
         try:
             self.cur.execute(sql, values)
             return self.cur
-        except pymysql.Error as e:
+        except mysql.connector.Error as e:
             print("Error executing RDS mysql statement:", e)
             return None
 
@@ -39,7 +39,7 @@ class DatabaseRDS:
         try:
             self.cur.executemany(sql, values)
             return self.cur
-        except pymysql.Error as e:
+        except mysql.connector.Error as e:
             print("Error executing RDS mysql statement:", e)
             return None
 
