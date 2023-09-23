@@ -12,6 +12,8 @@ BOT_NAME = "jobscraper"
 SPIDER_MODULES = ["jobscraper.spiders"]
 NEWSPIDER_MODULE = "jobscraper.spiders"
 
+SCRAPEOPS_API_KEY = '0fd2d39e-eb86-4dbc-b6fa-35bbe854e511'
+
 today = datetime.datetime.today() 
 FEEDS = {
    f'backupdata{today.strftime("%Y/%m-%d")}.json': {'format': 'json'},
@@ -54,15 +56,18 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 16
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    "jobscraper.middlewares.JobscraperDownloaderMiddleware": 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+   "scrapeops_scrapy.middleware.retry.RetryMiddleware": 550,
+   "scrapy.downloadermiddlewares.retry.RetryMiddleware": None,
+   # "jobscraper.middlewares.JobscraperDownloaderMiddleware": 543,
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    "scrapy.extensions.telnet.TelnetConsole": None,
-#}
+EXTENSIONS = {
+   "scrapeops_scrapy.extension.ScrapeOpsMonitor": 500,
+   # "scrapy.extensions.telnet.TelnetConsole": None,
+}
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html

@@ -15,7 +15,7 @@ class DatabaseRDS:
         try:
             self.conn = pymysql.connect(
                 host=self.RDS_HOST,
-                port=int(self.RDS_PORT),
+                port=self.RDS_PORT,
                 user=self.RDS_USER,
                 password=self.RDS_PASSWORD,
                 database=self.RDS_DATABASE,
