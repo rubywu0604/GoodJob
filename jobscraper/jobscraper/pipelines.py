@@ -13,8 +13,6 @@ from jobscraper.database import DatabaseRDS
 class JobscraperPipeline:
     def __init__(self):
         self.db = DatabaseRDS()
-        self.db.delete()
-        self.db.reset_auto_increment()
 
     def _store_data_to_mysql(self, values):
         sql = """INSERT INTO job (
@@ -46,14 +44,14 @@ class JobscraperPipeline:
                     if "萬" in salary:
                         adapter['min_monthly_salary'] = "40000" if "四" in salary else min_pattern.group(3) + "0000"
                     else:
-                        adapter['min_monthly_salary'] = min_pattern.group(3) if "月薪" in salary else min_pattern.group(3) // 12
+                        adapter['min_monthly_salary'] = min_pattern.group(3) if "月薪" in salary else str(int(min_pattern.group(3)) // 12)
                 else:
                     if salary.startswith("月薪"):
                         adapter['max_monthly_salary'] = max_pattern.group(2)
                         adapter['min_monthly_salary'] = min_pattern.group(1)
                     elif salary.startswith("年薪"):
-                        adapter['max_monthly_salary'] = max_pattern.group(2) // 12
-                        adapter['min_monthly_salary'] = min_pattern.group(1) // 12
+                        adapter['max_monthly_salary'] = str(int(max_pattern.group(2)) // 12)
+                        adapter['min_monthly_salary'] = str(int(min_pattern.group(1)) // 12)
                 break
 
             else:
