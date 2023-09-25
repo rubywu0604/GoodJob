@@ -17,11 +17,11 @@ class A518spiderSpider(scrapy.Spider):
         db.delete()
         db.reset_auto_increment()
         job_types = [
-            "軟體工程師", "前端工程師", "後端工程師", "資料工程師", 
+            "前端工程師", "後端工程師", "資料工程師", 
             "資料分析師", "資料科學家", "資料庫管理"
         ]
         for job_type in job_types:
-            for p in range(1, 11):
+            for p in range(1, 51):
                 url = f"https://www.518.com.tw/job-index-P-{p}.html?ad={job_type}"
                 yield scrapy.Request(url, callback=self.parse)
     
@@ -32,6 +32,18 @@ class A518spiderSpider(scrapy.Spider):
             for job in jobs:
                 category_code = re.search(r'ad=(.+)', response.url).group(1)
                 category = unquote(category_code)
+                if category == "前端工程師":
+                    category = "frontend_engineer"
+                elif category == "後端工程師":
+                    category = "backend_engineer"
+                elif category == "資料工程師":
+                    category = "data_engineer"
+                elif category == "資料分析師":
+                    category = "data_analyst"
+                elif category == "資料科學家":
+                    category = "data_scientist"
+                elif category == "資料庫管理":
+                    category = "dba" 
                 job_title = job.css('h2 a.job__title::text').get()
                 company = job.css('span.job__comp__name::text').get()
                 salary = job.css('p.job__salary::text').get()
@@ -61,21 +73,16 @@ class A518spiderSpider(scrapy.Spider):
         job_description = soup.text.lower()
         job_description_cleaned = re.sub(r'\s+', '', job_description)
         conditions = [
-            "python", "java", "javascript", "ruby", "c#", "c++", "php", "swift", "kotlin", "golang", 
-            "rust", "typescript", "matlab", "perl", "scala", "dart", "lua", "julia", "objective-c",
-            "numpy", "pandas", "tensorflow", "scikit-learn", "keras", "pytorch", "opencv", "react", 
-            "angular", "vue.js", "ruby on rails", ".net framework", "hibernate", "spring framework", 
-            "qt", "express.js", "rubygems", ".net core", "django", "mysql", "ajax", "html", "css",
-            "postgresql", "mongodb", "oracle database", "microsoft sql server", "sqlite", "redis", 
-            "cassandra", "couchbase", "amazon dynamodb", "ruby on rails", "django", "express.js", 
-            "laravel (php)", "flask", "react", "vue.js", "asp.net", "spring boot", "git", "svn", 
-            "mercurial", "cvs", "perforce", "tfs (team foundation server)", "aws", "particle",
-            "docker", "kubernetes", "jenkins", "ansible", "puppet", "chef", "terraform", "vagrant", 
-            "nagios", "microsoft azure", "gcp", "ibm cloud", "oracle cloud", "node.js", "firebase",
-            "hadoop", "spark", "hive", "pig", "kafka", "elasticsearch", "tableau", "splunk", "power bi",
-            "android", "kotlin", "ios", "swift", "flutter", "xamarin", "phonegap/cordova","arduino", 
-            "raspberry pi", "mqtt", "node-red", "tinkercad", "airflow", "github"
+            "python", "ios", "swift", "android", " java ", " javascript ", "ruby", "c#", "c++", "php",
+            "typescript", "scala", "julia", "objective-c", "numpy", "pandas", "tensorflow", "scikit-learn",
+            "pytorch", "opencv", "react", "angular", "ruby on rails", ".net", "hibernate", " java,"," javascript/",           
+            "express.js", "rubygems", ".net core", "django", "mysql", "ajax", "html", "css", "kotlin", "git",
+            "postgresql", "mongodb", "sqlite", "redis", "cassandra", "django", "express.js", "golang", "aws",
+            "flask", "react", "vue.js", "asp.net", "docker", "kubernetes", "flutter", " javascript,", "gcp", 
+            "azure", "ibm cloud", "node.js", "firebase", "airflow", "github","arduino", "java/", "restful api",
+            "hadoop", "spark", "kafka", "elasticsearch", "tableau", "splunk", "power bi", "jquery"        
         ]
+
 
         skill_set = set()
         for condition in conditions:

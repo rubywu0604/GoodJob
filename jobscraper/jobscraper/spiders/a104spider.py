@@ -17,7 +17,7 @@ class A104spiderSpider(scrapy.Spider):
             "data_scientist_資料科學家", "dba_資料庫管理"
         ]
         for job_type in job_types:
-            for p in range(1, 21):
+            for p in range(1, 51):
                 url = f"https://www.104.com.tw/jobs/search/?keyword={job_type}&page={p}"
                 yield scrapy.Request(url, callback=self.parse)
 
@@ -57,21 +57,16 @@ class A104spiderSpider(scrapy.Spider):
         text_ = json.loads("".join(soup.find("script", {"type":"application/ld+json"}).contents))
         job_description = soup.text.lower()
         conditions = [
-            "python", "java", "javascript", "ruby", "c#", "c++", "php", "swift", "kotlin", "golang", 
-            "rust", "typescript", "matlab", "perl", "scala", "dart", "lua", "julia", "objective-c",
-            "numpy", "pandas", "tensorflow", "scikit-learn", "keras", "pytorch", "opencv", "react", 
-            "angular", "vue.js", "ruby on rails", ".net framework", "hibernate", "spring framework", 
-            "qt", "express.js", "rubygems", ".net core", "django", "mysql", "ajax", "html", "css",
-            "postgresql", "mongodb", "oracle database", "microsoft sql server", "sqlite", "redis", 
-            "cassandra", "couchbase", "amazon dynamodb", "ruby on rails", "django", "express.js", 
-            "laravel (php)", "flask", "react", "vue.js", "asp.net", "spring boot", "git", "svn", 
-            "mercurial", "cvs", "perforce", "tfs (team foundation server)", "aws", "particle",
-            "docker", "kubernetes", "jenkins", "ansible", "puppet", "chef", "terraform", "vagrant", 
-            "nagios", "microsoft azure", "gcp", "ibm cloud", "oracle cloud", "node.js", "firebase",
-            "hadoop", "spark", "hive", "pig", "kafka", "elasticsearch", "tableau", "splunk", "power bi",
-            "android", "kotlin", "ios", "swift", "flutter", "xamarin", "phonegap/cordova","arduino", 
-            "raspberry pi", "mqtt", "node-red", "tinkercad", "airflow", "github"
+            "python", "ios", "swift", "android", " java ", " javascript ", "ruby", "c#", "c++", "php",
+            "typescript", "scala", "julia", "objective-c", "numpy", "pandas", "tensorflow", "scikit-learn",
+            "pytorch", "opencv", "react", "angular", "ruby on rails", ".net", "hibernate", " java,"," javascript/",           
+            "express.js", "rubygems", ".net core", "django", "mysql", "ajax", "html", "css", "kotlin", "git",
+            "postgresql", "mongodb", "sqlite", "redis", "cassandra", "django", "express.js", "golang", "aws",
+            "flask", "react", "vue.js", "asp.net", "docker", "kubernetes", "flutter", " javascript,", "gcp", 
+            "azure", "ibm cloud", "node.js", "firebase", "airflow", "github","arduino", "java/", "restful api",
+            "hadoop", "spark", "kafka", "elasticsearch", "tableau", "splunk", "power bi", "jquery"        
         ]
+
 
         skill_set = set()
         for condition in conditions:
