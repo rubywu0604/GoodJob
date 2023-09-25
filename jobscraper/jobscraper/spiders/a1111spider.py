@@ -14,10 +14,10 @@ class A1111spiderSpider(scrapy.Spider):
         job_types = [
             "ios engineer", "android engineer", "frontend engineer 前端工程師", 
             "backend engineer 後端工程師", "data engineer 資料工程師", "data analyst 資料分析師", 
-            "data scientist 資料科學家", "dba 資料庫管理"
+            "data scientist 資料科學家", "dba engineer 資料庫管理"
         ]
         for job_type in job_types:
-            for p in range(1, 21):
+            for p in range(1, 51):
                 url = f"https://www.1111.com.tw/search/job?col=da&ks={job_type}&page={p}"
                 yield scrapy.Request(url, callback=self.parse)
 

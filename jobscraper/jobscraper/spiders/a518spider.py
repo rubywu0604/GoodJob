@@ -17,11 +17,11 @@ class A518spiderSpider(scrapy.Spider):
         db.delete()
         db.reset_auto_increment()
         job_types = [
-            "軟體工程師", "前端工程師", "後端工程師", "資料工程師", 
+            "前端工程師", "後端工程師", "資料工程師", 
             "資料分析師", "資料科學家", "資料庫管理"
         ]
         for job_type in job_types:
-            for p in range(1, 11):
+            for p in range(1, 51):
                 url = f"https://www.518.com.tw/job-index-P-{p}.html?ad={job_type}"
                 yield scrapy.Request(url, callback=self.parse)
     
@@ -32,6 +32,18 @@ class A518spiderSpider(scrapy.Spider):
             for job in jobs:
                 category_code = re.search(r'ad=(.+)', response.url).group(1)
                 category = unquote(category_code)
+                if category == "前端工程師":
+                    category = "frontend_engineer"
+                elif category == "後端工程師":
+                    category = "backend_engineer"
+                elif category == "資料工程師":
+                    category = "data_engineer"
+                elif category == "資料分析師":
+                    category = "data_analyst"
+                elif category == "資料科學家":
+                    category = "data_scientist"
+                elif category == "資料庫管理":
+                    category = "dba" 
                 job_title = job.css('h2 a.job__title::text').get()
                 company = job.css('span.job__comp__name::text').get()
                 salary = job.css('p.job__salary::text').get()

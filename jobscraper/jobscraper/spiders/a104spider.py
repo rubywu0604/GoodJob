@@ -17,7 +17,7 @@ class A104spiderSpider(scrapy.Spider):
             "data_scientist_資料科學家", "dba_資料庫管理"
         ]
         for job_type in job_types:
-            for p in range(1, 21):
+            for p in range(1, 51):
                 url = f"https://www.104.com.tw/jobs/search/?keyword={job_type}&page={p}"
                 yield scrapy.Request(url, callback=self.parse)
 
