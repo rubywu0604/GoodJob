@@ -12,9 +12,9 @@ class A1111spiderSpider(scrapy.Spider):
 
     def start_requests(self):
         job_types = [
-            "ios_engineer_工程師", "android_engineer_工程師", "frontend_engineer_前端工程師", 
-            "backend_engineer_後端工程師", "data_engineer_資料工程師", "data_analyst_資料分析師", 
-            "data_scientist_資料科學家", "dba_資料庫管理"
+            "ios engineer", "android engineer", "frontend engineer 前端工程師", 
+            "backend engineer 後端工程師", "data engineer 資料工程師", "data analyst 資料分析師", 
+            "data scientist 資料科學家", "dba 資料庫管理"
         ]
         for job_type in job_types:
             for p in range(1, 21):
@@ -24,7 +24,7 @@ class A1111spiderSpider(scrapy.Spider):
     def parse(self, response):
         jobs = response.css('.item__job')
         for job in jobs:
-            category = re.search(r'ks=(\w+)_', response.url).group(1)
+            category = re.search(r'ks=(\w+%20\w+)', response.url).group(1).replace("%20", "_")
             job_title = job.xpath('.//h5[@class="card-title title_6"]')
             job_title = job_title.xpath('string()').get()
             location = job.css('.job_item_info .job_item_detail a::text').get()
