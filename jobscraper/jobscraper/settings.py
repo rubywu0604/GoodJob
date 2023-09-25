@@ -12,7 +12,7 @@ BOT_NAME = "jobscraper"
 SPIDER_MODULES = ["jobscraper.spiders"]
 NEWSPIDER_MODULE = "jobscraper.spiders"
 
-SCRAPEOPS_API_KEY = '0fd2d39e-eb86-4dbc-b6fa-35bbe854e511'
+SCRAPEOPS_API_KEY = '50ee86a1-5ea9-4db7-9d49-fd50a85be177'
 
 today = datetime.datetime.today() 
 FEEDS = {
