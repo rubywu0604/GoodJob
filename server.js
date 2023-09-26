@@ -40,6 +40,7 @@ function createDatabase(db) {
         console.log("Database created.");
     });
 }
+
 connectToMysql(db)
 
 // ================= API routes =================
@@ -71,6 +72,26 @@ app.get(`/api/jobs/:category`, (req, res) => {
             res.setHeader('Content-Type', 'application/json');
             res.json(results);
         }
+    });
+});
+
+app.get('/api/jobs/skills', (req, res) => {
+    db.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error connecting to the database:', err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        connection.query('SELECT skills FROM job', (err, result) => {
+            connection.release();
+
+            if (err) {
+                console.error('Error executing SQL query:', err);
+                res.status(500).json({ error: 'Internal server error' });
+                return;
+            }
+            res.json(result);
+        });
     });
 });
 
