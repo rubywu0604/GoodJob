@@ -1,0 +1,44 @@
+body,
+h1,
+p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Basic styling for header */
+header {
+    background-color: #0078d4;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Styling for search bar */
+
+#searchBtn {
+    padding: 10px 20px;
+    background-color: #0078d4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Styling for job listings */
+#job-listings {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+
+
+/* Basic styling for footer */
+footer {
+    background-color: #0078d4;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}

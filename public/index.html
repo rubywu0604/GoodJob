@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js" charset="utf-8"></script>
+    <title>Good Job</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Welcome to Good Job</h1>
+        <p>Find your dream job here!</p>
+    </header>
+
+    <main>
+        <div id="container">
+            <form>
+                <label for="category">Category:</label>
+                <select id="categorySelect">
+                    <option value="none" selected disabled hidden> ~~~ search good job ~~~ </option>
+                    <option value="ios_engineer">iOS Engineer</option>
+                    <option value="android_engineer">Android Engineer</option>
+                    <option value="frontend_engineer">Frontend Engineer</option>
+                    <option value="backend_engineer">Backend Engineer</option>
+                    <option value="data_engineer">Data Engineer</option>
+                    <option value="data_analyst">Data Analyst</option>
+                    <option value="data_scientist">Data Scientist</option>
+                    <option value="dba">Database Administrator</option>
+                </select>
+                <button id="searchBtn">Search</button>
+            </form>
+        </div>
+        <div id="jobResults"></div>
+
+        <section id="job-listings">
+            <div id="tester" style="width:600px;height:300px;"></div>
+            <div id='myDiv' style="width:600px;height:400px;"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Ruby Wu</p>
+    </footer>
+    <script src="./plotly.js"></script>
+    <script src="./script.js"></script>
+</body>
+
+</html>
