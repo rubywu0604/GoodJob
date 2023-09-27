@@ -73,21 +73,25 @@ class A518spiderSpider(scrapy.Spider):
         job_description = soup.text.lower()
         job_description_cleaned = re.sub(r'\s+', '', job_description)
         conditions = [
-            "python", "ios", "swift", "android", " java ", " javascript ", "ruby", "c#", "c++", "php",
-            "typescript", "scala", "julia", "objective-c", "numpy", "pandas", "tensorflow", "scikit-learn",
-            "pytorch", "opencv", "react", "angular", "ruby on rails", ".net", "hibernate", " java,"," javascript/",           
-            "express.js", "rubygems", ".net core", "django", "mysql", "ajax", "html", "css", "kotlin", "git",
-            "postgresql", "mongodb", "sqlite", "redis", "cassandra", "django", "express.js", "golang", "aws",
-            "flask", "react", "vue.js", "asp.net", "docker", "kubernetes", "flutter", " javascript,", "gcp", 
-            "azure", "ibm cloud", "node.js", "firebase", "airflow", "github","arduino", "java/", "restful api",
-            "hadoop", "spark", "kafka", "elasticsearch", "tableau", "splunk", "power bi", "jquery"        
+            "python", "ios", "swift", "android", "ruby", "c#", "c++", "php", "jquery", "aws",
+            "typescript", "scala", "julia", "objective-c", "numpy", "pandas", "tensorflow", "gcp",
+            "pytorch", "opencv", "react", "angular", "ruby on rails", ".net", "hibernate", "redis", 
+            "express.js", "rubygems", ".net core", "django", "mysql", "ajax", "html", "css", "kotlin",
+            "postgresql", "mongodb", "sqlite", "cassandra", "django", "express.js", "golang", "spark", 
+            "flask", "react", "vue.js", "asp.net", "docker", "kubernetes", "flutter", "restful api",
+            "azure", "ibm cloud", "node.js", "firebase", "airflow", "github","arduino", "power bi",
+            "hadoop", "kafka", "elasticsearch", "tableau", "splunk", "scikit-learn", "javascript"
         ]
 
+        java_pattern = re.search(r'(java)\W', job_description)
+        special_case_java = java_pattern.group(1) if java_pattern else None
 
         skill_set = set()
         for condition in conditions:
             if condition in job_description_cleaned:
                 skill_set.add(condition)
+            elif special_case_java:
+                skill_set.add(special_case_java)
 
         a518Item = JobscraperItem()
 
