@@ -11,7 +11,7 @@ function drawSkillsChart(skills, category) {
     skillsArray.sort((a, b) => b[1] - a[1]);
     const labels = []
     const values = []
-    for (var i = 0; i < 1; i++) {
+    for (var i = 0; i < 7; i++) {
         labels.push(skillsArray[i][0]);
         values.push(skillsArray[i][1]);
     }
