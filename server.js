@@ -75,26 +75,6 @@ app.get(`/api/jobs/:category`, (req, res) => {
     });
 });
 
-app.get('/api/jobs/skills', (req, res) => {
-    db.getConnection((err, connection) => {
-        if (err) {
-            console.error('Error connecting to the database:', err);
-            res.status(500).json({ error: 'Internal server error' });
-            return;
-        }
-        connection.query('SELECT skills FROM job', (err, result) => {
-            connection.release();
-
-            if (err) {
-                console.error('Error executing SQL query:', err);
-                res.status(500).json({ error: 'Internal server error' });
-                return;
-            }
-            res.json(result);
-        });
-    });
-});
-
 app.listen(port, () => {
     console.log(`listen on the port ${port}`);
 });

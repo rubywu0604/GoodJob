@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("form").addEventListener("submit", function (e) {
         e.preventDefault(); // Prevent the default form submission
 
-        const selectedCategory = categorySelect.value;
+        let selectedCategory = categorySelect.value;
         jobResults.innerHTML = "";
 
         if (selectedCategory !== "none") {
@@ -20,15 +20,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then((data) => {
                     const ol = document.createElement('ol');
                     const skillCounts = {}
+                    const minSalaryCounts = []
+                    const maxSalaryCounts = []
+                    let minMonthlySalary
+                    let maxMonthlySalary
 
                     data.forEach((job) => {
-                        const job_title = job.job_title;
-                        const region = job.location;
-                        const company = job.company;
-                        const min_monthly_salary = job.min_monthly_salary;
-                        const max_monthly_salary = job.max_monthly_salary;
-                        const skills = job.skills;
-                        const job_link = job.job_link;
+                        let job_title = job.job_title;
+                        let region = job.location;
+                        let company = job.company;
+                        minMonthlySalary = job.min_monthly_salary;
+                        maxMonthlySalary = job.max_monthly_salary;
+                        let skills = job.skills;
+                        let job_link = job.job_link;
 
                         const a = document.createElement('a');
                         const li = document.createElement('li');
@@ -37,22 +41,31 @@ document.addEventListener("DOMContentLoaded", function () {
                         a.href = job_link;
                         a.textContent = job_title;
 
-                        div.textContent = `${region}/${company}/${min_monthly_salary}~${max_monthly_salary}/${skills}`;
+                        div.textContent = `${region}/${company}/${minMonthlySalary}~${maxMonthlySalary}/${skills}`;
                         li.appendChild(a);
                         li.appendChild(div);
                         ol.appendChild(li);
                         
-                        Array(skills).forEach((skillStr) => {
-                            let skillArray = JSON.parse(skillStr.replace(/'/g, '"'));
+                        if (skills != "Null") {
+                            const skillArray = JSON.parse(skills.replace(/'/g, '"'));
                             skillArray.forEach((skill) => {
-                                skillCounts.hasOwnProperty(skill) ? skillCounts[skill]++ : skillCounts[skill] = 1;
-                            })
-                        });
+                                skillCounts.hasOwnProperty(skill) ? skillCounts[skill]++ : (skillCounts[skill] = 1);
+                            });
+                        }
+                        
+                        if (minMonthlySalary != "Null") {
+                            minSalaryCounts.push(minMonthlySalary)
+                        }
+
+                        if (maxMonthlySalary != "Null" && maxMonthlySalary != "Above") {
+                            maxSalaryCounts.push(maxMonthlySalary)
+                        }
                     });
-                    console.log(skillCounts)
 
                     jobResults.appendChild(ol);
-                    drawSkillsChart()
+                    selectedCategory = selectedCategory.replace("_", " ").toUpperCase();
+                    drawSkillsChart(skillCounts, selectedCategory);
+                    drawSalaryChart(minSalaryCounts, maxSalaryCounts, selectedCategory);
                 })
                 .catch((error) => {
                     console.error("There was a problem with the fetch operation:", error);
@@ -60,21 +73,3 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-
-function drawSkillsChart(skills) {
-
-    var data = [{
-        type: "pie",
-        values: [2, 3, 4, 4],
-        labels: ["Python", "JavaScript", "C#", "Ruby"],
-        textinfo: "label+percent",
-        insidetextorientation: "radial"
-    }]
-
-    var layout = [{
-        height: 700,
-        width: 700
-    }]
-
-    Plotly.newPlot('skills', data, layout)
-}
