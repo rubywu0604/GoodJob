@@ -7,16 +7,25 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import datetime
-BOT_NAME = "jobscraper"
+import os
+from dotenv import load_dotenv
 
+
+load_dotenv()
+
+BOT_NAME = "jobscraper"
 SPIDER_MODULES = ["jobscraper.spiders"]
 NEWSPIDER_MODULE = "jobscraper.spiders"
-
-SCRAPEOPS_API_KEY = '50ee86a1-5ea9-4db7-9d49-fd50a85be177'
+SCRAPEOPS_API_KEY = "50ee86a1-5ea9-4db7-9d49-fd50a85be177"
+AWS_ACCESS_KEY_ID = "AKIA6ANQNG7AR3RUT3OS"
+AWS_SECRET_ACCESS_KEY = "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"
 
 today = datetime.datetime.today() 
 FEEDS = {
    f'backupdata{today.strftime("%Y/%m-%d")}.json': {'format': 'json'},
+   f's3://project-goodjob/{today.strftime("%Y-%m-%d")}/%(name)s_%(time)s.jsonl': {
+      "format": "jsonlines",
+      }
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
