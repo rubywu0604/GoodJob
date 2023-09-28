@@ -1,53 +1,21 @@
 // ================= node package / middleware =================
-require('dotenv').config();
+var db = require('./database.js')
 const express = require("express");
 const app = express();
 const path = require('path');
 const port = 8080;
-const mysql = require('mysql');
+const ejs = require('ejs');
+const engine = require('ejs-locals');
 
-// ======================== Database ========================
-const db_host = process.env.RDS_HOSTNAME;
-const db_port = process.env.RDS_PORT;
-const db_user = process.env.RDS_USERNAME;
-const db_password = process.env.RDS_PASSWORD;
-const db_database = process.env.RDS_DATABASE;
-
-const db = mysql.createConnection({
-    host: db_host,
-    port: db_port,
-    user: db_user,
-    password: db_password,
-    database: db_database
-})
-
-function connectToMysql(db) {
-    db.connect((err) => {
-        if (err) {
-            console.log(err.message);
-            return;
-        };
-        console.log("Database connected.");
-    });
-}
-
-function createDatabase(db) {
-    db.query("CREATE DATABASE goodjob", function (err, result) {
-        if (err) {
-            console.log(err.message);
-            return;
-        };
-        console.log("Database created.");
-    });
-}
-
-connectToMysql(db)
-
-// ================= API routes =================
+app.engine('ejs', engine);
+app.set('views', './views');
+app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ================= API routes =================
+
 app.get('/', (req, res) => {
-    res.sendFile('index.html');
+    res.render('index');
 })
 
 app.get('/api/jobs', (req, res) => {
