@@ -6,11 +6,11 @@ import os
 class DatabaseRDS:
     def __init__(self):
         load_dotenv()
-        self.RDS_HOST = "rds-mysql-project.cdjs0gubuwbc.ap-southeast-1.rds.amazonaws.com"
+        self.RDS_HOST = os.getenv("RDS_HOSTNAME")
         self.RDS_PORT = 3306
-        self.RDS_USER = "ruby"
-        self.RDS_PASSWORD = "Qazj6qup3u60604$"
-        self.RDS_DATABASE = "goodjob"
+        self.RDS_USER = os.getenv("RDS_USERNAME")
+        self.RDS_PASSWORD = os.getenv("RDS_PASSWORD")
+        self.RDS_DATABASE = os.getenv("RDS_DATABASE")
 
         try:
             self.conn = pymysql.connect(
