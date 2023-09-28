@@ -1,10 +1,34 @@
-TESTER = document.getElementById('tester');
-Plotly.newPlot(TESTER, [{
-    x: [1, 2, 3, 4, 5],
-    y: [1, 2, 4, 8, 16]
-}], {
-    margin: { t: 0 }
-}); 
+function drawJobCounts(jobs) {
+    const jobsArray = Object.entries(jobs);
+    jobsArray.sort((a, b) => a[1] - b[1]);
+    const labels = []
+    const values = []
+    for (var i = 0; i < jobsArray.length; i++) {
+        labels.push(jobsArray[i][0]);
+        values.push(jobsArray[i][1]);
+    }
+
+    var data = [{
+        y: labels,
+        x: values,
+        type: 'bar',
+        orientation: 'h'
+    }]
+
+    var layout = {
+        title: '各類型職缺數量',
+        showlegend: false,
+        titlefont: {
+            size: 20
+        },
+        margin: {
+            l: 115
+        } 
+    }
+
+    Plotly.newPlot('jobCounts', data, layout)
+
+}
 
 function drawSkillsChart(skills, category) {
     const skillsArray = Object.entries(skills);  // ['ios', 900], ['python', 800]
