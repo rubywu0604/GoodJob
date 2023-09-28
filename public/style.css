@@ -11,10 +11,12 @@ header {
     color: white;
     text-align: center;
     padding: 20px;
-    margin-bottom: 20px;
 }
 
 /* Styling for search bar */
+#form {
+    padding: 50px;
+}
 
 #searchBtn {
     padding: 10px 20px;
@@ -33,7 +35,13 @@ header {
     margin: 20px;
 }
 
-
+#loader {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background: #21242d url('https://cssauthor.com/wp-content/uploads/2018/06/Bouncy-Preloader.gif') no-repeat center;
+    z-index: 999;
+}
 
 /* Basic styling for footer */
 footer {

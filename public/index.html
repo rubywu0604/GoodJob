@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.plot.ly/plotly-latest.min.js" charset="utf-8"></script>
     <title>Good Job</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
@@ -14,10 +14,10 @@
         <h1>Welcome to Good Job</h1>
         <p>Find your dream job here!</p>
     </header>
-
     <main>
+        <div id="loader"></div>
         <div id="container">
-            <form>
+            <form id="form">
                 <label for="category">Category:</label>
                 <select id="categorySelect">
                     <option value="none" selected disabled hidden> ~~~ search good job ~~~ </option>
@@ -32,8 +32,8 @@
                 </select>
                 <button id="searchBtn">Search</button>
             </form>
+            <div id="jobCounts" style="width:700px;height:400px;padding-left:60px;"></div>
         </div>
-        <div id="tester" style="width:600px;height:250px;"></div>
         <section id="job-listings">
             <div id='skillsPie' style="width:600px;height:400px;"></div>
             <div id='skillsBar' style="width:500px;height:400px;"></div>
@@ -45,8 +45,8 @@
     <footer>
         <p>&copy; 2023 Ruby Wu</p>
     </footer>
-    <script src="../plotly.js"></script>
-    <script src="../script.js"></script>
+    <script src="./plotly.js"></script>
+    <script src="./script.js"></script>
 </body>
 
 </html>

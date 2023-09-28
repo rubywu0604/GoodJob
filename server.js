@@ -1,15 +1,10 @@
 // ================= node package / middleware =================
-var db = require('./database.js')
+const db = require('./database.js')
 const express = require("express");
 const app = express();
 const path = require('path');
 const port = 8080;
-const ejs = require('ejs');
-const engine = require('ejs-locals');
 
-app.engine('ejs', engine);
-app.set('views', './views');
-app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ================= API routes =================
