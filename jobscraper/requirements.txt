@@ -5,6 +5,7 @@ attrs==23.1.0
 Automat==22.10.0
 backcall==0.2.0
 beautifulsoup4==4.12.2
+botocore==1.31.62
 bs4==0.0.1
 certifi==2023.7.22
 cffi==1.15.1
@@ -55,10 +56,13 @@ pyOpenSSL==23.2.0
 pyppeteer==1.0.2
 pyquery==2.0.0
 PySocks==1.7.1
+python-dateutil==2.8.2
 python-dotenv==1.0.0
 queuelib==1.6.2
 requests==2.31.0
 requests-file==1.5.1
+scrapeops-python-logger==0.4.7
+scrapeops-python-requests==0.4.7
 scrapeops-scrapy==0.5.3
 Scrapy==2.10.1
 scrapy-splash==0.9.0
