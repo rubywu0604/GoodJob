@@ -35,5 +35,4 @@ function createDatabase(db) {
     });
 }
 
-connectToMysql(db)
 module.exports = db
