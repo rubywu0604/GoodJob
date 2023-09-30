@@ -6,7 +6,7 @@ function loadNow(opacity) {
     } else {
         loader.style.opacity = opacity;
         window.setTimeout(function () {
-            loadNow(opacity - 0.04);
+            loadNow(opacity - 0.02);
         }, 50);
     }
 }
@@ -68,8 +68,7 @@ document.querySelector("form").addEventListener("submit", function (e) {
             .then((data) => {
                 const ol = document.createElement('ol');
                 const skillCounts = {}
-                const minSalaryCounts = []
-                const maxSalaryCounts = []
+                const salaryCounts = []
                 let minMonthlySalary
                 let maxMonthlySalary
 
@@ -99,21 +98,19 @@ document.querySelector("form").addEventListener("submit", function (e) {
                         skillArray.forEach((skill) => {
                             skillCounts.hasOwnProperty(skill) ? skillCounts[skill]++ : (skillCounts[skill] = 1);
                         });
-                    }
+                    };
 
-                    if (minMonthlySalary != "Null") {
-                        minSalaryCounts.push(minMonthlySalary)
-                    }
-
-                    if (maxMonthlySalary != "Null" && maxMonthlySalary != "Above") {
-                        maxSalaryCounts.push(maxMonthlySalary)
-                    }
+                    if (minMonthlySalary > 0) {
+                        salaryCounts.push(Number(minMonthlySalary));
+                    } else if (maxMonthlySalary > 0) {
+                        salaryCounts.push(Number(maxMonthlySalary));
+                    };
                 });
 
                 jobResults.appendChild(ol);
-                selectedCategory = selectedCategory.replace("_", " ").toUpperCase();
+                selectedCategory = selectedCategory.replace("_", " ").toLowerCase();
                 drawSkillsChart(skillCounts, selectedCategory);
-                drawSalaryChart(minSalaryCounts, maxSalaryCounts, selectedCategory);
+                drawSalaryChart(salaryCounts, selectedCategory);
             })
             .catch((error) => {
                 console.error("Fetch error:", error);

@@ -16,7 +16,7 @@ function drawJobCounts(jobs) {
     }]
 
     var layout = {
-        title: '各類型職缺數量',
+        title: '各類型職缺數量排行',
         showlegend: false,
         titlefont: {
             size: 20
@@ -49,7 +49,7 @@ function drawSkillsChart(skills, category) {
         insidetextorientation: "radial"
     }]
     var layout = {
-        title: `Top 7 High-Value Skills for ${category}`,
+        title: `${category} 技能佔比`,
         height: 400,
         width: 600
     }
@@ -70,33 +70,71 @@ function drawSkillsChart(skills, category) {
     };
     var data = [trace1];
     var layout = {
-        title: `Top 7 High-Value Skills for ${category}`,
+        title: `${category} 技能排行`,
         font: { size: 12 }
     };
     var config = { responsive: true }
     Plotly.newPlot('skillsBar', data, layout, config);
 }
 
-function drawSalaryChart(min, max, category) {
+function drawSalaryChart(salaryCounts, category) {
+    const minSalary = Math.min(...salaryCounts);
+    const maxSalary = Math.max(...salaryCounts);
+    const salaryValue = Array(9).fill(0);
+
+    salaryCounts.forEach((salary) => {
+        if (salary < 30000){
+            salaryValue[0] += 1;
+        } else if (30000 <= salary && salary < 40000) {
+            salaryValue[1] += 1
+        } else if (40000 <= salary && salary < 50000) {
+            salaryValue[2] += 1
+        } else if (50000 <= salary && salary < 60000) {
+            salaryValue[3] += 1
+        } else if (60000 <= salary && salary < 70000) {
+            salaryValue[4] += 1
+        } else if (70000 <= salary && salary < 80000) {
+            salaryValue[5] += 1
+        } else if (80000 <= salary && salary < 90000) {
+            salaryValue[6] += 1
+        } else if (90000 <= salary && salary < 100000) {
+            salaryValue[7] += 1
+        } else {
+            salaryValue[8] += 1
+        }
+    })
+
+    console.log(salaryValue)
+
+    var xValue = ['30k以下', '30k~40k', '40k~50k', '50k~60k', '60k~70k', '70k~80k', '80k~90k', '90k~100k', '100k以上'];
+
+    var yValue = salaryValue;
+
     var trace1 = {
-        x: min,
-        y: max,
-        mode: 'markers',
+        x: xValue,
+        y: yValue,
+        type: 'bar',
+        text: yValue.map(String),
+        textposition: 'auto',
+        hoverinfo: 'none',
         marker: {
-            size: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+            color: 'rgb(158,202,225)',
+            opacity: 0.6,
+            line: {
+                color: 'rgb(8,48,107)',
+                width: 1.5
+            }
         }
     };
 
     var data = [trace1];
 
     var layout = {
-        title: `Salary Range for ${category}`,
-        showlegend: false,
-        height: 600,
-        width: 600
+        title: `${category} 月薪 （最低：${minSalary}元/ 最高：${maxSalary}元）`,
+        barmode: 'stack'
     };
 
-    Plotly.newPlot('salaryBubble', data, layout);
+    Plotly.newPlot('salaryBar', data, layout);
 }
 
 function drawLocatioinChart(category) {
