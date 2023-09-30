@@ -27,21 +27,42 @@ document.addEventListener("DOMContentLoaded", function () {
             return response.json();
         })
         .then((data) => {
-            const jobCounts = { 
-                ios_engineer: 0,
-                android_engineer: 0,
-                frontend_engineer: 0,
-                backend_engineer: 0,
-                data_engineer: 0,
-                data_analyst: 0,
-                data_scientist: 0,
-                dba: 0
-            }
+            const jobDetails = {
+                ios_engineer: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary:[] },
+                android_engineer: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                frontend_engineer: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                backend_engineer: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                data_engineer: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                data_analyst: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                data_scientist: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                dba: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+            };
+            
             data.forEach((job) => {
-                const category = job.category;
-                category == "dba_engineer" ? jobCounts['dba']++ : jobCounts[category]++;
-            })
-            drawJobCounts(jobCounts);
+                category = job.category;
+                const minMonthlySalary = job.min_monthly_salary;
+                const maxMonthlySalary = job.max_monthly_salary;
+
+                category == "dba_engineer" ? jobDetails['dba'].counts++ : jobDetails[category].counts++;
+
+                if (Object.keys(jobDetails).includes(category)) {
+                    if (minMonthlySalary > 0) {
+                        jobDetails[category].aryMinSalary.push(Number(minMonthlySalary));
+                    }
+                    if (maxMonthlySalary > 0) {
+                        jobDetails[category].aryMaxSalary.push(Number(maxMonthlySalary));
+                    };
+                }
+            });
+
+            const jobDetailsValues = Object.values(jobDetails);
+            jobDetailsValues.forEach((value) => {
+                value.avgMinSalary = Math.round(value.aryMinSalary.reduce((sum, salary) => sum + salary, 0) / value.aryMinSalary.length);
+                value.avgMaxSalary = Math.round(value.aryMaxSalary.reduce((sum, salary) => sum + salary, 0) / value.aryMaxSalary.length);
+            });
+
+            drawJobCounts(jobDetails);
+            drawAvgSalary(jobDetails);
         })
         .catch((error) => {
             console.error("Fetch error:", error);
@@ -69,17 +90,15 @@ document.querySelector("form").addEventListener("submit", function (e) {
                 const ol = document.createElement('ol');
                 const skillCounts = {}
                 const salaryCounts = []
-                let minMonthlySalary
-                let maxMonthlySalary
 
                 data.forEach((job) => {
-                    let job_title = job.job_title;
-                    let region = job.location;
-                    let company = job.company;
-                    minMonthlySalary = job.min_monthly_salary;
-                    maxMonthlySalary = job.max_monthly_salary;
-                    let skills = job.skills;
-                    let job_link = job.job_link;
+                    const job_title = job.job_title;
+                    const region = job.location;
+                    const company = job.company;
+                    const minMonthlySalary = job.min_monthly_salary;
+                    const maxMonthlySalary = job.max_monthly_salary;
+                    const skills = job.skills;
+                    const job_link = job.job_link;
 
                     const a = document.createElement('a');
                     const li = document.createElement('li');

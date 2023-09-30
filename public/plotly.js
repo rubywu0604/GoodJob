@@ -1,5 +1,9 @@
 function drawJobCounts(jobs) {
-    const jobsArray = Object.entries(jobs);
+    const jobCountsPair = {}
+    for (const [jobCategory, details] of Object.entries(jobs)) {
+        jobCountsPair[jobCategory] = details.counts
+    }
+    const jobsArray = Object.entries(jobCountsPair);
     jobsArray.sort((a, b) => a[1] - b[1]);
     const labels = []
     const values = []
@@ -27,6 +31,60 @@ function drawJobCounts(jobs) {
     }
 
     Plotly.newPlot('jobCounts', data, layout)
+
+}
+
+function drawAvgSalary(avgSalary) {
+    var xValue = [];
+    var yValue = [];
+    var yValue2 = [];
+    
+    for (const [jobCategory, details] of Object.entries(avgSalary)) {
+        xValue.push(jobCategory);
+        yValue.push(details.avgMinSalary)
+        yValue2.push(details.avgMaxSalary)
+    }
+    
+    var trace1 = {
+        x: xValue,
+        y: yValue,
+        type: 'bar',
+        text: yValue.map(String),
+        textposition: 'auto',
+        hoverinfo: 'none',
+        opacity: 0.5,
+        marker: {
+            color: 'rgb(158,202,225)',
+            line: {
+                color: 'rgb(8,48,107)',
+                width: 1.5
+            }
+        }
+    };
+
+    var trace2 = {
+        x: xValue,
+        y: yValue2,
+        type: 'bar',
+        text: yValue2.map(String),
+        textposition: 'auto',
+        hoverinfo: 'none',
+        marker: {
+            color: 'rgba(58,200,225,.5)',
+            line: {
+                color: 'rgb(8,48,107)',
+                width: 1.5
+            }
+        }
+    };
+
+    var data = [trace1, trace2];
+
+    var layout = {
+        title: '平均月收入'
+    };
+
+    Plotly.newPlot('avgSalary', data, layout);
 
 }
 
@@ -135,8 +193,4 @@ function drawSalaryChart(salaryCounts, category) {
     };
 
     Plotly.newPlot('salaryBar', data, layout);
-}
-
-function drawLocatioinChart(category) {
-    
 }
