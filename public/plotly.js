@@ -30,7 +30,7 @@ function drawJobCounts(jobs) {
         } 
     }
 
-    Plotly.newPlot('jobCounts', data, layout)
+    Plotly.newPlot('jobCountsBar', data, layout)
 
 }
 
@@ -41,8 +41,8 @@ function drawAvgSalary(avgSalary) {
     
     for (const [jobCategory, details] of Object.entries(avgSalary)) {
         xValue.push(jobCategory);
-        yValue.push(details.avgMinSalary)
-        yValue2.push(details.avgMaxSalary)
+        yValue.push(details.avgMinSalary);
+        yValue2.push(details.avgMaxSalary);
     }
     
     var trace1 = {
@@ -59,7 +59,8 @@ function drawAvgSalary(avgSalary) {
                 color: 'rgb(8,48,107)',
                 width: 1.5
             }
-        }
+        },
+        name: "平均起薪"
     };
 
     var trace2 = {
@@ -75,7 +76,8 @@ function drawAvgSalary(avgSalary) {
                 color: 'rgb(8,48,107)',
                 width: 1.5
             }
-        }
+        },
+        name: "平均訖薪"
     };
 
     var data = [trace1, trace2];
@@ -84,7 +86,49 @@ function drawAvgSalary(avgSalary) {
         title: '平均月收入'
     };
 
-    Plotly.newPlot('avgSalary', data, layout);
+    Plotly.newPlot('avgSalaryBar', data, layout);
+
+}
+
+function drawExperience(experience) {
+    const expLabels = [];
+    const expValues = [];
+    for (const [expLabel, expValue] of Object.entries(experience)) {
+        expLabels.push(expLabel);
+        expValues.push(expValue)
+    }
+
+    var data = [{
+        values: expValues,
+        labels: expLabels,
+        text: '經驗',
+        textposition: 'inside',
+        domain: { x: [0, 1], y: [0, 1] },
+        hoverinfo: 'label+percent',
+        hole: .4,
+        type: 'pie'
+    }];
+
+    var layout = {
+        title: '工作經驗佔比',
+        annotations: [
+            {
+                font: {
+                    size: 20
+                },
+                showarrow: false,
+                text: '年資',
+                x: 0.5,
+                y: 0.5
+            }
+        ],
+        height: 400,
+        width: 600,
+        showlegend: true,
+        grid: { rows: 1, columns: 2 }
+    };
+
+    Plotly.newPlot('experienceDonut', data, layout);
 
 }
 

@@ -37,13 +37,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 data_scientist: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
                 dba: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
             };
+            const experienceCounts = {};
             
             data.forEach((job) => {
                 category = job.category;
                 const minMonthlySalary = job.min_monthly_salary;
                 const maxMonthlySalary = job.max_monthly_salary;
+                let experience = job.experience;
 
                 category == "dba_engineer" ? jobDetails['dba'].counts++ : jobDetails[category].counts++;
+                (experience === 0) ? (experience = "不拘") : (experience = `${experience}年`);
+                experienceCounts.hasOwnProperty(experience) ? experienceCounts[experience]++ : (experienceCounts[experience] = 1);
 
                 if (Object.keys(jobDetails).includes(category)) {
                     if (minMonthlySalary > 0) {
@@ -63,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             drawJobCounts(jobDetails);
             drawAvgSalary(jobDetails);
+            drawExperience(experienceCounts)
         })
         .catch((error) => {
             console.error("Fetch error:", error);
