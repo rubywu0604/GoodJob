@@ -1,8 +1,10 @@
+/* Reset some default styles */
 body,
 h1,
 p {
     margin: 0;
     padding: 0;
+    font-family:serif;
 }
 
 /* Basic styling for header */
@@ -13,18 +15,39 @@ header {
     padding: 20px;
 }
 
+.title {
+    font-size: 40px;
+}
+
+.welcome-msg {
+    font-size: 20px;
+}
+
 /* Styling for search bar */
 #form {
-    padding: 50px;
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+}
+
+#categorySelect {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+    font-family: serif;
 }
 
 #searchBtn {
     padding: 10px 20px;
+    font-size: medium;
+    font-family: serif;
     background-color: #0078d4;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-left: 10px;
 }
 
 /* Styling for job listings */
@@ -35,6 +58,7 @@ header {
     margin: 20px;
 }
 
+/* Loader styling */
 #loader {
     position: fixed;
     width: 100%;
@@ -45,8 +69,89 @@ header {
 
 /* Basic styling for footer */
 footer {
-    background-color: #0078d4;
+    background-color: rgb(0, 120, 212);
     color: white;
-    text-align: center;
+    text-align: right;
     padding: 10px;
+}
+
+/* Additional styles for main content */
+main {
+    padding: 20px;
+}
+
+/* Styling for the container */
+#container {
+    text-align: center;
+}
+
+/* Styling for the job category and average salary */
+#category {
+    background-color: rgba(0, 120, 212, 0.2);
+}
+
+#listCategory {
+    font-size: 50px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+#yearAvgSalary {
+    font-size: 50px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+#chart-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* Styling for each chart within the container */
+#jobCountsBar,
+#avgSalaryBar,
+#experienceDonut {
+    flex: 1;
+    max-width: calc(33.33% - 20px);
+    height: 400px;
+    margin-right: 20px;
+}
+
+/* Clear margin-right for the last chart */
+#experienceDonut {
+    margin-right: 0;
+}
+
+#chart-container-category {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    justify-content: space-between;
+}
+
+.chart {
+    flex: 1;
+    box-sizing: border-box;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    #chart-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Adjust the width of charts for smaller screens */
+    #jobCountsBar,
+    #avgSalaryBar,
+    #experienceDonut {
+        max-width: 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
 }
