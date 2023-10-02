@@ -195,7 +195,7 @@ function drawSkillsChart(skills) {
 function drawSalaryChart(salaryCounts) {
     const minSalary = Math.min(...salaryCounts);
     const maxSalary = Math.max(...salaryCounts);
-    const salaryValue = Array(9).fill(0);
+    const salaryValue = Array(11).fill(0);
 
     salaryCounts.forEach((salary) => {
         if (salary < 30000){
@@ -214,12 +214,16 @@ function drawSalaryChart(salaryCounts) {
             salaryValue[6] += 1
         } else if (90000 <= salary && salary < 100000) {
             salaryValue[7] += 1
-        } else {
+        } else if (100000 <= salary && salary < 110000) {
             salaryValue[8] += 1
+        } else if (110000 <= salary && salary < 120000) {
+            salaryValue[9] += 1
+        } else {
+            salaryValue[10] += 1
         }
     })
 
-    var xValue = ['30k以下', '30k~40k', '40k~50k', '50k~60k', '60k~70k', '70k~80k', '80k~90k', '90k~100k', '100k以上'];
+    var xValue = ['30k以下', '30k~40k', '40k~50k', '50k~60k', '60k~70k', '70k~80k', '80k~90k', '90k~100k', '100k~110k', '110k~120k', '120k以上'];
 
     var yValue = salaryValue;
 
