@@ -28,24 +28,33 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then((data) => {
             const jobDetails = {
-                ios_engineer: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary:[] },
-                android_engineer: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                frontend_engineer: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                backend_engineer: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                data_engineer: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                data_analyst: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                data_scientist: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                dba: { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                "iOS Engineer": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                "Android Engineer": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                "Frontend Engineer": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                "Backend Engineer": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                "Data Engineer": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                "Data Analyst": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                "Data Scientist": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                "Dba": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
             };
             const experienceCounts = {};
             
             data.forEach((job) => {
                 category = job.category;
+                category = category.replace("_", " ");
+                if (category === "ios engineer") {
+                    category = "iOS Engineer";
+                } else {
+                    category = category.replace(/\b\w/g, function (char) {
+                        return char.toUpperCase();
+                    });
+                }
+
                 const minMonthlySalary = job.min_monthly_salary;
                 const maxMonthlySalary = job.max_monthly_salary;
                 let experience = job.experience;
 
-                category == "dba_engineer" ? jobDetails['dba'].counts++ : jobDetails[category].counts++;
+                (category === "Dba Engineer") ? jobDetails['Dba'].counts++ : jobDetails[category].counts++;
                 (experience === 0) ? (experience = "不拘") : (experience = `${experience}年`);
                 experienceCounts.hasOwnProperty(experience) ? experienceCounts[experience]++ : (experienceCounts[experience] = 1);
 
@@ -77,9 +86,12 @@ document.addEventListener("DOMContentLoaded", function () {
 document.querySelector("form").addEventListener("submit", function (e) {
     const categorySelect = document.getElementById("categorySelect");
     const jobResults = document.getElementById("jobResults");
+    const yearSalary = document.getElementById('yearAvgSalary');
+    const listCategory = document.getElementById('listCategory');
     e.preventDefault(); // Prevent the default form submission
 
     let selectedCategory = categorySelect.value;
+    let yearAvgSalary;
     jobResults.innerHTML = "";
 
     if (selectedCategory !== "none") {
@@ -93,8 +105,11 @@ document.querySelector("form").addEventListener("submit", function (e) {
             })
             .then((data) => {
                 const ol = document.createElement('ol');
-                const skillCounts = {}
-                const salaryCounts = []
+                const skillCounts = {};
+                const educationCounts = {};
+                const salaryCounts = [];
+                const minSalaryAry = [];
+                const maxSalaryAry = [];
 
                 data.forEach((job) => {
                     const job_title = job.job_title;
@@ -104,6 +119,7 @@ document.querySelector("form").addEventListener("submit", function (e) {
                     const maxMonthlySalary = job.max_monthly_salary;
                     const skills = job.skills;
                     const job_link = job.job_link;
+                    const education = job.education;
 
                     const a = document.createElement('a');
                     const li = document.createElement('li');
@@ -126,15 +142,35 @@ document.querySelector("form").addEventListener("submit", function (e) {
 
                     if (minMonthlySalary > 0) {
                         salaryCounts.push(Number(minMonthlySalary));
-                    } else if (maxMonthlySalary > 0) {
+                        minSalaryAry.push(Number(minMonthlySalary));
+                    } 
+                    if (maxMonthlySalary > 0) {
                         salaryCounts.push(Number(maxMonthlySalary));
+                        maxSalaryAry.push(Number(maxMonthlySalary));
                     };
+
+                    const minAvgSalary = Math.round((minSalaryAry.reduce((sum, salary) => sum + salary, 0)) / minSalaryAry.length) * 13;
+                    const maxAvgSalary = Math.round((maxSalaryAry.reduce((sum, salary) => sum + salary, 0)) / maxSalaryAry.length) * 13;
+                    yearAvgSalary = Math.round((minAvgSalary + maxAvgSalary) / 2)
+
+                    educationCounts.hasOwnProperty(education) ? educationCounts[education]++ : (educationCounts[education] = 1);
                 });
 
                 jobResults.appendChild(ol);
-                selectedCategory = selectedCategory.replace("_", " ").toLowerCase();
-                drawSkillsChart(skillCounts, selectedCategory);
-                drawSalaryChart(salaryCounts, selectedCategory);
+                selectedCategory = selectedCategory.replace("_", " ");
+                if (selectedCategory === "ios engineer") {
+                    selectedCategory = "iOS Engineer";
+                } else {
+                    selectedCategory = selectedCategory.replace(/\b\w/g, function (char) {
+                        return char.toUpperCase();
+                    });
+                }
+                
+                listCategory.innerHTML = `${selectedCategory}`;
+                yearSalary.innerHTML = `平均年薪＄${yearAvgSalary}`;
+                drawSkillsChart(skillCounts);
+                drawSalaryChart(salaryCounts);
+                drawEducationWordCloud(educationCounts);
             })
             .catch((error) => {
                 console.error("Fetch error:", error);
