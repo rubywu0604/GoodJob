@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.plot.ly/plotly-latest.min.js" charset="utf-8"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-bundle.min.js"></script>
     <title>Good Job</title>
     <link rel="stylesheet" href="./style.css">
 </head>
@@ -12,15 +13,15 @@
 <body>
     <div id="loader"></div>
     <header>
-        <h1>Welcome to Good Job</h1>
-        <p>Find your dream job here!</p>
+        <h1 class="title">Welcome to Good Job</h1>
+        <p class="welcome-msg">Find your dream job here!</p>
     </header>
     <main>
         <div id="container">
             <form id="form">
-                <label for="category">Category:</label>
+                <label for="category">Category</label>
                 <select id="categorySelect">
-                    <option value="none" selected disabled hidden> ~~~ search good job ~~~ </option>
+                    <option value="none" selected disabled hidden> === search Good Job === </option>
                     <option value="ios_engineer">iOS Engineer</option>
                     <option value="android_engineer">Android Engineer</option>
                     <option value="frontend_engineer">Frontend Engineer</option>
@@ -32,14 +33,25 @@
                 </select>
                 <button id="searchBtn">Search</button>
             </form>
-            <div id="jobCountsBar" style="width:700px;height:400px"></div>
-            <div id="avgSalaryBar" style="width:700px;height:400px"></div>
-            <div id="experienceDonut" style="width:500px;height:200px"></div>
+            <div id="chart-container">
+                <div id="jobCountsBar"></div>
+                <div id="avgSalaryBar"></div>
+                <div id="experienceDonut"></div>
+            </div>
+        </div>
+        <div id="category">
+            <h1 id='listCategory'></h1>
+            <p id='yearAvgSalary'></p>
         </div>
         <section id="job-listings">
-            <div id='salaryBar' style="width:500px;height:500px;"></div>
-            <div id='skillsPie' style="width:600px;height:400px;"></div>
-            <div id='skillsBar' style="width:500px;height:400px;"></div>
+            <div id="chart-container-category">
+                <div id="worldCloud" class="chart">
+                    <div id="educationWordCloud"></div>
+                </div>
+                <div id='salaryBar' class="chart"></div>
+                <div id='skillsPie' class="chart"></div>
+                <div id='skillsBar' class="chart"></div>
+            </div>
             <div id="jobResults"></div>
         </section>
     </main>
@@ -47,8 +59,8 @@
     <footer>
         <p>&copy; 2023 Ruby Wu</p>
     </footer>
-    <script src="./plotly.js"></script>
     <script src="./script.js"></script>
+    <script src="./plotly.js"></script>
 </body>
 
 </html>
