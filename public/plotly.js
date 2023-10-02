@@ -20,7 +20,7 @@ function drawJobCounts(jobs) {
     }]
 
     var layout = {
-        title: '各類型職缺數量排行',
+        title: '軟體工程師 職缺數量排行',
         showlegend: false,
         titlefont: {
             size: 20
@@ -83,7 +83,10 @@ function drawAvgSalary(avgSalary) {
     var data = [trace1, trace2];
 
     var layout = {
-        title: '平均月收入'
+        title: '軟體工程師 平均月收入',
+        titlefont: {
+            size: 20
+        }
     };
 
     Plotly.newPlot('avgSalaryBar', data, layout);
@@ -110,7 +113,10 @@ function drawExperience(experience) {
     }];
 
     var layout = {
-        title: '工作經驗佔比',
+        title: '軟體工程師 工作經驗佔比',
+        titlefont: {
+            size: 20
+        },
         annotations: [
             {
                 font: {
@@ -132,7 +138,7 @@ function drawExperience(experience) {
 
 }
 
-function drawSkillsChart(skills, category) {
+function drawSkillsChart(skills) {
     const skillsArray = Object.entries(skills);  // ['ios', 900], ['python', 800]
     skillsArray.sort((a, b) => b[1] - a[1]);
     const labels = []
@@ -151,9 +157,12 @@ function drawSkillsChart(skills, category) {
         insidetextorientation: "radial"
     }]
     var layout = {
-        title: `${category} 技能佔比`,
+        title: '技術佔比',
+        titlefont: {
+            size: 20
+        },
         height: 400,
-        width: 600
+        width: 400
     }
 
     Plotly.newPlot('skillsPie', data, layout)
@@ -172,14 +181,18 @@ function drawSkillsChart(skills, category) {
     };
     var data = [trace1];
     var layout = {
-        title: `${category} 技能排行`,
-        font: { size: 12 }
+        title: '技術排行',
+        titlefont: {
+            size: 20
+        },
+        height: 400,
+        width: 520
     };
     var config = { responsive: true }
     Plotly.newPlot('skillsBar', data, layout, config);
 }
 
-function drawSalaryChart(salaryCounts, category) {
+function drawSalaryChart(salaryCounts) {
     const minSalary = Math.min(...salaryCounts);
     const maxSalary = Math.max(...salaryCounts);
     const salaryValue = Array(9).fill(0);
@@ -206,8 +219,6 @@ function drawSalaryChart(salaryCounts, category) {
         }
     })
 
-    console.log(salaryValue)
-
     var xValue = ['30k以下', '30k~40k', '40k~50k', '50k~60k', '60k~70k', '70k~80k', '80k~90k', '90k~100k', '100k以上'];
 
     var yValue = salaryValue;
@@ -232,9 +243,46 @@ function drawSalaryChart(salaryCounts, category) {
     var data = [trace1];
 
     var layout = {
-        title: `${category} 月薪 （最低：${minSalary}元/ 最高：${maxSalary}元）`,
-        barmode: 'stack'
+        title: `每月薪資收入 <br>（最低：${minSalary}元 / 最高：${maxSalary}元）`,
+        titlefont: {
+            size: 20
+        },
+        barmode: 'stack',
+        height: 400,
+        width: 520
     };
 
     Plotly.newPlot('salaryBar', data, layout);
+}
+
+function drawEducationWordCloud(education) {
+    const chartContainer = document.getElementById('educationWordCloud');
+
+    if (chartContainer) {
+        chartContainer.parentNode.removeChild(chartContainer);
+    }
+
+    const newChartContainer = document.createElement('div');
+    newChartContainer.id = 'educationWordCloud';
+    newChartContainer.style.width = '350px';
+    newChartContainer.style.height = '350px';
+
+    const container = document.getElementById('worldCloud');
+    container.appendChild(newChartContainer);
+
+    const chart = anychart.tagCloud([
+        { "x": "不拘", "value": `${education['不拘']}` },
+        { "x": "高中", "value": `${education['高中']}` },
+        { "x": "大學", "value": `${education['大學']}` },
+        { "x": "專科", "value": `${education['專科']}` },
+        { "x": "碩士", "value": `${education['碩士']}` }
+    ]);
+
+    chart.colorScale(anychart.scales.linearColor().colors(["#45b6fe", '#f94449', "#DE73FF"]));
+    chart.title('學歷要求').title().fontColor("#000000").fontSize(20);
+    chart.angles([0, 45, -45]);
+    chart.colorRange(true);
+    chart.colorRange().length('90%');
+    chart.container('educationWordCloud');
+    chart.draw();
 }
