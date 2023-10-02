@@ -121,17 +121,7 @@ document.querySelector("form").addEventListener("submit", function (e) {
                     const job_link = job.job_link;
                     const education = job.education;
 
-                    const a = document.createElement('a');
-                    const li = document.createElement('li');
-                    const div = document.createElement('div');
-
-                    a.href = job_link;
-                    a.textContent = job_title;
-
-                    div.textContent = `${region}/${company}/${minMonthlySalary}~${maxMonthlySalary}/${skills}`;
-                    li.appendChild(a);
-                    li.appendChild(div);
-                    ol.appendChild(li);
+                    jobList(job_title, job_link, region, company, minMonthlySalary, maxMonthlySalary, skills, ol);
 
                     if (skills != "Null") {
                         const skillArray = JSON.parse(skills.replace(/'/g, '"'));
@@ -167,7 +157,7 @@ document.querySelector("form").addEventListener("submit", function (e) {
                 }
                 
                 listCategory.innerHTML = `${selectedCategory}`;
-                yearSalary.innerHTML = `平均年薪＄${yearAvgSalary}`;
+                yearSalary.innerHTML = `平均年薪＄${yearAvgSalary.toLocaleString() }`;
                 drawSkillsChart(skillCounts);
                 drawSalaryChart(salaryCounts);
                 drawEducationWordCloud(educationCounts);
@@ -177,3 +167,17 @@ document.querySelector("form").addEventListener("submit", function (e) {
             });
     }
 });
+
+function jobList(job_title, job_link, region, company, minMonthlySalary, maxMonthlySalary, skills, ol) {
+    const a = document.createElement('a');
+    const li = document.createElement('li');
+    const div = document.createElement('div');
+
+    a.href = job_link;
+    a.textContent = job_title;
+
+    div.textContent = `${region}/${company}/${minMonthlySalary}~${maxMonthlySalary}/${skills}`;
+    li.appendChild(a);
+    li.appendChild(div);
+    ol.appendChild(li);
+}

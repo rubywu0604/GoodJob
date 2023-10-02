@@ -243,7 +243,7 @@ function drawSalaryChart(salaryCounts) {
     var data = [trace1];
 
     var layout = {
-        title: `每月薪資收入 <br>（最低：${minSalary}元 / 最高：${maxSalary}元）`,
+        title: `每月薪資收入 <br>（最低：$${minSalary.toLocaleString()}元 / 最高：$${maxSalary.toLocaleString()}元）`,
         titlefont: {
             size: 20
         },
