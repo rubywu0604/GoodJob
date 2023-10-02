@@ -27,7 +27,8 @@ function drawJobCounts(jobs) {
         },
         margin: {
             l: 115
-        } 
+        },
+        width: 600
     }
 
     Plotly.newPlot('jobCountsBar', data, layout)
@@ -86,7 +87,9 @@ function drawAvgSalary(avgSalary) {
         title: '軟體工程師 平均月收入',
         titlefont: {
             size: 20
-        }
+        },
+        height: 400,
+        width: 600
     };
 
     Plotly.newPlot('avgSalaryBar', data, layout);
@@ -128,8 +131,8 @@ function drawExperience(experience) {
                 y: 0.5
             }
         ],
-        height: 400,
-        width: 600,
+        height: 450,
+        width: 450,
         showlegend: true,
         grid: { rows: 1, columns: 2 }
     };
@@ -162,7 +165,7 @@ function drawSkillsChart(skills) {
             size: 20
         },
         height: 400,
-        width: 400
+        width: 500
     }
 
     Plotly.newPlot('skillsPie', data, layout)
@@ -247,13 +250,13 @@ function drawSalaryChart(salaryCounts) {
     var data = [trace1];
 
     var layout = {
-        title: `每月薪資收入 <br>（最低：$${minSalary.toLocaleString()}元 / 最高：$${maxSalary.toLocaleString()}元）`,
+        title: `每月薪資收入 <br><br>（最低：$${minSalary.toLocaleString()}元 / 最高：$${maxSalary.toLocaleString()}元）`,
         titlefont: {
             size: 20
         },
         barmode: 'stack',
         height: 400,
-        width: 520
+        width: 580
     };
 
     Plotly.newPlot('salaryBar', data, layout);

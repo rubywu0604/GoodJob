@@ -1,10 +1,9 @@
-/* Reset some default styles */
 body,
 h1,
 p {
     margin: 0;
     padding: 0;
-    font-family:serif;
+    font-family: serif;
 }
 
 /* Basic styling for header */
@@ -102,41 +101,45 @@ main {
     text-align: center;
 }
 
+/* Styling for the chart containers */
 #chart-container {
     display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
     flex-wrap: wrap;
     margin-top: 20px;
+    max-width: 100%;
+    /* Set a maximum width for the chart container */
 }
 
 /* Styling for each chart within the container */
 #jobCountsBar,
 #avgSalaryBar,
-#experienceDonut {
+#experienceDonut,
+.chart {
     flex: 1;
     max-width: calc(33.33% - 20px);
-    height: 400px;
-    margin-right: 20px;
+    margin-bottom: 20px;
 }
 
 /* Clear margin-right for the last chart */
-#experienceDonut {
-    margin-right: 0;
+#experienceDonut,
+.chart:last-child {
+    margin-left: 100px;
 }
 
 #chart-container-category {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: wrap;
     margin-top: 20px;
-    justify-content: space-between;
+    gap: 20px;
+    /* Add gap between charts if desired */
 }
 
 .chart {
-    flex: 1;
-    box-sizing: border-box;
+    flex: 0 0 auto;
+    /* Prevent charts from growing or shrinking */
+    /* Add any other styling for individual charts here */
 }
 
 /* Responsive adjustments for smaller screens */
@@ -144,14 +147,5 @@ main {
     #chart-container {
         flex-direction: column;
         align-items: center;
-    }
-
-    /* Adjust the width of charts for smaller screens */
-    #jobCountsBar,
-    #avgSalaryBar,
-    #experienceDonut {
-        max-width: 100%;
-        margin-right: 0;
-        margin-bottom: 20px;
     }
 }
