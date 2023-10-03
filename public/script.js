@@ -161,7 +161,6 @@ function drawCharts(data, selectedCategory){
     const maxSalaryAry = [];
 
     data.forEach((job) => {
-        console.log(job)
         const minMonthlySalary = job.min_monthly_salary;
         const maxMonthlySalary = job.max_monthly_salary;
         const skills = job.skills;
@@ -213,32 +212,70 @@ function createJobList(data) {
     currentPage = data.selectedPage;
     nextPage = data.next;
     previousPage = data.previous;
-    const ol = document.createElement('ol');
+    const table = document.createElement('table');
 
-    jobs.forEach((job) => {
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    const th0 = document.createElement('th');
+    th0.textContent = 'No.';
+    const th1 = document.createElement('th');
+    th1.textContent = 'Job Title';
+    const th2 = document.createElement('th');
+    th2.textContent = 'Location';
+    const th3 = document.createElement('th');
+    th3.textContent = 'Company';
+    const th4 = document.createElement('th');
+    th4.textContent = 'Salary Range';
+    headerRow.appendChild(th0);
+    headerRow.appendChild(th1);
+    headerRow.appendChild(th2);
+    headerRow.appendChild(th3);
+    headerRow.appendChild(th4);
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    let indexPage = (currentPage - 1) * 20;
+    jobs.forEach((job, index) => {
         const job_title = job.job_title;
         const job_link = job.job_link;
-        const region = job.location;
-        const company = job.company;
+        const region = "|" + job.location;
+        const company = "|" + job.company;
         const minMonthlySalary = job.min_monthly_salary;
         const maxMonthlySalary = job.max_monthly_salary;
-        const a = document.createElement('a');
-        const li = document.createElement('li');
-        const div = document.createElement('div');
 
+        const tr = document.createElement('tr');
+
+        const td0 = document.createElement('td');
+        td0.textContent = index + 1;
+        tr.appendChild(td0);
+
+        const td1 = document.createElement('td');
+        const a = document.createElement('a');
         a.href = job_link;
         a.textContent = job_title;
-        a.style.display = 'inline';
+        td1.appendChild(a);
 
-        div.textContent = `${region}/${company}/${minMonthlySalary}~${maxMonthlySalary}`;
-        div.style.display = 'inline';
+        const td2 = document.createElement('td');
+        const td3 = document.createElement('td');
+        const td4 = document.createElement('td');
+        td2.textContent = region;
+        td3.textContent = company;
+        td4.textContent = (minMonthlySalary === "Null" || maxMonthlySalary === "Above") ? "|面議" : `|${minMonthlySalary} ～ ${maxMonthlySalary}`
 
-        li.appendChild(a);
-        li.appendChild(div);
-        ol.appendChild(li);
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+        tr.appendChild(td4);
+
+        tbody.appendChild(tr);
     });
 
-    jobResults.appendChild(ol);
+    table.appendChild(tbody);
+
+    jobResults.innerHTML = '';
+    jobResults.appendChild(table);
+
     document.querySelectorAll(".pagination a").forEach((pageLink) => { pageLink.classList.remove("active") });
     displayPagination(currentPage, nextPage, previousPage);
 }

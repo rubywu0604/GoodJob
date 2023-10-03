@@ -134,11 +134,14 @@ main {
     flex-wrap: wrap;
     margin-top: 20px;
     gap: 20px;
-    /* Add gap between charts if desired */
 }
 
 .chart {
     flex: 0 0 auto;
+}
+
+.jobResults {
+    padding-left: 5%;
 }
 
 .pagination a {
