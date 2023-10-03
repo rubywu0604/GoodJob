@@ -17,7 +17,7 @@ class A104spiderSpider(scrapy.Spider):
             "data_scientist_資料科學家", "dba_資料庫管理"
         ]
         for job_type in job_types:
-            for p in range(1, 21):
+            for p in range(1, 51):
                 url = f"https://www.104.com.tw/jobs/search/?keyword={job_type}&page={p}"
                 yield scrapy.Request(url, callback=self.parse)
 
@@ -54,23 +54,33 @@ class A104spiderSpider(scrapy.Spider):
         job_link = response.url
         req = requests.get(job_link)
         soup = BeautifulSoup(req.text, 'html.parser')
-        text_ = json.loads("".join(soup.find("script", {"type":"application/ld+json"}).contents))
         job_description = soup.text.lower()
+        job_description_cleaned = re.sub(r'\s+', '', job_description)
         conditions = [
-            "python", "ios", "swift", "android", " java ", " javascript ", "ruby", "c#", "c++", "php",
-            "typescript", "scala", "julia", "objective-c", "numpy", "pandas", "tensorflow", "scikit-learn",
-            "pytorch", "opencv", "react", "angular", "ruby on rails", ".net", "hibernate", " java,"," javascript/",           
-            "express.js", "rubygems", ".net core", "django", "mysql", "ajax", "html", "css", "kotlin", "git",
-            "postgresql", "mongodb", "sqlite", "redis", "cassandra", "django", "express.js", "golang", "aws",
-            "flask", "react", "vue.js", "asp.net", "docker", "kubernetes", "flutter", " javascript,", "gcp", 
-            "azure", "ibm cloud", "node.js", "firebase", "airflow", "github","arduino", "java/", "restful api",
-            "hadoop", "spark", "kafka", "elasticsearch", "tableau", "splunk", "power bi", "jquery"        
+            "python", "ios", "swift", "android", "ruby", "c#", "c++", "php", "jquery", "aws",
+            "typescript", "scala", "julia", "objective-c", "numpy", "pandas", "tensorflow", "gcp",
+            "pytorch", "opencv", "react", "angular", "ruby on rails", ".net", "hibernate", "redis", 
+            "express.js", "rubygems", ".net core", "django", "mysql", "ajax", "html", "css", "kotlin",
+            "postgresql", "mongodb", "sqlite", "cassandra", "django", "express.js", "golang", "spark", 
+            "flask", "react", "vue.js", "asp.net", "docker", "kubernetes", "flutter", "restful api",
+            "azure", "ibm cloud", "node.js", "firebase", "airflow", "github","arduino", "power bi",
+            "hadoop", "kafka", "elasticsearch", "tableau", "splunk", "scikit-learn"
         ]
+
+        java_pattern = re.search(r'(java)\W', job_description)
+        javascript_pattern = re.search(r'(?<!without )(javascript)', job_description)
+
+        special_case_java = java_pattern.group(1) if java_pattern else None
+        special_case_javascript = javascript_pattern.group(1) if javascript_pattern else None
 
         skill_set = set()
         for condition in conditions:
-            if condition in job_description:
+            if condition in job_description_cleaned:
                 skill_set.add(condition)
+            elif special_case_java:
+                skill_set.add(special_case_java)
+            elif special_case_javascript:
+                skill_set.add(special_case_javascript)
         
         a104Item = JobscraperItem()
 
