@@ -86,17 +86,19 @@ main {
 
 /* Styling for the job category and average salary */
 #category {
-    background-color: rgba(0, 120, 212, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: rgba(173, 220, 246, 0.8);
 }
 
 #listCategory {
-    font-size: 50px;
-    margin-top: 20px;
+    font-size: 40px;
     text-align: center;
 }
 
 #yearAvgSalary {
-    font-size: 50px;
+    font-size: 30px;
     margin-top: 10px;
     text-align: center;
 }
@@ -117,7 +119,6 @@ main {
 .chart {
     flex: 1;
     max-width: calc(33.33% - 20px);
-    margin-bottom: 20px;
 }
 
 /* Clear margin-right for the last chart */
@@ -138,8 +139,22 @@ main {
 
 .chart {
     flex: 0 0 auto;
-    /* Prevent charts from growing or shrinking */
-    /* Add any other styling for individual charts here */
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.pagination a.active {
+    background-color: #0078d4;
+    color: white;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
 }
 
 /* Responsive adjustments for smaller screens */

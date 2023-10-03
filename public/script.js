@@ -17,6 +17,7 @@ function displayContent() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById('pagination').style.display = "none";
     loader = document.getElementById('loader');
     loadNow(1);
     fetch(`/api/jobs`)
@@ -76,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             drawJobCounts(jobDetails);
             drawAvgSalary(jobDetails);
-            drawExperience(experienceCounts)
+            drawExperience(experienceCounts);
         })
         .catch((error) => {
             console.error("Fetch error:", error);
@@ -86,17 +87,14 @@ document.addEventListener("DOMContentLoaded", function () {
 document.querySelector("form").addEventListener("submit", function (e) {
     const categorySelect = document.getElementById("categorySelect");
     const jobResults = document.getElementById("jobResults");
-    const yearSalary = document.getElementById('yearAvgSalary');
-    const listCategory = document.getElementById('listCategory');
     e.preventDefault(); // Prevent the default form submission
 
     let selectedCategory = categorySelect.value;
-    let yearAvgSalary;
     jobResults.innerHTML = "";
 
     if (selectedCategory !== "none") {
         // AJAX request
-        fetch(`/api/jobs/${selectedCategory}`)
+        fetch(`/api/jobs/${selectedCategory}?page=1&limit=20`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -104,63 +102,7 @@ document.querySelector("form").addEventListener("submit", function (e) {
                 return response.json();
             })
             .then((data) => {
-                const ol = document.createElement('ol');
-                const skillCounts = {};
-                const educationCounts = {};
-                const salaryCounts = [];
-                const minSalaryAry = [];
-                const maxSalaryAry = [];
-
-                data.forEach((job) => {
-                    const job_title = job.job_title;
-                    const region = job.location;
-                    const company = job.company;
-                    const minMonthlySalary = job.min_monthly_salary;
-                    const maxMonthlySalary = job.max_monthly_salary;
-                    const skills = job.skills;
-                    const job_link = job.job_link;
-                    const education = job.education;
-
-                    jobList(job_title, job_link, region, company, minMonthlySalary, maxMonthlySalary, skills, ol);
-
-                    if (skills != "Null") {
-                        const skillArray = JSON.parse(skills.replace(/'/g, '"'));
-                        skillArray.forEach((skill) => {
-                            skillCounts.hasOwnProperty(skill) ? skillCounts[skill]++ : (skillCounts[skill] = 1);
-                        });
-                    };
-
-                    if (minMonthlySalary > 0) {
-                        salaryCounts.push(Number(minMonthlySalary));
-                        minSalaryAry.push(Number(minMonthlySalary));
-                    } 
-                    if (maxMonthlySalary > 0) {
-                        salaryCounts.push(Number(maxMonthlySalary));
-                        maxSalaryAry.push(Number(maxMonthlySalary));
-                    };
-
-                    const minAvgSalary = Math.round((minSalaryAry.reduce((sum, salary) => sum + salary, 0)) / minSalaryAry.length) * 13;
-                    const maxAvgSalary = Math.round((maxSalaryAry.reduce((sum, salary) => sum + salary, 0)) / maxSalaryAry.length) * 13;
-                    yearAvgSalary = Math.round((minAvgSalary + maxAvgSalary) / 2)
-
-                    educationCounts.hasOwnProperty(education) ? educationCounts[education]++ : (educationCounts[education] = 1);
-                });
-
-                jobResults.appendChild(ol);
-                selectedCategory = selectedCategory.replace("_", " ");
-                if (selectedCategory === "ios engineer") {
-                    selectedCategory = "iOS Engineer";
-                } else {
-                    selectedCategory = selectedCategory.replace(/\b\w/g, function (char) {
-                        return char.toUpperCase();
-                    });
-                }
-                
-                listCategory.innerHTML = `${selectedCategory}`;
-                yearSalary.innerHTML = `平均年薪＄${yearAvgSalary.toLocaleString() }`;
-                drawSkillsChart(skillCounts);
-                drawSalaryChart(salaryCounts);
-                drawEducationWordCloud(educationCounts);
+                showCategoryDetails(data, selectedCategory);
             })
             .catch((error) => {
                 console.error("Fetch error:", error);
@@ -168,16 +110,128 @@ document.querySelector("form").addEventListener("submit", function (e) {
     }
 });
 
-function jobList(job_title, job_link, region, company, minMonthlySalary, maxMonthlySalary, skills, ol) {
-    const a = document.createElement('a');
-    const li = document.createElement('li');
-    const div = document.createElement('div');
+document.querySelectorAll(".pagination a").forEach((pageLink) => {
+    pageLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        const selectedPage = parseInt(pageLink.getAttribute("data-page"));
+        const categorySelect = document.getElementById("categorySelect");
 
-    a.href = job_link;
-    a.textContent = job_title;
+        let selectedCategory = categorySelect.value;
 
-    div.textContent = `${region}/${company}/${minMonthlySalary}~${maxMonthlySalary}/${skills}`;
-    li.appendChild(a);
-    li.appendChild(div);
-    ol.appendChild(li);
+        if (selectedCategory !== "none") {
+            fetch(`/api/jobs/${selectedCategory}?page=${selectedPage}&limit=20`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    document.getElementById("jobResults").innerHTML = "";
+                    showCategoryDetails(data, selectedCategory);
+                })
+                .catch((error) => {
+                    console.error("Fetch error:", error);
+                });
+        }
+    });
+});
+
+function showCategoryDetails(data, selectedCategory) {
+    alljobs = data.alljobs;
+    jobs = data.jobs;
+    let yearSalary = document.getElementById('yearAvgSalary');
+    let listCategory = document.getElementById('listCategory');
+    let yearAvgSalary;
+    const nextPage = data.next;
+    const previousPage = data.previous;
+
+    if (!previousPage) {
+        document.getElementById('previous').style.display = "none";
+    }
+    if (!nextPage) {
+        document.getElementById('next').style.display = "none";
+    }
+    
+    const skillCounts = {};
+    const educationCounts = {};
+    const salaryCounts = [];
+    const minSalaryAry = [];
+    const maxSalaryAry = [];
+
+    alljobs.forEach((job) => {
+        const minMonthlySalary = job.min_monthly_salary;
+        const maxMonthlySalary = job.max_monthly_salary;
+        const skills = job.skills;
+        const education = job.education;
+
+        if (skills != "Null") {
+            const skillArray = JSON.parse(skills.replace(/'/g, '"'));
+            skillArray.forEach((skill) => {
+                skillCounts.hasOwnProperty(skill) ? skillCounts[skill]++ : (skillCounts[skill] = 1);
+            });
+        };
+
+        if (minMonthlySalary > 0) {
+            salaryCounts.push(Number(minMonthlySalary));
+            minSalaryAry.push(Number(minMonthlySalary));
+        }
+        if (maxMonthlySalary > 0) {
+            salaryCounts.push(Number(maxMonthlySalary));
+            maxSalaryAry.push(Number(maxMonthlySalary));
+        };
+
+        const minAvgSalary = Math.round((minSalaryAry.reduce((sum, salary) => sum + salary, 0)) / minSalaryAry.length) * 13;
+        const maxAvgSalary = Math.round((maxSalaryAry.reduce((sum, salary) => sum + salary, 0)) / maxSalaryAry.length) * 13;
+        yearAvgSalary = Math.round((minAvgSalary + maxAvgSalary) / 2)
+
+        educationCounts.hasOwnProperty(education) ? educationCounts[education]++ : (educationCounts[education] = 1);
+    });
+
+    createJobList(jobs);
+    
+    selectedCategory = selectedCategory.replace("_", " ");
+    if (selectedCategory === "ios engineer") {
+        selectedCategory = "iOS Engineer";
+    } else {
+        selectedCategory = selectedCategory.replace(/\b\w/g, function (char) {
+            return char.toUpperCase();
+        });
+    }
+
+    listCategory.innerHTML = `${selectedCategory}`;
+    yearSalary.innerHTML = `平均年薪＄${yearAvgSalary.toLocaleString()}`;
+    drawSkillsChart(skillCounts);
+    drawSalaryChart(salaryCounts);
+    drawEducationWordCloud(educationCounts);
+    document.getElementById('pagination').style.display = "inline-block";
+}
+
+function createJobList(jobs) {
+    const ol = document.createElement('ol');
+
+    jobs.forEach((job) => {
+        const job_title = job.job_title;
+        const job_link = job.job_link;
+        const region = job.location;
+        const company = job.company;
+        const minMonthlySalary = job.min_monthly_salary;
+        const maxMonthlySalary = job.max_monthly_salary;
+        const a = document.createElement('a');
+        const li = document.createElement('li');
+        const div = document.createElement('div');
+
+        a.href = job_link;
+        a.textContent = job_title;
+        a.style.display = 'inline';
+
+        div.textContent = `${region}/${company}/${minMonthlySalary}~${maxMonthlySalary}`;
+        div.style.display = 'inline';
+
+        li.appendChild(a);
+        li.appendChild(div);
+        ol.appendChild(li);
+    });
+
+    jobResults.appendChild(ol);
 }
