@@ -1,0 +1,169 @@
+body,
+h1,
+p {
+    margin: 0;
+    padding: 0;
+    font-family: serif;
+}
+
+/* Basic styling for header */
+header {
+    background-color: #0078d4;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.title {
+    font-size: 40px;
+}
+
+.welcome-msg {
+    font-size: 20px;
+}
+
+/* Styling for search bar */
+#form {
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+}
+
+#categorySelect {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+    font-family: serif;
+}
+
+#searchBtn {
+    padding: 10px 20px;
+    font-size: medium;
+    font-family: serif;
+    background-color: #0078d4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Styling for job listings */
+#job-listings {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+/* Loader styling */
+#loader {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background: #21242d url('https://cssauthor.com/wp-content/uploads/2018/06/Bouncy-Preloader.gif') no-repeat center;
+    z-index: 999;
+}
+
+/* Basic styling for footer */
+footer {
+    background-color: rgb(0, 120, 212);
+    color: white;
+    text-align: right;
+    padding: 10px;
+}
+
+/* Additional styles for main content */
+main {
+    padding: 20px;
+}
+
+/* Styling for the container */
+#container {
+    text-align: center;
+}
+
+/* Styling for the job category and average salary */
+#category {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: rgba(173, 220, 246, 0.8);
+}
+
+#listCategory {
+    font-size: 40px;
+    text-align: center;
+}
+
+#yearAvgSalary {
+    font-size: 30px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Styling for the chart containers */
+#chart-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    max-width: 100%;
+    /* Set a maximum width for the chart container */
+}
+
+/* Styling for each chart within the container */
+#jobCountsBar,
+#avgSalaryBar,
+#experienceDonut,
+.chart {
+    flex: 1;
+    max-width: calc(33.33% - 20px);
+}
+
+/* Clear margin-right for the last chart */
+#experienceDonut,
+.chart:last-child {
+    margin-left: 100px;
+}
+
+#chart-container-category {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.chart {
+    flex: 0 0 auto;
+}
+
+.jobResults {
+    padding-left: 5%;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.pagination a.active {
+    background-color: #0078d4;
+    color: white;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    #chart-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
