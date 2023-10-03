@@ -1,22 +1,5 @@
-var loader;
-
-function loadNow(opacity) {
-    if (opacity <= 0) {
-        displayContent();
-    } else {
-        loader.style.opacity = opacity;
-        window.setTimeout(function () {
-            loadNow(opacity - 0.02);
-        }, 50);
-    }
-}
-
-function displayContent() {
-    loader.style.display = 'none';
-    document.getElementById('container').style.display = 'block';
-}
-
 document.addEventListener("DOMContentLoaded", function () {
+    var loader;
     document.getElementById('pagination').style.display = "none";
     loader = document.getElementById('loader');
     loadNow(1);
@@ -87,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
 document.querySelector("form").addEventListener("submit", function (e) {
     const categorySelect = document.getElementById("categorySelect");
     const jobResults = document.getElementById("jobResults");
-    e.preventDefault(); // Prevent the default form submission
+    e.preventDefault();
 
     let selectedCategory = categorySelect.value;
     jobResults.innerHTML = "";
@@ -101,7 +84,22 @@ document.querySelector("form").addEventListener("submit", function (e) {
                 return response.json();
             })
             .then((data) => {
-                showCategoryDetails(data, selectedCategory);
+                drawCharts(data, selectedCategory);
+                if (selectedCategory !== "none") {
+                    fetch(`/api/jobs/${selectedCategory}?page=1&limit=20`)
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then((data) => {
+                            createJobList(data);
+                        })
+                        .catch((error) => {
+                            console.error("Fetch error:", error);
+                        });
+                }
             })
             .catch((error) => {
                 console.error("Fetch error:", error);
@@ -116,8 +114,6 @@ document.querySelectorAll(".pagination a").forEach((pageLink) => {
         const categorySelect = document.getElementById("categorySelect");
         let selectedCategory = categorySelect.value;
 
-        document.querySelectorAll(".pagination a").forEach((pageLink) => { pageLink.classList.remove("active")});
-
         if (selectedCategory !== "none") {
             fetch(`/api/jobs/${selectedCategory}?page=${selectedPage}&limit=20`)
                 .then((response) => {
@@ -128,7 +124,7 @@ document.querySelectorAll(".pagination a").forEach((pageLink) => {
                 })
                 .then((data) => {
                     document.getElementById("jobResults").innerHTML = "";
-                    showCategoryDetails(data, selectedCategory);
+                    createJobList(data);
                 })
                 .catch((error) => {
                     console.error("Fetch error:", error);
@@ -137,24 +133,35 @@ document.querySelectorAll(".pagination a").forEach((pageLink) => {
     });
 });
 
-function showCategoryDetails(data, selectedCategory) {
-    alljobs = data.alljobs;
-    jobs = data.jobs;
-    currentPage = data.selectedPage;
-    nextPage = data.next;
-    previousPage = data.previous;
+function loadNow(opacity) {
+    if (opacity <= 0) {
+        displayContent();
+    } else {
+        loader.style.opacity = opacity;
+        window.setTimeout(function () {
+            loadNow(opacity - 0.02);
+        }, 50);
+    }
+}
 
+function displayContent() {
+    loader.style.display = 'none';
+    document.getElementById('container').style.display = 'block';
+}
+
+function drawCharts(data, selectedCategory){
     let yearSalary = document.getElementById('yearAvgSalary');
     let listCategory = document.getElementById('listCategory');
     let yearAvgSalary;
-    
+
     const skillCounts = {};
     const educationCounts = {};
     const salaryCounts = [];
     const minSalaryAry = [];
     const maxSalaryAry = [];
 
-    alljobs.forEach((job) => {
+    data.forEach((job) => {
+        console.log(job)
         const minMonthlySalary = job.min_monthly_salary;
         const maxMonthlySalary = job.max_monthly_salary;
         const skills = job.skills;
@@ -181,11 +188,9 @@ function showCategoryDetails(data, selectedCategory) {
         yearAvgSalary = Math.round((minAvgSalary + maxAvgSalary) / 2)
 
         educationCounts.hasOwnProperty(education) ? educationCounts[education]++ : (educationCounts[education] = 1);
+
     });
-    
-    createJobList(jobs);
-    displayPagination(currentPage, nextPage, previousPage);
-    
+
     selectedCategory = selectedCategory.replace("_", " ");
     if (selectedCategory === "ios engineer") {
         selectedCategory = "iOS Engineer";
@@ -203,7 +208,11 @@ function showCategoryDetails(data, selectedCategory) {
     drawEducationWordCloud(educationCounts);
 }
 
-function createJobList(jobs) {
+function createJobList(data) {
+    jobs = data.jobs;
+    currentPage = data.selectedPage;
+    nextPage = data.next;
+    previousPage = data.previous;
     const ol = document.createElement('ol');
 
     jobs.forEach((job) => {
@@ -230,6 +239,8 @@ function createJobList(jobs) {
     });
 
     jobResults.appendChild(ol);
+    document.querySelectorAll(".pagination a").forEach((pageLink) => { pageLink.classList.remove("active") });
+    displayPagination(currentPage, nextPage, previousPage);
 }
 
 function displayPagination(currentPage, nextPage, previousPage) {
