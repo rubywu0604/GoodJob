@@ -1,41 +1,76 @@
-const http = require('http');
-const mysql = require('mysql');
+// ================= node package / middleware =================
+const db = require('./database.js')
+const express = require("express");
+const app = express();
+const path = require('path');
+const port = 8080;
 
-require('dotenv').config();
-const host = process.env.RDS_HOSTNAME;
-const port = process.env.RDS_PORT;
-const user = process.env.RDS_USERNAME;
-const password = process.env.RDS_PASSWORD;
-const db = mysql.createConnection({
-    host: host,
-    port: port,
-    user: user,
-    password: password
+app.use(express.static(path.join(__dirname, 'public')));
+
+// ================= API routes =================
+
+app.get('/', (req, res) => {
+    res.render('index');
 })
 
-function connectToMysql(db) {
-    db.connect((err) => {
+app.get('/api/jobs', (req, res) => {
+    db.query('SELECT * FROM job', (err, results) => {
         if (err) {
             console.log(err.message);
-            return;
-        };
-        console.log("Database connected.");
+            res.status(500).json({ error: 'Internal server error' });
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            const formattedResponse = JSON.stringify(results, null, 2);
+            res.send(formattedResponse);
+        }
     });
-}
+});
 
-function createDatabase(db) {
-    db.query("CREATE DATABASE goodjob", function (err, result) {
+app.get(`/api/jobs/:category`, (req, res) => {
+    const category = req.params.category;
+
+    const query = 'SELECT * FROM job WHERE category = ?';
+    db.query(query, [category], (err, results) => {
         if (err) {
             console.log(err.message);
-            return;
-        };
-        console.log("Database created.");
+            res.status(500).json({ error: 'Internal server error' });
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+
+            if (req.query.page) {
+                const page = parseInt(req.query.page);
+                const limit = parseInt(req.query.limit || 20);
+
+                const startIndex = (page - 1) * limit;
+                const endIndex = page * limit;
+
+                const categoryJobs = {};
+
+                if (startIndex > 0) {
+                    categoryJobs.previous = {
+                        page: page - 1,
+                        limit: limit
+                    }
+                }
+                if (endIndex < results.length) {
+                    categoryJobs.next = {
+                        page: page + 1,
+                        limit: limit
+                    }
+                }
+                categoryJobs.selectedPage = page;
+                categoryJobs.jobs = results.slice(startIndex, endIndex);
+
+                const formattedResponse = JSON.stringify(categoryJobs, null, 2);
+                res.send(formattedResponse);
+            } else {
+                const formattedResponse = JSON.stringify(results, null, 2);
+                res.send(formattedResponse);
+            }
+        }
     });
-}
+});
 
-connectToMysql(db)
-
-http.createServer(function (req, res) {
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end('Hello World');
-}).listen(8080);
+app.listen(port, () => {
+    console.log(`listen on the port ${port}`);
+});

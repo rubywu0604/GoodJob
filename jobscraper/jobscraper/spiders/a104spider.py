@@ -17,7 +17,7 @@ class A104spiderSpider(scrapy.Spider):
             "data_scientist_資料科學家", "dba_資料庫管理"
         ]
         for job_type in job_types:
-            for p in range(1, 21):
+            for p in range(1, 51):
                 url = f"https://www.104.com.tw/jobs/search/?keyword={job_type}&page={p}"
                 yield scrapy.Request(url, callback=self.parse)
 
@@ -54,29 +54,33 @@ class A104spiderSpider(scrapy.Spider):
         job_link = response.url
         req = requests.get(job_link)
         soup = BeautifulSoup(req.text, 'html.parser')
-        text_ = json.loads("".join(soup.find("script", {"type":"application/ld+json"}).contents))
         job_description = soup.text.lower()
+        job_description_cleaned = re.sub(r'\s+', '', job_description)
         conditions = [
-            "python", "java", "javascript", "ruby", "c#", "c++", "php", "swift", "kotlin", "golang", 
-            "rust", "typescript", "matlab", "perl", "scala", "dart", "lua", "julia", "objective-c",
-            "numpy", "pandas", "tensorflow", "scikit-learn", "keras", "pytorch", "opencv", "react", 
-            "angular", "vue.js", "ruby on rails", ".net framework", "hibernate", "spring framework", 
-            "qt", "express.js", "rubygems", ".net core", "django", "mysql", "ajax", "html", "css",
-            "postgresql", "mongodb", "oracle database", "microsoft sql server", "sqlite", "redis", 
-            "cassandra", "couchbase", "amazon dynamodb", "ruby on rails", "django", "express.js", 
-            "laravel (php)", "flask", "react", "vue.js", "asp.net", "spring boot", "git", "svn", 
-            "mercurial", "cvs", "perforce", "tfs (team foundation server)", "aws", "particle",
-            "docker", "kubernetes", "jenkins", "ansible", "puppet", "chef", "terraform", "vagrant", 
-            "nagios", "microsoft azure", "gcp", "ibm cloud", "oracle cloud", "node.js", "firebase",
-            "hadoop", "spark", "hive", "pig", "kafka", "elasticsearch", "tableau", "splunk", "power bi",
-            "android", "kotlin", "ios", "swift", "flutter", "xamarin", "phonegap/cordova","arduino", 
-            "raspberry pi", "mqtt", "node-red", "tinkercad", "airflow", "github"
+            "python", "ios", "swift", "android", "ruby", "c#", "c++", "php", "jquery", "aws",
+            "typescript", "scala", "julia", "objective-c", "numpy", "pandas", "tensorflow", "gcp",
+            "pytorch", "opencv", "react", "angular", "ruby on rails", ".net", "hibernate", "redis", 
+            "express.js", "rubygems", ".net core", "django", "mysql", "ajax", "html", "css", "kotlin",
+            "postgresql", "mongodb", "sqlite", "cassandra", "django", "express.js", "golang", "spark", 
+            "flask", "react", "vue.js", "asp.net", "docker", "kubernetes", "flutter", "restful api",
+            "azure", "ibm cloud", "node.js", "firebase", "airflow", "github","arduino", "power bi",
+            "hadoop", "kafka", "elasticsearch", "tableau", "splunk", "scikit-learn"
         ]
+
+        java_pattern = re.search(r'(java)\W', job_description)
+        javascript_pattern = re.search(r'(?<!without )(javascript)', job_description)
+
+        special_case_java = java_pattern.group(1) if java_pattern else None
+        special_case_javascript = javascript_pattern.group(1) if javascript_pattern else None
 
         skill_set = set()
         for condition in conditions:
-            if condition in job_description:
+            if condition in job_description_cleaned:
                 skill_set.add(condition)
+            elif special_case_java:
+                skill_set.add(special_case_java)
+            elif special_case_javascript:
+                skill_set.add(special_case_javascript)
         
         a104Item = JobscraperItem()
 
