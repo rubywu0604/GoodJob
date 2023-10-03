@@ -26,6 +26,14 @@ app.get('/api/jobs', (req, res) => {
 
 app.get(`/api/jobs/:category`, (req, res) => {
     const category = req.params.category;
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const categoryJobs = {};
+    
     const query = 'SELECT * FROM job WHERE category = ?';
     db.query(query, [category], (err, results) => {
         if (err) {
@@ -33,7 +41,23 @@ app.get(`/api/jobs/:category`, (req, res) => {
             res.status(500).json({ error: 'Internal server error' });
         } else {
             res.setHeader('Content-Type', 'application/json');
-            res.json(results);
+
+            if (startIndex > 0) {
+                categoryJobs.previous = {
+                    page: page - 1,
+                    limit: limit
+                }
+            } 
+            if (endIndex < results.length) {
+                categoryJobs.next = {
+                    page: page + 1,
+                    limit: limit
+                }
+            }
+
+            categoryJobs.jobs = results.slice(startIndex, endIndex);
+            categoryJobs.alljobs = results;
+            res.json(categoryJobs);
         }
     });
 });
