@@ -93,8 +93,7 @@ document.querySelector("form").addEventListener("submit", function (e) {
     jobResults.innerHTML = "";
 
     if (selectedCategory !== "none") {
-        // AJAX request
-        fetch(`/api/jobs/${selectedCategory}?page=1&limit=20`)
+        fetch(`/api/jobs/${selectedCategory}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -115,8 +114,9 @@ document.querySelectorAll(".pagination a").forEach((pageLink) => {
         e.preventDefault();
         const selectedPage = parseInt(pageLink.getAttribute("data-page"));
         const categorySelect = document.getElementById("categorySelect");
-
         let selectedCategory = categorySelect.value;
+
+        document.querySelectorAll(".pagination a").forEach((pageLink) => { pageLink.classList.remove("active")});
 
         if (selectedCategory !== "none") {
             fetch(`/api/jobs/${selectedCategory}?page=${selectedPage}&limit=20`)
@@ -140,18 +140,13 @@ document.querySelectorAll(".pagination a").forEach((pageLink) => {
 function showCategoryDetails(data, selectedCategory) {
     alljobs = data.alljobs;
     jobs = data.jobs;
+    currentPage = data.selectedPage;
+    nextPage = data.next;
+    previousPage = data.previous;
+
     let yearSalary = document.getElementById('yearAvgSalary');
     let listCategory = document.getElementById('listCategory');
     let yearAvgSalary;
-    const nextPage = data.next;
-    const previousPage = data.previous;
-
-    if (!previousPage) {
-        document.getElementById('previous').style.display = "none";
-    }
-    if (!nextPage) {
-        document.getElementById('next').style.display = "none";
-    }
     
     const skillCounts = {};
     const educationCounts = {};
@@ -187,8 +182,9 @@ function showCategoryDetails(data, selectedCategory) {
 
         educationCounts.hasOwnProperty(education) ? educationCounts[education]++ : (educationCounts[education] = 1);
     });
-
+    
     createJobList(jobs);
+    displayPagination(currentPage, nextPage, previousPage);
     
     selectedCategory = selectedCategory.replace("_", " ");
     if (selectedCategory === "ios engineer") {
@@ -201,10 +197,10 @@ function showCategoryDetails(data, selectedCategory) {
 
     listCategory.innerHTML = `${selectedCategory}`;
     yearSalary.innerHTML = `平均年薪＄${yearAvgSalary.toLocaleString()}`;
+
     drawSkillsChart(skillCounts);
     drawSalaryChart(salaryCounts);
     drawEducationWordCloud(educationCounts);
-    document.getElementById('pagination').style.display = "inline-block";
 }
 
 function createJobList(jobs) {
@@ -234,4 +230,22 @@ function createJobList(jobs) {
     });
 
     jobResults.appendChild(ol);
+}
+
+function displayPagination(currentPage, nextPage, previousPage) {
+    document.getElementById('pagination').style.display = "inline-block";
+    document.getElementById(currentPage).classList.add("active");
+
+    const paginationDiv = document.getElementById('pagination');
+    if (previousPage) {
+        paginationDiv.querySelector('#previous').style.display = 'inline';
+    } else {
+        paginationDiv.querySelector('#previous').style.display = 'none';
+    }
+    if (nextPage) {
+        paginationDiv.querySelector('#next').style.display = 'inline';
+    } else {
+        paginationDiv.querySelector('#next').style.display = 'none';
+    }
+
 }

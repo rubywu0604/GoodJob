@@ -26,8 +26,8 @@ app.get('/api/jobs', (req, res) => {
 
 app.get(`/api/jobs/:category`, (req, res) => {
     const category = req.params.category;
-    const page = parseInt(req.query.page);
-    const limit = parseInt(req.query.limit);
+    const page = parseInt(req.query.page || 1);
+    const limit = parseInt(req.query.limit || 20); 
 
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
@@ -55,6 +55,7 @@ app.get(`/api/jobs/:category`, (req, res) => {
                 }
             }
 
+            categoryJobs.selectedPage = page;
             categoryJobs.jobs = results.slice(startIndex, endIndex);
             categoryJobs.alljobs = results;
             res.json(categoryJobs);
