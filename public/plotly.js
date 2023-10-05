@@ -25,10 +25,13 @@ function drawJobCounts(jobs) {
         titlefont: {
             size: 20
         },
-        margin: {
-            l: 115
+        font: {
+            size: 15
         },
-        width: 600
+        margin: {
+            l: 150
+        },
+        width: 650
     }
 
     Plotly.newPlot('jobCountsBar', data, layout)
@@ -87,9 +90,12 @@ function drawAvgSalary(avgSalary) {
         title: '軟體工程師 平均月收入',
         titlefont: {
             size: 20
+        }, 
+        font: {
+            size: 15
         },
-        height: 400,
-        width: 600
+        height: 450,
+        width: 700
     };
 
     Plotly.newPlot('avgSalaryBar', data, layout);
@@ -131,8 +137,8 @@ function drawExperience(experience) {
                 y: 0.5
             }
         ],
-        height: 450,
-        width: 450,
+        height: 500,
+        width: 500,
         showlegend: true,
         grid: { rows: 1, columns: 2 }
     };
@@ -164,8 +170,11 @@ function drawSkillsChart(skills) {
         titlefont: {
             size: 20
         },
-        height: 400,
-        width: 500
+        font: {
+            size: 15
+        },
+        height: 500,
+        width: 600
     }
 
     Plotly.newPlot('skillsPie', data, layout)
@@ -188,8 +197,8 @@ function drawSkillsChart(skills) {
         titlefont: {
             size: 20
         },
-        height: 400,
-        width: 520
+        height: 500,
+        width: 600
     };
     var config = { responsive: true }
     Plotly.newPlot('skillsBar', data, layout, config);
@@ -250,13 +259,16 @@ function drawSalaryChart(salaryCounts) {
     var data = [trace1];
 
     var layout = {
-        title: `每月薪資收入 <br><br>（最低：$${minSalary.toLocaleString()}元 / 最高：$${maxSalary.toLocaleString()}元）`,
+        title: `每月薪資收入 <br><br>（最低：$${minSalary.toLocaleString()}元 / 最高：$${maxSalary.toLocaleString()}元）<br>`,
         titlefont: {
             size: 20
         },
         barmode: 'stack',
-        height: 400,
-        width: 580
+        font: {
+            size: 15
+        },
+        height: 500,
+        width: 600
     };
 
     Plotly.newPlot('salaryBar', data, layout);
@@ -271,8 +283,8 @@ function drawEducationWordCloud(education) {
 
     const newChartContainer = document.createElement('div');
     newChartContainer.id = 'educationWordCloud';
-    newChartContainer.style.width = '350px';
-    newChartContainer.style.height = '350px';
+    newChartContainer.style.width = '400px';
+    newChartContainer.style.height = '400px';
 
     const container = document.getElementById('worldCloud');
     container.appendChild(newChartContainer);
