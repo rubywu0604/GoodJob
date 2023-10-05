@@ -3,7 +3,7 @@ const db = require('./database.js')
 const express = require("express");
 const app = express();
 const path = require('path');
-const port = 8080;
+const port = 8000;
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -19,7 +19,9 @@ app.get('/api/jobs', (req, res) => {
             console.log(err.message);
             res.status(500).json({ error: 'Internal server error' });
         } else {
-            res.json(results);
+            res.setHeader('Content-Type', 'application/json');
+            const formattedResponse = JSON.stringify(results, null, 2);
+            res.send(formattedResponse);
         }
     });
 });
@@ -33,7 +35,8 @@ app.get(`/api/jobs/:category`, (req, res) => {
             res.status(500).json({ error: 'Internal server error' });
         } else {
             res.setHeader('Content-Type', 'application/json');
-            res.json(results);
+            const formattedResponse = JSON.stringify(results, null, 2);
+            res.send(formattedResponse);
         }
     });
 });
