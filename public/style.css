@@ -160,6 +160,10 @@ main {
     padding-right: 30px;
 }
 
+#developer {
+    padding-right: 30px;
+}
+
 @media (max-width: 768px) {
     #chart-container {
         flex-direction: column;
