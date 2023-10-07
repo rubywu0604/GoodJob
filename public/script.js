@@ -194,10 +194,10 @@ function createJobList(data) {
         let job_title = (job.job_title.includes("工程師") ? job.job_title.slice(0, job.job_title.indexOf("工程師") + 3) : job.job_title.slice(0, 20));
         job_title = (job_title.length > 40) ? job_title.slice(0, 40) : job_title;
         let job_link = job.job_link;
-        let region = "|" + job.location;
+        let region = job.location;
         let companyRegex = /[\u4e00-\u9fa5]+公司/;
         let companyMatch = job.company.match(companyRegex);
-        let company = "|" + (companyMatch ? companyMatch : job.company.slice(0, 20));
+        let company = (companyMatch ? companyMatch : job.company.slice(0, 20));
         let minMonthlySalary = job.min_monthly_salary;
         let maxMonthlySalary = job.max_monthly_salary;
 
@@ -218,7 +218,8 @@ function createJobList(data) {
         let td4 = document.createElement('td');
         td2.textContent = region;
         td3.textContent = company;
-        td4.textContent = (minMonthlySalary === "Null" || maxMonthlySalary === "Above") ? "|面議" : `|${minMonthlySalary} ～ ${maxMonthlySalary}`
+        td3.style.textAlign = 'center';
+        td4.textContent = (minMonthlySalary === "Null" || maxMonthlySalary === "Above") ? "面議" : `${minMonthlySalary} ～ ${maxMonthlySalary}`
 
         tr.appendChild(td1);
         tr.appendChild(td2);
@@ -226,10 +227,32 @@ function createJobList(data) {
         tr.appendChild(td4);
 
         tbody.appendChild(tr);
+
+        if (index % 2 === 0) {
+            tr.classList.add('odd-row');
+        }
     });
 
     table.appendChild(tbody);
 
     jobResults.innerHTML = '';
+    jobResults.style.height = '450px';
+    jobResults.style.width = '1200px';
+    jobResults.style.boxShadow = '0px 3px 5px 0px rgba(0, 0, 0, 0.2)';
     jobResults.appendChild(table);
 }
+
+window.addEventListener('scroll', function () {
+    const formContainer = document.getElementById('form-container');
+    const scrollY = window.scrollY;
+
+    const threshold = 100;
+
+    if (scrollY > threshold) {
+        formContainer.style.position = 'fixed';
+        formContainer.style.top = '0';
+    } else {
+        formContainer.style.position = 'sticky';
+        formContainer.style.top = '0';
+    }
+});
