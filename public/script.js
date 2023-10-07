@@ -211,6 +211,7 @@ function createJobList(data) {
         let a = document.createElement('a');
         a.href = job_link;
         a.textContent = job_title;
+        a.target = '_blank';
         td1.appendChild(a);
 
         let td2 = document.createElement('td');
