@@ -6,7 +6,6 @@ p {
     font-family: serif;
 }
 
-/* Basic styling for header */
 header {
     background-color: #0078d4;
     color: white;
@@ -22,7 +21,16 @@ header {
     font-size: 20px;
 }
 
-/* Styling for search bar */
+#form-container {
+    position: sticky;
+    right: 0;
+    background-color: white;
+    z-index: 101;
+    margin-top: 10px;
+    margin-right: 50px;
+    box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.2);
+}
+
 #form {
     padding: 20px;
     text-align: center;
@@ -49,7 +57,6 @@ header {
     margin-left: 10px;
 }
 
-/* Styling for job listings */
 #job-listings {
     display: flex;
     flex-wrap: wrap;
@@ -57,7 +64,6 @@ header {
     margin: 20px;
 }
 
-/* Loader styling */
 #loader {
     position: fixed;
     width: 100%;
@@ -66,7 +72,6 @@ header {
     z-index: 999;
 }
 
-/* Basic styling for footer */
 footer {
     background-color: rgb(0, 120, 212);
     color: white;
@@ -74,17 +79,14 @@ footer {
     padding: 10px;
 }
 
-/* Additional styles for main content */
 main {
     padding: 20px;
 }
 
-/* Styling for the container */
 #container {
     text-align: center;
 }
 
-/* Styling for the job category and average salary */
 #category {
     position: sticky;
     top: 0;
@@ -103,16 +105,13 @@ main {
     text-align: center;
 }
 
-/* Styling for the chart containers */
 #chart-container {
     display: flex;
     flex-wrap: wrap;
     margin-top: 20px;
     max-width: 100%;
-    /* Set a maximum width for the chart container */
 }
 
-/* Styling for each chart within the container */
 #jobCountsBar,
 #avgSalaryBar,
 #experienceDonut,
@@ -121,7 +120,6 @@ main {
     max-width: calc(33.33% - 20px);
 }
 
-/* Clear margin-right for the last chart */
 #experienceDonut,
 .chart:last-child {
     margin-left: 100px;
@@ -141,26 +139,31 @@ main {
 }
 
 .jobResults {
-    padding-left: 5%;
+    margin-left: 20px;
+    overflow-y: auto;
+    padding-left: 7%;
 }
 
-.pagination a {
-    color: black;
-    float: left;
-    padding: 8px 16px;
-    text-decoration: none;
+.jobResults tr.odd-row {
+    background-color: rgba(173, 220, 246, 0.2);
 }
 
-.pagination a.active {
-    background-color: #0078d4;
-    color: white;
+.sticky-header th {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    font-size: 20px;
+    text-decoration: underline;
 }
 
-.pagination a:hover:not(.active) {
-    background-color: #ddd;
+#developer {
+    padding-right: 30px;
 }
 
-/* Responsive adjustments for smaller screens */
+#developer {
+    padding-right: 30px;
+}
+
 @media (max-width: 768px) {
     #chart-container {
         flex-direction: column;
