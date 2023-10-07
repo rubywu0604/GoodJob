@@ -3,7 +3,7 @@ const db = require('./database.js')
 const express = require("express");
 const app = express();
 const path = require('path');
-const port = 8080;
+const port = 8000;
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -28,7 +28,6 @@ app.get('/api/jobs', (req, res) => {
 
 app.get(`/api/jobs/:category`, (req, res) => {
     const category = req.params.category;
-
     const query = 'SELECT * FROM job WHERE category = ?';
     db.query(query, [category], (err, results) => {
         if (err) {
@@ -36,37 +35,8 @@ app.get(`/api/jobs/:category`, (req, res) => {
             res.status(500).json({ error: 'Internal server error' });
         } else {
             res.setHeader('Content-Type', 'application/json');
-
-            if (req.query.page) {
-                const page = parseInt(req.query.page);
-                const limit = parseInt(req.query.limit || 20);
-
-                const startIndex = (page - 1) * limit;
-                const endIndex = page * limit;
-
-                const categoryJobs = {};
-
-                if (startIndex > 0) {
-                    categoryJobs.previous = {
-                        page: page - 1,
-                        limit: limit
-                    }
-                }
-                if (endIndex < results.length) {
-                    categoryJobs.next = {
-                        page: page + 1,
-                        limit: limit
-                    }
-                }
-                categoryJobs.selectedPage = page;
-                categoryJobs.jobs = results.slice(startIndex, endIndex);
-
-                const formattedResponse = JSON.stringify(categoryJobs, null, 2);
-                res.send(formattedResponse);
-            } else {
-                const formattedResponse = JSON.stringify(results, null, 2);
-                res.send(formattedResponse);
-            }
+            const formattedResponse = JSON.stringify(results, null, 2);
+            res.send(formattedResponse);
         }
     });
 });
