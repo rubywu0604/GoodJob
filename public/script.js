@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
     var loader;
-    document.getElementById('pagination').style.display = "none";
     loader = document.getElementById('loader');
     loadNow(1);
     fetch(`/api/jobs`)
@@ -22,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Dba": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
             };
             const experienceCounts = {};
-            
+
             data.forEach((job) => {
                 category = job.category;
                 category = category.replace("_", " ");
@@ -68,11 +67,10 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.querySelector("form").addEventListener("submit", function (e) {
-    const categorySelect = document.getElementById("categorySelect");
+    const selectedCategory = document.getElementById("categorySelect").value;
     const jobResults = document.getElementById("jobResults");
     e.preventDefault();
 
-    let selectedCategory = categorySelect.value;
     jobResults.innerHTML = "";
 
     if (selectedCategory !== "none") {
@@ -85,52 +83,12 @@ document.querySelector("form").addEventListener("submit", function (e) {
             })
             .then((data) => {
                 drawCharts(data, selectedCategory);
-                if (selectedCategory !== "none") {
-                    fetch(`/api/jobs/${selectedCategory}?page=1&limit=20`)
-                        .then((response) => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! Status: ${response.status}`);
-                            }
-                            return response.json();
-                        })
-                        .then((data) => {
-                            createJobList(data);
-                        })
-                        .catch((error) => {
-                            console.error("Fetch error:", error);
-                        });
-                }
+                createJobList(data);
             })
             .catch((error) => {
                 console.error("Fetch error:", error);
             });
     }
-});
-
-document.querySelectorAll(".pagination a").forEach((pageLink) => {
-    pageLink.addEventListener("click", function (e) {
-        e.preventDefault();
-        const selectedPage = parseInt(pageLink.getAttribute("data-page"));
-        const categorySelect = document.getElementById("categorySelect");
-        let selectedCategory = categorySelect.value;
-
-        if (selectedCategory !== "none") {
-            fetch(`/api/jobs/${selectedCategory}?page=${selectedPage}&limit=20`)
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    document.getElementById("jobResults").innerHTML = "";
-                    createJobList(data);
-                })
-                .catch((error) => {
-                    console.error("Fetch error:", error);
-                });
-        }
-    });
 });
 
 function loadNow(opacity) {
@@ -208,60 +166,60 @@ function drawCharts(data, selectedCategory){
 }
 
 function createJobList(data) {
-    jobs = data.jobs;
-    currentPage = data.selectedPage;
-    nextPage = data.next;
-    previousPage = data.previous;
-    const table = document.createElement('table');
+    let table = document.createElement('table');
 
-    const thead = document.createElement('thead');
-    const headerRow = document.createElement('tr');
-    const th0 = document.createElement('th');
+    let thead = document.createElement('thead');
+    let headerRow = document.createElement('tr');
+    let th0 = document.createElement('th');
     th0.textContent = 'No.';
-    const th1 = document.createElement('th');
+    let th1 = document.createElement('th');
     th1.textContent = 'Job Title';
-    const th2 = document.createElement('th');
+    let th2 = document.createElement('th');
     th2.textContent = 'Location';
-    const th3 = document.createElement('th');
+    let th3 = document.createElement('th');
     th3.textContent = 'Company';
-    const th4 = document.createElement('th');
+    let th4 = document.createElement('th');
     th4.textContent = 'Salary Range';
     headerRow.appendChild(th0);
     headerRow.appendChild(th1);
     headerRow.appendChild(th2);
     headerRow.appendChild(th3);
     headerRow.appendChild(th4);
+    headerRow.classList.add('sticky-header');
     thead.appendChild(headerRow);
     table.appendChild(thead);
 
-    const tbody = document.createElement('tbody');
-    let indexPage = (currentPage - 1) * 20;
-    jobs.forEach((job, index) => {
-        const job_title = job.job_title;
-        const job_link = job.job_link;
-        const region = "|" + job.location;
-        const company = "|" + job.company;
-        const minMonthlySalary = job.min_monthly_salary;
-        const maxMonthlySalary = job.max_monthly_salary;
+    let tbody = document.createElement('tbody');
+    data.forEach((job, index) => {
+        let job_title = (job.job_title.includes("工程師") ? job.job_title.slice(0, job.job_title.indexOf("工程師") + 3) : job.job_title.slice(0, 20));
+        job_title = (job_title.length > 40) ? job_title.slice(0, 40) : job_title;
+        let job_link = job.job_link;
+        let region = job.location;
+        let companyRegex = /[\u4e00-\u9fa5]+公司/;
+        let companyMatch = job.company.match(companyRegex);
+        let company = (companyMatch ? companyMatch : job.company.slice(0, 20));
+        let minMonthlySalary = job.min_monthly_salary;
+        let maxMonthlySalary = job.max_monthly_salary;
 
-        const tr = document.createElement('tr');
+        let tr = document.createElement('tr');
 
-        const td0 = document.createElement('td');
+        let td0 = document.createElement('td');
         td0.textContent = index + 1;
         tr.appendChild(td0);
 
-        const td1 = document.createElement('td');
-        const a = document.createElement('a');
+        let td1 = document.createElement('td');
+        let a = document.createElement('a');
         a.href = job_link;
         a.textContent = job_title;
         td1.appendChild(a);
 
-        const td2 = document.createElement('td');
-        const td3 = document.createElement('td');
-        const td4 = document.createElement('td');
+        let td2 = document.createElement('td');
+        let td3 = document.createElement('td');
+        let td4 = document.createElement('td');
         td2.textContent = region;
         td3.textContent = company;
-        td4.textContent = (minMonthlySalary === "Null" || maxMonthlySalary === "Above") ? "|面議" : `|${minMonthlySalary} ～ ${maxMonthlySalary}`
+        td3.style.textAlign = 'center';
+        td4.textContent = (minMonthlySalary === "Null" || maxMonthlySalary === "Above") ? "面議" : `${minMonthlySalary} ～ ${maxMonthlySalary}`
 
         tr.appendChild(td1);
         tr.appendChild(td2);
@@ -269,31 +227,32 @@ function createJobList(data) {
         tr.appendChild(td4);
 
         tbody.appendChild(tr);
+
+        if (index % 2 === 0) {
+            tr.classList.add('odd-row');
+        }
     });
 
     table.appendChild(tbody);
 
     jobResults.innerHTML = '';
+    jobResults.style.height = '450px';
+    jobResults.style.width = '1200px';
+    jobResults.style.boxShadow = '0px 3px 5px 0px rgba(0, 0, 0, 0.2)';
     jobResults.appendChild(table);
-
-    document.querySelectorAll(".pagination a").forEach((pageLink) => { pageLink.classList.remove("active") });
-    displayPagination(currentPage, nextPage, previousPage);
 }
 
-function displayPagination(currentPage, nextPage, previousPage) {
-    document.getElementById('pagination').style.display = "inline-block";
-    document.getElementById(currentPage).classList.add("active");
+window.addEventListener('scroll', function () {
+    const formContainer = document.getElementById('form-container');
+    const scrollY = window.scrollY;
 
-    const paginationDiv = document.getElementById('pagination');
-    if (previousPage) {
-        paginationDiv.querySelector('#previous').style.display = 'inline';
-    } else {
-        paginationDiv.querySelector('#previous').style.display = 'none';
-    }
-    if (nextPage) {
-        paginationDiv.querySelector('#next').style.display = 'inline';
-    } else {
-        paginationDiv.querySelector('#next').style.display = 'none';
-    }
+    const threshold = 100;
 
-}
+    if (scrollY > threshold) {
+        formContainer.style.position = 'fixed';
+        formContainer.style.top = '0';
+    } else {
+        formContainer.style.position = 'sticky';
+        formContainer.style.top = '0';
+    }
+});
