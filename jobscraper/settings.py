@@ -8,6 +8,7 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import datetime
 import os
+import botocore
 from dotenv import load_dotenv
 
 
