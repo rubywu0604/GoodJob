@@ -59,6 +59,7 @@ pyquery==2.0.0
 PySocks==1.7.1
 python-dateutil==2.8.2
 python-dotenv==1.0.0
+python==3.10.13
 queuelib==1.6.2
 requests==2.31.0
 requests-file==1.5.1

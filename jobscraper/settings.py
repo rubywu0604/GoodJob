@@ -8,8 +8,6 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import datetime
 import os
-import botocore
-import boto3
 from dotenv import load_dotenv
 
 
@@ -25,7 +23,7 @@ AWS_SECRET_ACCESS_KEY = "o8hUAt98oFXmB9hzu8E9/0AcU8eTuD6tiZBPcaGL"
 today = datetime.datetime.today() 
 FEEDS = {
    f'backupdata{today.strftime("%Y/%m-%d")}.json': {'format': 'json'},
-   f's3://project-goodjob/{today.strftime("%Y-%m-%d")}/%(name)s_%(time)s.jsonl': {
+   's3://project-goodjob/%(name)s_%(time)s.jsonl': {
       "format": "jsonlines",
       }
 }
