@@ -25,7 +25,9 @@ today = datetime.datetime.today()
 FEEDS = {
    f'backupdata{today.strftime("%Y/%m-%d")}.json': {'format': 'json'},
    f's3://project-goodjob/{today.strftime("%Y-%m-%d")}/%(name)s_%(time)s.jsonl': {
-      'format': 'jsonlines'
+      'format': 'jsonlines',
+      'store_empty': False,
+      'encoding': 'utf8', 
    }
 }
 
@@ -76,7 +78,7 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 EXTENSIONS = {
    "scrapeops_scrapy.extension.ScrapeOpsMonitor": 500,
-   # "scrapy.extensions.telnet.TelnetConsole": None,
+   "scrapy.extensions.feedexport": None,
 }
 
 # Configure item pipelines
@@ -110,4 +112,3 @@ HTTPCACHE_DIR = "httpcache"
 # Set settings whose default value is deprecated to a future-proof value
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
-FEED_EXPORT_ENCODING = "utf-8"
