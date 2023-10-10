@@ -134,14 +134,18 @@ main {
     gap: 20px;
 }
 
+#skillsPie {
+    margin-left: 30px;
+}
+
 .chart {
     flex: 0 0 auto;
 }
 
 .jobResults {
-    margin-left: 20px;
+    margin: auto;
     overflow-y: auto;
-    padding-left: 7%;
+    text-align: center;
 }
 
 .jobResults tr.odd-row {

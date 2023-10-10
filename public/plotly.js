@@ -29,9 +29,10 @@ function drawJobCounts(jobs) {
             size: 15
         },
         margin: {
-            l: 150
+            l: 150,
+            r: 100
         },
-        width: 650
+        width: 600
     }
 
     Plotly.newPlot('jobCountsBar', data, layout)
@@ -95,7 +96,7 @@ function drawAvgSalary(avgSalary) {
             size: 15
         },
         height: 450,
-        width: 700
+        width: 600
     };
 
     Plotly.newPlot('avgSalaryBar', data, layout);
@@ -138,7 +139,7 @@ function drawExperience(experience) {
             }
         ],
         height: 500,
-        width: 500,
+        width: 450,
         showlegend: true,
         grid: { rows: 1, columns: 2 }
     };
@@ -173,8 +174,8 @@ function drawSkillsChart(skills) {
         font: {
             size: 15
         },
-        height: 500,
-        width: 600
+        height: 450,
+        width: 450
     }
 
     Plotly.newPlot('skillsPie', data, layout)
@@ -197,8 +198,11 @@ function drawSkillsChart(skills) {
         titlefont: {
             size: 20
         },
-        height: 500,
-        width: 600
+        height: 450,
+        width: 600,
+        font: {
+            size: 15
+        }
     };
     var config = { responsive: true }
     Plotly.newPlot('skillsBar', data, layout, config);
@@ -267,7 +271,7 @@ function drawSalaryChart(salaryCounts) {
         font: {
             size: 15
         },
-        height: 500,
+        height: 450,
         width: 600
     };
 
@@ -283,7 +287,7 @@ function drawEducationWordCloud(education) {
 
     const newChartContainer = document.createElement('div');
     newChartContainer.id = 'educationWordCloud';
-    newChartContainer.style.width = '400px';
+    newChartContainer.style.width = '350px';
     newChartContainer.style.height = '400px';
 
     const container = document.getElementById('worldCloud');

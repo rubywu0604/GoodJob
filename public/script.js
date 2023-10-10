@@ -235,10 +235,9 @@ function createJobList(data) {
     });
 
     table.appendChild(tbody);
-
     jobResults.innerHTML = '';
     jobResults.style.height = '450px';
-    jobResults.style.width = '1200px';
+    jobResults.style.width = 'auto';
     jobResults.style.boxShadow = '0px 3px 5px 0px rgba(0, 0, 0, 0.2)';
     jobResults.appendChild(table);
 }
