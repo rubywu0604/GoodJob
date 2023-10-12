@@ -20,7 +20,7 @@ function drawJobCounts(jobs) {
     }]
 
     var layout = {
-        title: '軟體工程師 職缺數量排行',
+        title: '職缺數量排行',
         showlegend: false,
         titlefont: {
             size: 20
@@ -91,7 +91,7 @@ function drawAvgSalary(avgSalary) {
     var data = [trace1, trace2];
 
     var layout = {
-        title: '軟體工程師 平均月收入',
+        title: '平均月收入',
         titlefont: {
             size: 20
         }, 
@@ -138,7 +138,7 @@ function drawExperience(experience) {
     }];
 
     var layout = {
-        title: '軟體工程師 工作經驗佔比',
+        title: '工作經驗佔比',
         titlefont: {
             size: 20
         },
