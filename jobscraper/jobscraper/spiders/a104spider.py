@@ -4,6 +4,7 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from jobscraper.items import JobscraperItem
+from scrapy.exceptions import DropItem
 
 
 class A104spiderSpider(scrapy.Spider):
@@ -35,6 +36,9 @@ class A104spiderSpider(scrapy.Spider):
                 education = job.css('ul.job-list-intro li:nth-child(5)::text').get()
                 experience = job.css('ul.job-list-intro li:nth-child(3)::text').get()
                 job_link = 'https:' + job.css('h2 a::attr(href)').get()
+
+                category = self.categorize_job(job_title)
+
                 yield scrapy.Request(
                     job_link,
                     callback=self.parse_104_details,
@@ -85,5 +89,29 @@ class A104spiderSpider(scrapy.Spider):
         a104Item['job_link'] = response.meta.get('job_link')
         a104Item['skills'] = "Null" if skill_set == set() else list(skill_set)
         a104Item['source_website'] = "104人力銀行"
-        
-        yield a104Item
+
+        if a104Item['category'] == 'others':
+            DropItem("Category is not in project scope. (others)")
+        else:
+            yield a104Item
+
+    def categorize_job(self, job_title):
+        job_title = job_title.lower()
+        if "ios" in job_title or "flutter" in job_title or "swift" in job_title:
+            return 'ios_engineer'
+        elif "android" in job_title or "flutter" in job_title or "kotlin" in job_title:
+            return 'android_engineer'
+        elif "frontend" in job_title or "前端" in job_title:
+            return 'frontend_engineer'
+        elif "backend" in job_title or "後端" in job_title:
+            return 'backend_engineer'
+        elif "data" in job_title or "資料工程師" in job_title or "數據工程師" in job_title:
+            return 'data_engineer'
+        elif "analyst" in job_title or "分析" in job_title:
+            return 'data_analyst'
+        elif "scientist" in job_title or "科學" in job_title:
+            return 'data_scientist'
+        elif "database" in job_title or "資料庫" in job_title or "Administrator" in job_title:
+            return 'dba'
+        else:
+            return "others"
