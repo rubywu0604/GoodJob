@@ -145,11 +145,16 @@ main {
 .jobResults {
     margin: auto;
     overflow-y: auto;
-    text-align: center;
 }
 
 .jobResults tr.odd-row {
     background-color: rgba(173, 220, 246, 0.2);
+}
+
+.jobResults tr:hover {
+    background-color: rgb(231, 238, 255);
+    color: rgb(0, 57, 137);
+    font-weight: bolder;
 }
 
 .sticky-header th {
