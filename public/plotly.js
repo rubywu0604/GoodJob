@@ -58,10 +58,13 @@ function drawAvgSalary(avgSalary) {
         textposition: 'auto',
         hoverinfo: 'none',
         opacity: 0.5,
+        textfont: {
+            color: 'rgba(0, 0, 0, 1)'
+        },
         marker: {
-            color: 'rgb(158,202,225)',
+            color: 'rgba(89, 172, 227, 0.5)',
             line: {
-                color: 'rgb(8,48,107)',
+                color: '#0a4015',
                 width: 1.5
             }
         },
@@ -76,9 +79,9 @@ function drawAvgSalary(avgSalary) {
         textposition: 'auto',
         hoverinfo: 'none',
         marker: {
-            color: 'rgba(58,200,225,.5)',
+            color: 'rgba(113, 212, 245, 0.5)',
             line: {
-                color: 'rgb(8,48,107)',
+                color: '#0078d4',
                 width: 1.5
             }
         },
@@ -106,6 +109,15 @@ function drawAvgSalary(avgSalary) {
 function drawExperience(experience) {
     const expLabels = [];
     const expValues = [];
+    const expColors = [
+        'rgba(0, 128, 255, 0.8)',
+        'rgba(255, 99, 71, 0.8)',
+        'rgba(50, 205, 50, 0.8)',
+        'rgba(255, 165, 0, 0.8)',
+        'rgba(70, 130, 180, 0.8)',
+        'rgba(255, 192, 203, 0.8)',
+        'rgba(0, 128, 0, 0.8)'
+    ];
     for (const [expLabel, expValue] of Object.entries(experience)) {
         expLabels.push(expLabel);
         expValues.push(expValue)
@@ -119,7 +131,10 @@ function drawExperience(experience) {
         domain: { x: [0, 1], y: [0, 1] },
         hoverinfo: 'label+percent',
         hole: .4,
-        type: 'pie'
+        type: 'pie',
+        marker: {
+            colors: expColors,
+        }
     }];
 
     var layout = {
@@ -166,6 +181,15 @@ function drawSkillsChart(skills) {
         textinfo: "label+percent",
         insidetextorientation: "radial"
     }]
+    const expColors = [
+        'rgba(0, 128, 255, 0.8)',
+        'rgba(255, 99, 71, 0.8)',
+        'rgba(50, 205, 50, 0.8)',
+        'rgba(255, 165, 0, 0.8)',
+        'rgba(70, 130, 180, 0.8)',
+        'rgba(255, 192, 203, 0.8)',
+        'rgba(0, 128, 0, 0.8)'
+    ];
     var layout = {
         title: '技術佔比',
         titlefont: {
@@ -175,7 +199,9 @@ function drawSkillsChart(skills) {
             size: 15
         },
         height: 450,
-        width: 450
+        width: 450,
+        showlegend: true,
+        colorway: expColors
     }
 
     Plotly.newPlot('skillsPie', data, layout)
