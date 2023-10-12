@@ -14,7 +14,7 @@
 *_REMOTE_*.txt
 
 # Environments
-.env
+*.env
 .venv
 env/
 venv/

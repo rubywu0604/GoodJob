@@ -4,6 +4,7 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from jobscraper.items import JobscraperItem
+from scrapy.exceptions import DropItem
 
 
 class A1111spiderSpider(scrapy.Spider):
@@ -34,6 +35,9 @@ class A1111spiderSpider(scrapy.Spider):
             education = job.css('.item_data .item_group .applicants::text').getall()[1][1::]
             experience = job.css('.item_data .item_group .applicants::text').getall()[0][1::]
             job_link = 'https://www.1111.com.tw' + job.css('.job_item_info a::attr(href)').get()
+
+            category = self.categorize_job(job_title)
+
             yield scrapy.Request(
                 job_link,
                 callback=self.parse_1111_details,
@@ -89,4 +93,30 @@ class A1111spiderSpider(scrapy.Spider):
         a1111Item['skills'] = "Null" if skill_set == set() else list(skill_set)
         a1111Item['source_website'] = "1111人力銀行"
 
-        yield a1111Item
+        if a1111Item['category'] == 'others':
+            DropItem("Category is not in project scope. (others)")
+        else:
+            yield a1111Item
+
+    def categorize_job(self, job_title):
+        job_title = job_title.lower()
+        if "ios" in job_title or "flutter" in job_title or "swift" in job_title:
+            return 'ios_engineer'
+        elif "android" in job_title or "flutter" in job_title or "kotlin" in job_title:
+            return 'android_engineer'
+        elif "frontend" in job_title or "前端" in job_title:
+            return 'frontend_engineer'
+        elif "backend" in job_title or "後端" in job_title:
+            return 'backend_engineer'
+        elif "data" in job_title or "資料" in job_title or "數據" in job_title:
+            if "engineer" in job_title or "工程師" in job_title:
+                return 'data_engineer'
+            elif "analyst" in job_title or "分析" in job_title:
+                return 'data_analyst'
+            elif "scientist" in job_title or "科學" in job_title:
+                return 'data_scientist'
+        elif "database" in job_title or "dba" in job_title or "資料庫" in job_title:
+            if "administrator" in job_title or "dba" in job_title or "管理" in job_title or "工程" in job_title:
+                return 'dba'
+        else:
+            return "others"

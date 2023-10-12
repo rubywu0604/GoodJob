@@ -2,8 +2,8 @@ attrs==23.1.0
 Automat==22.10.0
 beautifulsoup4==4.12.2
 boto3==1.28.62
-botocore @ file:///home/conda/feedstock_root/build_artifacts/botocore_1696631387898/work
-Brotli @ file:///Users/runner/miniforge3/conda-bld/brotli-split_1687884187023/work
+botocore==1.31.62
+Brotli==1.1.0
 bs4==0.0.1
 certifi==2023.7.22
 cffi==1.16.0
@@ -17,7 +17,7 @@ idna==3.4
 incremental==22.10.0
 itemadapter==0.8.0
 itemloaders==1.1.0
-jmespath @ file:///home/conda/feedstock_root/build_artifacts/jmespath_1655568249366/work
+jmespath==1.0.1
 json5==0.9.14
 lxml==4.9.3
 packaging==23.2
@@ -29,8 +29,8 @@ pycparser==2.21
 PyDispatcher==2.0.7
 PyMySQL==1.1.0
 pyOpenSSL==23.2.0
-PySocks @ file:///home/conda/feedstock_root/build_artifacts/pysocks_1661604839144/work
-python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/python-dateutil_1626286286081/work
+PySocks==1.7.1
+python-dateutil==2.8.2
 python-dotenv==1.0.0
 queuelib==1.6.2
 requests==2.31.0
@@ -40,12 +40,12 @@ scrapeops-scrapy==0.5.3
 Scrapy==2.11.0
 scrapy-s3pipeline==0.7.0
 service-identity==23.1.0
-six @ file:///home/conda/feedstock_root/build_artifacts/six_1620240208055/work
+six==1.16.0
 soupsieve==2.5
 tld==0.13
 tldextract==3.6.0
 Twisted==22.10.0
 typing_extensions==4.8.0
-urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1696425423864/work
+urllib3==1.26.6
 w3lib==2.1.2
 zope.interface==6.1
