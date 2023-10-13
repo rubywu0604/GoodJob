@@ -162,7 +162,7 @@ function drawCharts(data, selectedCategory){
 
     drawSkillsChart(skillCounts);
     drawSalaryChart(salaryCounts);
-    drawEducationWordCloud(educationCounts);
+    drawEducationPie(educationCounts);
 }
 
 function createJobList(data) {

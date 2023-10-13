@@ -153,8 +153,8 @@ function drawExperience(experience) {
                 y: 0.5
             }
         ],
-        height: 500,
-        width: 450,
+        height: 450,
+        width: 400,
         showlegend: true,
         grid: { rows: 1, columns: 2 }
     };
@@ -164,8 +164,40 @@ function drawExperience(experience) {
 }
 
 function drawSkillsChart(skills) {
+    // Skill World Cloud
+    const chartContainer = document.getElementById('skillWordCloud');
+
+    if (chartContainer) {
+        chartContainer.parentNode.removeChild(chartContainer);
+    }
+
     const skillsArray = Object.entries(skills);  // ['ios', 900], ['python', 800]
     skillsArray.sort((a, b) => b[1] - a[1]);
+    const allSkills = []
+    skillsArray.forEach((skillCount) => {
+        let skillObj = {};
+        skillObj['x'] = skillCount[0];
+        skillObj['value'] = `${skillCount[1]}`;
+        allSkills.push(skillObj);
+    })
+    const chart = anychart.tagCloud(allSkills);
+    const newChartContainer = document.createElement('div');
+    newChartContainer.id = 'skillWordCloud';
+    newChartContainer.style.width = '550px';
+    newChartContainer.style.height = '400px';
+
+    const container = document.getElementById('wordCloud');
+    container.appendChild(newChartContainer);
+
+    chart.colorScale(anychart.scales.linearColor().colors(["#45b6fe", "#DE73FF", "#FFC300", "#FF5733"]));
+    chart.title('相關技術').title().fontColor("#000000").fontSize(20);
+    chart.angles([0, 20, 45, -20, -45]);
+    chart.colorRange(true);
+    chart.colorRange().length('90%');
+    chart.container('skillWordCloud');
+    chart.draw();
+
+    // Skill Bar Chart
     const labels = []
     const values = []
     for (var i = 0; i < 7; i++) {
@@ -173,59 +205,30 @@ function drawSkillsChart(skills) {
         values.push(skillsArray[i][1]);
     }
 
-    // Skill Pie Chart
-    var data = [{
-        type: "pie",
-        values: values,
-        labels: labels,
-        textinfo: "label+percent",
-        insidetextorientation: "radial"
-    }]
-    const expColors = [
-        'rgba(0, 128, 255, 0.8)',
-        'rgba(255, 99, 71, 0.8)',
-        'rgba(50, 205, 50, 0.8)',
-        'rgba(255, 165, 0, 0.8)',
-        'rgba(70, 130, 180, 0.8)',
-        'rgba(255, 192, 203, 0.8)',
-        'rgba(0, 128, 0, 0.8)'
-    ];
-    var layout = {
-        title: '技術佔比',
-        titlefont: {
-            size: 20
-        },
-        font: {
-            size: 15
-        },
-        height: 450,
-        width: 450,
-        showlegend: true,
-        colorway: expColors
-    }
-
-    Plotly.newPlot('skillsPie', data, layout)
-
-    // Skill Bar Chart
     var trace1 = {
         type: 'bar',
         x: labels,
         y: values,
         marker: {
-            color: '#C8A2C8',
+            color: 'rgba(21, 127, 213 , 0.5)',
             line: {
-                width: 2.5
+                color: '#0078d4',
+                width: 1.5
             }
         }
-    };
+    }
+
     var data = [trace1];
     var layout = {
         title: '技術排行',
         titlefont: {
             size: 20
         },
-        height: 450,
-        width: 600,
+        height: 400,
+        width: 550,
+        padding: {
+            r: '50px'
+        },
         font: {
             size: 15
         }
@@ -297,41 +300,41 @@ function drawSalaryChart(salaryCounts) {
         font: {
             size: 15
         },
-        height: 450,
+        height: 400,
         width: 600
     };
 
     Plotly.newPlot('salaryBar', data, layout);
 }
 
-function drawEducationWordCloud(education) {
-    const chartContainer = document.getElementById('educationWordCloud');
-
-    if (chartContainer) {
-        chartContainer.parentNode.removeChild(chartContainer);
+function drawEducationPie(education) {
+    var data = [{
+        type: "pie",
+        values: Object.values(education),
+        labels: Object.keys(education),
+        textinfo: "label+percent",
+        insidetextorientation: "radial"
+    }]
+    const expColors = [
+        'rgba(0, 128, 255, 0.8)',
+        'rgba(255, 99, 71, 0.8)',
+        'rgba(50, 205, 50, 0.8)',
+        'rgba(255, 165, 0, 0.8)',
+        'rgba(70, 130, 180, 0.8)'
+    ];
+    var layout = {
+        title: '學歷佔比',
+        titlefont: {
+            size: 20
+        },
+        font: {
+            size: 15
+        },
+        height: 400,
+        width: 400,
+        showlegend: true,
+        colorway: expColors
     }
 
-    const newChartContainer = document.createElement('div');
-    newChartContainer.id = 'educationWordCloud';
-    newChartContainer.style.width = '350px';
-    newChartContainer.style.height = '400px';
-
-    const container = document.getElementById('worldCloud');
-    container.appendChild(newChartContainer);
-
-    const chart = anychart.tagCloud([
-        { "x": "不拘", "value": `${education['不拘']}` },
-        { "x": "高中", "value": `${education['高中']}` },
-        { "x": "大學", "value": `${education['大學']}` },
-        { "x": "專科", "value": `${education['專科']}` },
-        { "x": "碩士", "value": `${education['碩士']}` }
-    ]);
-
-    chart.colorScale(anychart.scales.linearColor().colors(["#45b6fe", '#f94449', "#DE73FF"]));
-    chart.title('學歷要求').title().fontColor("#000000").fontSize(20);
-    chart.angles([0, 45, -45]);
-    chart.colorRange(true);
-    chart.colorRange().length('90%');
-    chart.container('educationWordCloud');
-    chart.draw();
+    Plotly.newPlot('educationPie', data, layout)
 }
