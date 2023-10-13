@@ -92,6 +92,7 @@ main {
     top: 0;
     z-index: 100;
     background-color: rgba(173, 220, 246, 0.8);
+    margin-top: 20px;
 }
 
 #listCategory {
@@ -120,26 +121,21 @@ main {
     max-width: calc(33.33% - 20px);
 }
 
-#experienceDonut,
-.chart:last-child {
-    margin-left: 100px;
+#experienceDonut {
+    margin-left: 70px;
 }
 
 #chart-container-category {
     display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
     flex-wrap: wrap;
-    margin-top: 20px;
-    gap: 20px;
-}
-
-#skillsPie {
-    margin-left: 30px;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    margin-right: 20%;
 }
 
 .chart {
-    flex: 0 0 auto;
+    flex: 0 0 calc(50% - 25px);
+    margin: 0 25px;
 }
 
 .jobResults {
@@ -152,8 +148,8 @@ main {
 }
 
 .jobResults tr:hover {
-    background-color: rgb(231, 238, 255);
-    color: rgb(0, 57, 137);
+    background-color: rgb(203, 221, 237);
+    color: rgb(6, 52, 117);
     font-weight: bolder;
 }
 
@@ -176,5 +172,9 @@ main {
     #chart-container {
         flex-direction: column;
         align-items: center;
+    }
+    .chart {
+        flex: 0 0 calc(100% - 50px);
+        margin: 0;
     }
 }
