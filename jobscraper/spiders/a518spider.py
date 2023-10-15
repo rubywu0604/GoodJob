@@ -116,7 +116,7 @@ class A518spiderSpider(scrapy.Spider):
         else:
             yield a518Item
 
-    def categorize_job(self, job_title):
+     def categorize_job(self, job_title):
         job_title = job_title.lower()
         if "ios" in job_title or "flutter" in job_title or "swift" in job_title:
             return 'ios_engineer'
@@ -126,13 +126,15 @@ class A518spiderSpider(scrapy.Spider):
             return 'frontend_engineer'
         elif "backend" in job_title or "後端" in job_title:
             return 'backend_engineer'
-        elif "data" in job_title or "資料工程師" in job_title or "數據工程師" in job_title:
-            return 'data_engineer'
-        elif "analyst" in job_title or "分析" in job_title:
-            return 'data_analyst'
-        elif "scientist" in job_title or "科學" in job_title:
-            return 'data_scientist'
-        elif "database" in job_title or "資料庫" in job_title or "Administrator" in job_title:
-            return 'dba'
+        elif "data" in job_title or "資料" in job_title or "數據" in job_title:
+            if "engineer" in job_title or "工程師" in job_title:
+                return 'data_engineer'
+            elif "analyst" in job_title or "分析" in job_title:
+                return 'data_analyst'
+            elif "scientist" in job_title or "科學" in job_title:
+                return 'data_scientist'
+        elif "database" in job_title or "dba" in job_title or "資料庫" in job_title:
+            if "administrator" in job_title or "dba" in job_title or "管理" in job_title or "工程" in job_title:
+                return 'dba'
         else:
             return "others"
