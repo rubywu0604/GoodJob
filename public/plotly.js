@@ -8,7 +8,7 @@ function drawJobCounts(jobs) {
     const labels = []
     const values = []
     for (var i = 0; i < jobsArray.length; i++) {
-        labels.push(jobsArray[i][0]);
+        labels.push(`${jobsArray[i][0]} `);
         values.push(jobsArray[i][1]);
     }
 
@@ -20,18 +20,18 @@ function drawJobCounts(jobs) {
     }]
 
     var layout = {
-        title: '軟體工程師 職缺數量排行',
+        title: '職缺數量排行',
         showlegend: false,
         titlefont: {
             size: 20
         },
         font: {
-            size: 15
+            size: 12
         },
         margin: {
-            l: 150
+            l: 120
         },
-        width: 650
+        width: 600
     }
 
     Plotly.newPlot('jobCountsBar', data, layout)
@@ -57,10 +57,13 @@ function drawAvgSalary(avgSalary) {
         textposition: 'auto',
         hoverinfo: 'none',
         opacity: 0.5,
+        textfont: {
+            color: 'rgba(0, 0, 0, 1)'
+        },
         marker: {
-            color: 'rgb(158,202,225)',
+            color: 'rgba(89, 172, 227, 0.5)',
             line: {
-                color: 'rgb(8,48,107)',
+                color: '#0a4015',
                 width: 1.5
             }
         },
@@ -75,9 +78,9 @@ function drawAvgSalary(avgSalary) {
         textposition: 'auto',
         hoverinfo: 'none',
         marker: {
-            color: 'rgba(58,200,225,.5)',
+            color: 'rgba(113, 212, 245, 0.5)',
             line: {
-                color: 'rgb(8,48,107)',
+                color: '#0078d4',
                 width: 1.5
             }
         },
@@ -87,7 +90,7 @@ function drawAvgSalary(avgSalary) {
     var data = [trace1, trace2];
 
     var layout = {
-        title: '軟體工程師 平均月收入',
+        title: '平均月收入 (低標/高標)',
         titlefont: {
             size: 20
         }, 
@@ -95,7 +98,7 @@ function drawAvgSalary(avgSalary) {
             size: 15
         },
         height: 450,
-        width: 700
+        width: 600
     };
 
     Plotly.newPlot('avgSalaryBar', data, layout);
@@ -105,6 +108,15 @@ function drawAvgSalary(avgSalary) {
 function drawExperience(experience) {
     const expLabels = [];
     const expValues = [];
+    const expColors = [
+        'rgba(0, 128, 255, 0.8)',
+        'rgba(255, 99, 71, 0.8)',
+        'rgba(50, 205, 50, 0.8)',
+        'rgba(255, 165, 0, 0.8)',
+        'rgba(70, 130, 180, 0.8)',
+        'rgba(255, 192, 203, 0.8)',
+        'rgba(0, 128, 0, 0.8)'
+    ];
     for (const [expLabel, expValue] of Object.entries(experience)) {
         expLabels.push(expLabel);
         expValues.push(expValue)
@@ -118,11 +130,14 @@ function drawExperience(experience) {
         domain: { x: [0, 1], y: [0, 1] },
         hoverinfo: 'label+percent',
         hole: .4,
-        type: 'pie'
+        type: 'pie',
+        marker: {
+            colors: expColors,
+        }
     }];
 
     var layout = {
-        title: '軟體工程師 工作經驗佔比',
+        title: '工作經驗佔比',
         titlefont: {
             size: 20
         },
@@ -137,8 +152,8 @@ function drawExperience(experience) {
                 y: 0.5
             }
         ],
-        height: 500,
-        width: 500,
+        height: 450,
+        width: 400,
         showlegend: true,
         grid: { rows: 1, columns: 2 }
     };
@@ -148,8 +163,40 @@ function drawExperience(experience) {
 }
 
 function drawSkillsChart(skills) {
+    // Skill World Cloud
+    const chartContainer = document.getElementById('skillWordCloud');
+
+    if (chartContainer) {
+        chartContainer.parentNode.removeChild(chartContainer);
+    }
+
     const skillsArray = Object.entries(skills);  // ['ios', 900], ['python', 800]
     skillsArray.sort((a, b) => b[1] - a[1]);
+    const allSkills = []
+    skillsArray.forEach((skillCount) => {
+        let skillObj = {};
+        skillObj['x'] = skillCount[0];
+        skillObj['value'] = `${skillCount[1]}`;
+        allSkills.push(skillObj);
+    })
+    const chart = anychart.tagCloud(allSkills);
+    const newChartContainer = document.createElement('div');
+    newChartContainer.id = 'skillWordCloud';
+    newChartContainer.style.width = '550px';
+    newChartContainer.style.height = '400px';
+
+    const container = document.getElementById('wordCloud');
+    container.appendChild(newChartContainer);
+
+    chart.colorScale(anychart.scales.linearColor().colors(["#45b6fe", "#DE73FF", "#FFC300", "#FF5733"]));
+    chart.title('相關技術').title().fontColor("#000000").fontSize(20);
+    chart.angles([0, 20, 45, -20, -45]);
+    chart.colorRange(true);
+    chart.colorRange().length('90%');
+    chart.container('skillWordCloud');
+    chart.draw();
+
+    // Skill Bar Chart
     const labels = []
     const values = []
     for (var i = 0; i < 7; i++) {
@@ -157,48 +204,31 @@ function drawSkillsChart(skills) {
         values.push(skillsArray[i][1]);
     }
 
-    // Skill Pie Chart
-    var data = [{
-        type: "pie",
-        values: values,
-        labels: labels,
-        textinfo: "label+percent",
-        insidetextorientation: "radial"
-    }]
-    var layout = {
-        title: '技術佔比',
-        titlefont: {
-            size: 20
-        },
-        font: {
-            size: 15
-        },
-        height: 500,
-        width: 600
-    }
-
-    Plotly.newPlot('skillsPie', data, layout)
-
-    // Skill Bar Chart
     var trace1 = {
         type: 'bar',
         x: labels,
         y: values,
         marker: {
-            color: '#C8A2C8',
-            line: {
-                width: 2.5
-            }
+            color: 'rgba(21, 127, 213 , 0.5)'
         }
-    };
+    }
+
     var data = [trace1];
     var layout = {
         title: '技術排行',
         titlefont: {
             size: 20
         },
-        height: 500,
-        width: 600
+        height: 400,
+        width: 550,
+        padding: {
+            r: '50px'
+        },
+        font: {
+            size: 12
+        },
+        bargap: 0.2,
+        bargroupgap: 0.2
     };
     var config = { responsive: true }
     Plotly.newPlot('skillsBar', data, layout, config);
@@ -267,41 +297,41 @@ function drawSalaryChart(salaryCounts) {
         font: {
             size: 15
         },
-        height: 500,
-        width: 600
+        height: 400,
+        width: 650
     };
 
     Plotly.newPlot('salaryBar', data, layout);
 }
 
-function drawEducationWordCloud(education) {
-    const chartContainer = document.getElementById('educationWordCloud');
-
-    if (chartContainer) {
-        chartContainer.parentNode.removeChild(chartContainer);
+function drawEducationPie(education) {
+    var data = [{
+        type: "pie",
+        values: Object.values(education),
+        labels: Object.keys(education),
+        textinfo: "label+percent",
+        insidetextorientation: "radial"
+    }]
+    const expColors = [
+        'rgba(0, 128, 255, 0.8)',
+        'rgba(255, 99, 71, 0.8)',
+        'rgba(50, 205, 50, 0.8)',
+        'rgba(255, 165, 0, 0.8)',
+        'rgba(70, 130, 180, 0.8)'
+    ];
+    var layout = {
+        title: '學歷佔比',
+        titlefont: {
+            size: 20
+        },
+        font: {
+            size: 15
+        },
+        height: 400,
+        width: 400,
+        showlegend: true,
+        colorway: expColors
     }
 
-    const newChartContainer = document.createElement('div');
-    newChartContainer.id = 'educationWordCloud';
-    newChartContainer.style.width = '400px';
-    newChartContainer.style.height = '400px';
-
-    const container = document.getElementById('worldCloud');
-    container.appendChild(newChartContainer);
-
-    const chart = anychart.tagCloud([
-        { "x": "不拘", "value": `${education['不拘']}` },
-        { "x": "高中", "value": `${education['高中']}` },
-        { "x": "大學", "value": `${education['大學']}` },
-        { "x": "專科", "value": `${education['專科']}` },
-        { "x": "碩士", "value": `${education['碩士']}` }
-    ]);
-
-    chart.colorScale(anychart.scales.linearColor().colors(["#45b6fe", '#f94449', "#DE73FF"]));
-    chart.title('學歷要求').title().fontColor("#000000").fontSize(20);
-    chart.angles([0, 45, -45]);
-    chart.colorRange(true);
-    chart.colorRange().length('90%');
-    chart.container('educationWordCloud');
-    chart.draw();
+    Plotly.newPlot('educationPie', data, layout)
 }

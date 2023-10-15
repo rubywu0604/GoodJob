@@ -18,26 +18,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Data Engineer": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
                 "Data Analyst": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
                 "Data Scientist": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                "Dba": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+                "DBA": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
             };
             const experienceCounts = {};
 
             data.forEach((job) => {
-                category = job.category;
+                let category = job.category;
                 category = category.replace("_", " ");
                 if (category === "ios engineer") {
-                    category = "iOS Engineer";
-                } else {
-                    category = category.replace(/\b\w/g, function (char) {
-                        return char.toUpperCase();
-                    });
+                    category = "iOS Engineer"
+                } else if (category === "dba") {
+                    category = "DBA"
+                }else {
+                    category = category.replace(/\b\w/g, (char) => char.toUpperCase());
                 }
-
+                (jobDetails[category].counts === 0) ? jobDetails[category].counts = 1 : jobDetails[category].counts++;
+                
                 const minMonthlySalary = job.min_monthly_salary;
                 const maxMonthlySalary = job.max_monthly_salary;
                 let experience = job.experience;
-
-                (category === "Dba Engineer") ? jobDetails['Dba'].counts++ : jobDetails[category].counts++;
+                
                 (experience === 0) ? (experience = "不拘") : (experience = `${experience}年`);
                 experienceCounts.hasOwnProperty(experience) ? experienceCounts[experience]++ : (experienceCounts[experience] = 1);
 
@@ -162,7 +162,7 @@ function drawCharts(data, selectedCategory){
 
     drawSkillsChart(skillCounts);
     drawSalaryChart(salaryCounts);
-    drawEducationWordCloud(educationCounts);
+    drawEducationPie(educationCounts);
 }
 
 function createJobList(data) {
@@ -191,8 +191,7 @@ function createJobList(data) {
 
     let tbody = document.createElement('tbody');
     data.forEach((job, index) => {
-        let job_title = (job.job_title.includes("工程師") ? job.job_title.slice(0, job.job_title.indexOf("工程師") + 3) : job.job_title.slice(0, 20));
-        job_title = (job_title.length > 40) ? job_title.slice(0, 40) : job_title;
+        let job_title = (job.job_title.length > 50) ? job.job_title.slice(0, 50) + "..." : job.job_title;
         let job_link = job.job_link;
         let region = job.location;
         let companyRegex = /[\u4e00-\u9fa5]+公司/;
@@ -218,9 +217,17 @@ function createJobList(data) {
         let td3 = document.createElement('td');
         let td4 = document.createElement('td');
         td2.textContent = region;
+        td2.style.textAlign = 'center';
         td3.textContent = company;
         td3.style.textAlign = 'center';
-        td4.textContent = (minMonthlySalary === "Null" || maxMonthlySalary === "Above") ? "面議" : `${minMonthlySalary} ～ ${maxMonthlySalary}`
+        if (minMonthlySalary === "Null") {
+            td4.textContent = "面議(40,000以上)";
+        } else if (maxMonthlySalary === "Above") {
+            td4.textContent = `面議($${parseInt(minMonthlySalary).toLocaleString()}以上)`;
+        } else {
+            td4.textContent = `$${parseInt(minMonthlySalary).toLocaleString()} ～ $${parseInt(maxMonthlySalary).toLocaleString() }`
+        }
+        td4.style.textAlign = 'center';
 
         tr.appendChild(td1);
         tr.appendChild(td2);
@@ -235,10 +242,9 @@ function createJobList(data) {
     });
 
     table.appendChild(tbody);
-
     jobResults.innerHTML = '';
     jobResults.style.height = '450px';
-    jobResults.style.width = '1200px';
+    jobResults.style.width = 'auto';
     jobResults.style.boxShadow = '0px 3px 5px 0px rgba(0, 0, 0, 0.2)';
     jobResults.appendChild(table);
 }
@@ -247,7 +253,7 @@ window.addEventListener('scroll', function () {
     const formContainer = document.getElementById('form-container');
     const scrollY = window.scrollY;
 
-    const threshold = 100;
+    const threshold = 800;
 
     if (scrollY > threshold) {
         formContainer.style.position = 'fixed';
