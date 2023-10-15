@@ -68,8 +68,14 @@ class A104spiderSpider(scrapy.Spider):
             "postgresql", "mongodb", "sqlite", "cassandra", "django", "express.js", "golang", "spark", 
             "flask", "react", "vue.js", "asp.net", "docker", "kubernetes", "flutter", "restful api",
             "azure", "ibm cloud", "node.js", "firebase", "airflow", "github","arduino", "power bi",
-            "hadoop", "kafka", "elasticsearch", "tableau", "splunk", "scikit-learn", "javascript"
+            "hadoop", "kafka", "elasticsearch", "tableau", "splunk", "scikit-learn"
         ]
+
+        java_pattern = re.search(r'(java)\W', job_description)
+        javascript_pattern = re.search(r'(?<!without )(javascript)', job_description)
+
+        special_case_java = java_pattern.group(1) if java_pattern else None
+        special_case_javascript = javascript_pattern.group(1) if javascript_pattern else None
 
         skill_set = set()
         for condition in conditions:
