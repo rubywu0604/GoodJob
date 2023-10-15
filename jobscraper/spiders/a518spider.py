@@ -116,7 +116,7 @@ class A518spiderSpider(scrapy.Spider):
         else:
             yield a518Item
 
-    def categorize_job(self, job_title):
+     def categorize_job(self, job_title):
         job_title = job_title.lower()
         if "ios" in job_title or "flutter" in job_title or "swift" in job_title:
             return 'ios_engineer'
