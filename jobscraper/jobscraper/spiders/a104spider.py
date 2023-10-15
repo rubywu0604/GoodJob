@@ -18,7 +18,7 @@ class A104spiderSpider(scrapy.Spider):
             "data_scientist_資料科學家", "dba_資料庫管理"
         ]
         for job_type in job_types:
-            for p in range(1, 21):
+            for p in range(1, 51):
                 url = f"https://www.104.com.tw/jobs/search/?keyword={job_type}&page={p}"
                 yield scrapy.Request(url, callback=self.parse)
 
@@ -58,23 +58,33 @@ class A104spiderSpider(scrapy.Spider):
         job_link = response.url
         req = requests.get(job_link)
         soup = BeautifulSoup(req.text, 'html.parser')
-        text_ = json.loads("".join(soup.find("script", {"type":"application/ld+json"}).contents))
         job_description = soup.text.lower()
+        job_description_cleaned = re.sub(r'\s+', '', job_description)
         conditions = [
-            "python", "ios", "swift", "android", " java ", " javascript ", "ruby", "c#", "c++", "php",
-            "typescript", "scala", "julia", "objective-c", "numpy", "pandas", "tensorflow", "scikit-learn",
-            "pytorch", "opencv", "react", "angular", "ruby on rails", ".net", "hibernate", " java,"," javascript/",           
-            "express.js", "rubygems", ".net core", "django", "mysql", "ajax", "html", "css", "kotlin", "git",
-            "postgresql", "mongodb", "sqlite", "redis", "cassandra", "django", "express.js", "golang", "aws",
-            "flask", "react", "vue.js", "asp.net", "docker", "kubernetes", "flutter", " javascript,", "gcp", 
-            "azure", "ibm cloud", "node.js", "firebase", "airflow", "github","arduino", "java/", "restful api",
-            "hadoop", "spark", "kafka", "elasticsearch", "tableau", "splunk", "power bi", "jquery"        
+            "python", "ios", "swift", "android", "ruby", "c#", "c++", "php", "jquery", "aws",
+            "typescript", "scala", "julia", "objective-c", "numpy", "pandas", "tensorflow", "gcp",
+            "pytorch", "opencv", "react", "angular", "ruby on rails", ".net", "hibernate", "redis", 
+            "express.js", "rubygems", ".net core", "django", "mysql", "ajax", "html", "css", "kotlin",
+            "postgresql", "mongodb", "sqlite", "cassandra", "django", "express.js", "golang", "spark", 
+            "flask", "react", "vue.js", "asp.net", "docker", "kubernetes", "flutter", "restful api",
+            "azure", "ibm cloud", "node.js", "firebase", "airflow", "github","arduino", "power bi",
+            "hadoop", "kafka", "elasticsearch", "tableau", "splunk", "scikit-learn"
         ]
+
+        java_pattern = re.search(r'(java)\W', job_description)
+        javascript_pattern = re.search(r'(?<!without )(javascript)', job_description)
+
+        special_case_java = java_pattern.group(1) if java_pattern else None
+        special_case_javascript = javascript_pattern.group(1) if javascript_pattern else None
 
         skill_set = set()
         for condition in conditions:
-            if condition in job_description:
+            if condition in job_description_cleaned:
                 skill_set.add(condition)
+            elif special_case_java:
+                skill_set.add(special_case_java)
+            elif special_case_javascript:
+                skill_set.add(special_case_javascript)
         
         a104Item = JobscraperItem()
 
@@ -91,7 +101,12 @@ class A104spiderSpider(scrapy.Spider):
         a104Item['source_website'] = "104人力銀行"
 
         if a104Item['category'] == 'others':
-            DropItem("Category is not in project scope. (others)")
+            raise DropItem("Category is not in project scope. (others)")
+        if ("ios" in a104Item['job_title'] and "android" in a104Item['job_title']) or "flutter" in a104Item['job_title']:
+            yield a104Item
+            duplicate_item = a104Item.copy()
+            duplicate_item['category'] = 'android_engineer'
+            yield duplicate_item
         else:
             yield a104Item
 
@@ -99,19 +114,21 @@ class A104spiderSpider(scrapy.Spider):
         job_title = job_title.lower()
         if "ios" in job_title or "flutter" in job_title or "swift" in job_title:
             return 'ios_engineer'
-        elif "android" in job_title or "flutter" in job_title or "kotlin" in job_title:
+        elif "android" in job_title or "kotlin" in job_title:
             return 'android_engineer'
-        elif "frontend" in job_title or "前端" in job_title:
+        elif "frontend" in job_title or "前端" in job_title or "網頁設計" in job_title or "ui" in job_title or "ux" in job_title:
             return 'frontend_engineer'
         elif "backend" in job_title or "後端" in job_title:
             return 'backend_engineer'
-        elif "data" in job_title or "資料工程師" in job_title or "數據工程師" in job_title:
-            return 'data_engineer'
-        elif "analyst" in job_title or "分析" in job_title:
-            return 'data_analyst'
-        elif "scientist" in job_title or "科學" in job_title:
-            return 'data_scientist'
-        elif "database" in job_title or "資料庫" in job_title or "Administrator" in job_title:
-            return 'dba'
+        elif "database" in job_title or "dba" in job_title or "資料庫" in job_title:
+            if "administrator" in job_title or "dba" in job_title or "管理" in job_title or "工程" in job_title:
+                return 'dba'
+        elif "data" in job_title or "資料" in job_title or "數據" in job_title:
+            if "scientist" in job_title or "科學" in job_title:
+                return 'data_scientist'
+            elif "analyst" in job_title or "分析" in job_title:
+                return 'data_analyst'
+            elif "engineer" in job_title or "工程師" in job_title:
+                return 'data_engineer'
         else:
             return "others"
