@@ -7,18 +7,42 @@ p {
 }
 
 header {
-    background-color: #0078d4;
-    color: white;
-    text-align: center;
+    background: url('image/handshake.jpg') center/cover no-repeat;
+    background-size: 100% 100%;
     padding: 20px;
+    height: 200px;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .title {
-    font-size: 40px;
+    font-size: 80px;
+    padding-left: 20px;
+    color:whitesmoke;
+    font-style: oblique;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.title-msg {
+    font-size: 25px;
+    color:#ffffff;
+    padding-left: 50px;
 }
 
 .welcome-msg {
-    font-size: 20px;
+    line-height: 1.8;
+}
+
+.header-category {
+    text-align: right;
+    font-size: 18px;
+    color: rgb(231, 234, 237);
+    padding-right: 20px;
+    padding-bottom: 10px;
 }
 
 #form-container {
@@ -85,6 +109,8 @@ main {
 
 #container {
     text-align: center;
+    font-size: 18px;
+    color: rgb(68, 73, 83);
 }
 
 #category {
@@ -110,7 +136,6 @@ main {
     display: flex;
     flex-wrap: wrap;
     margin-top: 20px;
-    max-width: 100%;
 }
 
 #jobCountsBar,
@@ -130,7 +155,6 @@ main {
     flex-wrap: wrap;
     justify-content: space-around;
     margin-bottom: 20px;
-    margin-right: 20%;
 }
 
 .chart {
@@ -158,10 +182,6 @@ main {
     top: 0;
     background-color: white;
     font-size: 20px;
-}
-
-#developer {
-    padding-right: 30px;
 }
 
 #developer {

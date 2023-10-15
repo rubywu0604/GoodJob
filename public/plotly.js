@@ -8,7 +8,7 @@ function drawJobCounts(jobs) {
     const labels = []
     const values = []
     for (var i = 0; i < jobsArray.length; i++) {
-        labels.push(jobsArray[i][0]);
+        labels.push(`${jobsArray[i][0]} `);
         values.push(jobsArray[i][1]);
     }
 
@@ -26,11 +26,10 @@ function drawJobCounts(jobs) {
             size: 20
         },
         font: {
-            size: 15
+            size: 12
         },
         margin: {
-            l: 150,
-            r: 100
+            l: 120
         },
         width: 600
     }
@@ -91,7 +90,7 @@ function drawAvgSalary(avgSalary) {
     var data = [trace1, trace2];
 
     var layout = {
-        title: '平均月收入',
+        title: '平均月收入 (低標/高標)',
         titlefont: {
             size: 20
         }, 
@@ -210,11 +209,7 @@ function drawSkillsChart(skills) {
         x: labels,
         y: values,
         marker: {
-            color: 'rgba(21, 127, 213 , 0.5)',
-            line: {
-                color: '#0078d4',
-                width: 1.5
-            }
+            color: 'rgba(21, 127, 213 , 0.5)'
         }
     }
 
@@ -230,8 +225,10 @@ function drawSkillsChart(skills) {
             r: '50px'
         },
         font: {
-            size: 15
-        }
+            size: 12
+        },
+        bargap: 0.2,
+        bargroupgap: 0.2
     };
     var config = { responsive: true }
     Plotly.newPlot('skillsBar', data, layout, config);
@@ -301,7 +298,7 @@ function drawSalaryChart(salaryCounts) {
             size: 15
         },
         height: 400,
-        width: 600
+        width: 650
     };
 
     Plotly.newPlot('salaryBar', data, layout);
