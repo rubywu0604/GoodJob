@@ -110,9 +110,14 @@ class A518spiderSpider(scrapy.Spider):
         a518Item['job_link'] = response.meta.get('job_link')
         a518Item['skills'] = "Null" if skill_set == set() else list(skill_set)
         a518Item['source_website'] = "518熊班"
-
+        
         if a518Item['category'] == 'others':
-            DropItem("Category is not in project scope. (others)")
+            raise DropItem("Category is not in project scope. (others)")
+        if ("ios" in a518Item['job_title'] and "android" in a518Item['job_title']) or "flutter" in a518Item['job_title']:
+            yield a518Item
+            duplicate_item = a518Item.copy()
+            duplicate_item['category'] = 'android_engineer'
+            yield duplicate_item
         else:
             yield a518Item
 
@@ -120,21 +125,21 @@ class A518spiderSpider(scrapy.Spider):
         job_title = job_title.lower()
         if "ios" in job_title or "flutter" in job_title or "swift" in job_title:
             return 'ios_engineer'
-        elif "android" in job_title or "flutter" in job_title or "kotlin" in job_title:
+        elif "android" in job_title or "kotlin" in job_title:
             return 'android_engineer'
-        elif "frontend" in job_title or "前端" in job_title:
+        elif "frontend" in job_title or "前端" in job_title or "網頁設計" in job_title or "ui" in job_title or "ux" in job_title:
             return 'frontend_engineer'
         elif "backend" in job_title or "後端" in job_title:
             return 'backend_engineer'
-        elif "data" in job_title or "資料" in job_title or "數據" in job_title:
-            if "engineer" in job_title or "工程師" in job_title:
-                return 'data_engineer'
-            elif "analyst" in job_title or "分析" in job_title:
-                return 'data_analyst'
-            elif "scientist" in job_title or "科學" in job_title:
-                return 'data_scientist'
         elif "database" in job_title or "dba" in job_title or "資料庫" in job_title:
             if "administrator" in job_title or "dba" in job_title or "管理" in job_title or "工程" in job_title:
                 return 'dba'
+        elif "data" in job_title or "資料" in job_title or "數據" in job_title:
+            if "scientist" in job_title or "科學" in job_title:
+                return 'data_scientist'
+            elif "analyst" in job_title or "分析" in job_title:
+                return 'data_analyst'
+            elif "engineer" in job_title or "工程師" in job_title:
+                return 'data_engineer'
         else:
             return "others"
