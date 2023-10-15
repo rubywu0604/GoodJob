@@ -87,9 +87,6 @@ class A518spiderSpider(scrapy.Spider):
             "hadoop", "kafka", "elasticsearch", "tableau", "splunk", "scikit-learn", "javascript"
         ]
 
-        java_pattern = re.search(r'(java)\W', job_description)
-        special_case_java = java_pattern.group(1) if java_pattern else None
-
         skill_set = set()
         for condition in conditions:
             if condition in job_description_cleaned:
