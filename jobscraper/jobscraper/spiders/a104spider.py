@@ -3,7 +3,7 @@ import re
 import json
 import requests
 from bs4 import BeautifulSoup
-from jobscraper.items import JobscraperItem
+from jobscraper.jobscraper.items import JobscraperItem
 from scrapy.exceptions import DropItem
 
 
@@ -120,7 +120,7 @@ class A104spiderSpider(scrapy.Spider):
             return 'frontend_engineer'
         elif "backend" in job_title or "後端" in job_title:
             return 'backend_engineer'
-        elif "database" in job_title or "dba" in job_title or "資料庫" in job_title:
+        elif "database" in job_title or "dba" in job_title or "資料庫" in job_title or "資料倉儲" in job_title:
             if "administrator" in job_title or "dba" in job_title or "管理" in job_title or "工程" in job_title:
                 return 'dba'
         elif "data" in job_title or "資料" in job_title or "數據" in job_title:
