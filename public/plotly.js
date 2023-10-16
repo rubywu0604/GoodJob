@@ -98,7 +98,7 @@ function drawAvgSalary(avgSalary) {
             size: 15
         },
         height: 450,
-        width: 600
+        width: 1500
     };
 
     Plotly.newPlot('avgSalaryBar', data, layout);

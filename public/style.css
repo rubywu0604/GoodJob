@@ -136,6 +136,7 @@ main {
     display: flex;
     flex-wrap: wrap;
     margin-top: 20px;
+    justify-content: space-around;
 }
 
 #jobCountsBar,
@@ -146,8 +147,8 @@ main {
     max-width: calc(33.33% - 20px);
 }
 
-#experienceDonut {
-    margin-left: 70px;
+#avgSalaryBar {
+    margin-left: 10%;
 }
 
 #chart-container-category {
