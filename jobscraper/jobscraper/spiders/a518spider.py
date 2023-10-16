@@ -4,9 +4,9 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import unquote
-from jobscraper.items import JobscraperItem
+from jobscraper.jobscraper.items import JobscraperItem
 from scrapy.exceptions import DropItem
-from jobscraper.database import DatabaseRDS
+from jobscraper.jobscraper.database import DatabaseRDS
 
 
 class A518spiderSpider(scrapy.Spider):

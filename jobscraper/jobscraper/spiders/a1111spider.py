@@ -3,7 +3,7 @@ import re
 import json
 import requests
 from bs4 import BeautifulSoup
-from jobscraper.items import JobscraperItem
+from jobscraper.jobscraper.items import JobscraperItem
 from scrapy.exceptions import DropItem
 
 

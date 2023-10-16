@@ -8,7 +8,7 @@
 import re
 import json
 from itemadapter import ItemAdapter
-from jobscraper.database import DatabaseRDS
+from jobscraper.jobscraper.database import DatabaseRDS
 
 class JobscraperPipeline:
     def __init__(self):

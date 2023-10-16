@@ -14,8 +14,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BOT_NAME = "jobscraper"
-SPIDER_MODULES = ["jobscraper.spiders"]
-NEWSPIDER_MODULE = "jobscraper.spiders"
+SPIDER_MODULES = ["jobscraper.jobscraper.spiders"]
+NEWSPIDER_MODULE = "jobscraper.jobscraper.spiders"
 SCRAPEOPS_API_KEY = os.getenv('SCRAPEOPS_API_KEY')
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
@@ -84,9 +84,9 @@ EXTENSIONS = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   "jobscraper.pipelines.JobscraperPipeline": 300
+   "jobscraper.jobscraper.pipelines.JobscraperPipeline": 300
 }
-ITEM_ADAPTER = 'jobscraper.adapters.CustomItemAdapter'
+ITEM_ADAPTER = 'jobscraper.jobscraper.adapters.CustomItemAdapter'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
