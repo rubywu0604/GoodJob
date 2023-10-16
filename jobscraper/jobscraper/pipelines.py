@@ -7,8 +7,10 @@
 # useful for handling different item types with a single interface
 import re
 import json
+import logging
 from itemadapter import ItemAdapter
 from jobscraper.database import DatabaseRDS
+from scrapy.exceptions import DropItem
 
 class JobscraperPipeline:
     def __init__(self):
@@ -26,6 +28,9 @@ class JobscraperPipeline:
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
+        if adapter['category'] == 'others':
+            logging.info("Job is not in project scope. (Category: others)")
+            raise DropItem(f"Drop 1 Item : {item}")
         salary = adapter['min_monthly_salary']
         experience = adapter['experience']
         location = adapter['location']
@@ -50,8 +55,12 @@ class JobscraperPipeline:
                         adapter['max_monthly_salary'] = max_pattern.group(2)
                         adapter['min_monthly_salary'] = min_pattern.group(1)
                     elif salary.startswith("年薪"):
-                        adapter['max_monthly_salary'] = str(int(max_pattern.group(2)) // 12)
-                        adapter['min_monthly_salary'] = str(int(min_pattern.group(1)) // 12)
+                        if int(max_pattern.group(2)):
+                            adapter['max_monthly_salary'] = str(int(max_pattern.group(2)) // 12)
+                            adapter['min_monthly_salary'] = str(int(min_pattern.group(1)) // 12)
+                        else:
+                            adapter['min_monthly_salary'] = str(int(min_pattern.group(3)) // 12)
+                            adapter['max_monthly_salary'] = adapter['min_monthly_salary']
                 break
 
             else:
@@ -85,4 +94,22 @@ class JobscraperPipeline:
         )
 
         self._store_data_to_mysql(items)
+
+        if ("ios" in adapter['job_title'] and "android" in adapter['job_title']) or "flutter" in adapter['job_title']:
+            adapter['category'] = 'android_engineer'
+            copy_items = (
+                adapter['category'],
+                adapter['company'],
+                adapter['education'],
+                adapter['experience'],
+                adapter['job_link'],
+                adapter['job_title'],
+                adapter['location'],
+                adapter['max_monthly_salary'],
+                adapter['min_monthly_salary'],
+                str(adapter['skills']),
+                adapter['source_website']
+            )
+            self._store_data_to_mysql(copy_items)
+            
         return item
