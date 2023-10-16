@@ -151,6 +151,8 @@ function drawCharts(data, selectedCategory){
     selectedCategory = selectedCategory.replace("_", " ");
     if (selectedCategory === "ios engineer") {
         selectedCategory = "iOS Engineer";
+    } else if (selectedCategory === "dba") {
+        selectedCategory = "DBA";
     } else {
         selectedCategory = selectedCategory.replace(/\b\w/g, function (char) {
             return char.toUpperCase();
@@ -253,7 +255,7 @@ window.addEventListener('scroll', function () {
     const formContainer = document.getElementById('form-container');
     const scrollY = window.scrollY;
 
-    const threshold = 800;
+    const threshold = 1100;
 
     if (scrollY > threshold) {
         formContainer.style.position = 'fixed';
