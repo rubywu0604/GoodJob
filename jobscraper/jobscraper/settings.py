@@ -16,30 +16,19 @@ load_dotenv()
 BOT_NAME = "jobscraper"
 SPIDER_MODULES = ["jobscraper.spiders"]
 NEWSPIDER_MODULE = "jobscraper.spiders"
-<<<<<<< HEAD
 SCRAPEOPS_API_KEY = os.getenv('SCRAPEOPS_API_KEY')
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 
 today = datetime.datetime.today()
-=======
-SCRAPEOPS_API_KEY = "50ee86a1-5ea9-4db7-9d49-fd50a85be177"
-AWS_ACCESS_KEY_ID = "AKIA6ANQNG7AR3RUT3OS"
-AWS_SECRET_ACCESS_KEY = "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"
->>>>>>> 2c8951a (docs: remain only scrapy pipeline source)
 
 FEEDS = {
    f'backupdata{today.strftime("%Y/%m-%d")}.json': {'format': 'json'},
    f's3://project-goodjob/{today.strftime("%Y-%m-%d")}/%(name)s_%(time)s.jsonl': {
-<<<<<<< HEAD
       'format': 'jsonlines',
       'store_empty': False,
       'encoding': 'utf8', 
    }
-=======
-      "format": "jsonlines",
-      }
->>>>>>> 2c8951a (docs: remain only scrapy pipeline source)
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
