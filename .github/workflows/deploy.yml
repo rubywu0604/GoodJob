@@ -3,7 +3,7 @@ name: CI/CD Pipeline Deploy to prod - website
 run-name: ${{ github.actor }} is doing CI/CD on GitHub Actions 🚀
 on:
   push:
-    branches: [ feature/website ]
+    branches: [ feat/website ]
 jobs:
   deploy:
     runs-on: ubuntu-latest
