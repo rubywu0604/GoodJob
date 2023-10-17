@@ -151,6 +151,8 @@ function drawCharts(data, selectedCategory){
     selectedCategory = selectedCategory.replace("_", " ");
     if (selectedCategory === "ios engineer") {
         selectedCategory = "iOS Engineer";
+    } else if (selectedCategory === "dba") {
+        selectedCategory = "DBA";
     } else {
         selectedCategory = selectedCategory.replace(/\b\w/g, function (char) {
             return char.toUpperCase();
@@ -179,7 +181,7 @@ function createJobList(data) {
     let th3 = document.createElement('th');
     th3.textContent = 'Company';
     let th4 = document.createElement('th');
-    th4.textContent = 'Salary Range';
+    th4.textContent = 'Monthly Salary';
     headerRow.appendChild(th0);
     headerRow.appendChild(th1);
     headerRow.appendChild(th2);
@@ -221,7 +223,7 @@ function createJobList(data) {
         td3.textContent = company;
         td3.style.textAlign = 'center';
         if (minMonthlySalary === "Null") {
-            td4.textContent = "面議(40,000以上)";
+            td4.textContent = "面議($40,000以上)";
         } else if (maxMonthlySalary === "Above") {
             td4.textContent = `面議($${parseInt(minMonthlySalary).toLocaleString()}以上)`;
         } else {
@@ -253,7 +255,7 @@ window.addEventListener('scroll', function () {
     const formContainer = document.getElementById('form-container');
     const scrollY = window.scrollY;
 
-    const threshold = 800;
+    const threshold = 1100;
 
     if (scrollY > threshold) {
         formContainer.style.position = 'fixed';
