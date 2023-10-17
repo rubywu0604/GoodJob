@@ -32,7 +32,7 @@ FEEDS = {
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "jobscraper (+http://www.yourdomain.com)"
+# USER_AGENT = "jobscraper (https://www.get-good-job.com/)"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False

@@ -4,7 +4,6 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from jobscraper.items import JobscraperItem
-from scrapy.exceptions import DropItem
 
 
 class A104spiderSpider(scrapy.Spider):
@@ -100,15 +99,7 @@ class A104spiderSpider(scrapy.Spider):
         a104Item['skills'] = "Null" if skill_set == set() else list(skill_set)
         a104Item['source_website'] = "104人力銀行"
 
-        if a104Item['category'] == 'others':
-            raise DropItem("Category is not in project scope. (others)")
-        if ("ios" in a104Item['job_title'] and "android" in a104Item['job_title']) or "flutter" in a104Item['job_title']:
-            yield a104Item
-            duplicate_item = a104Item.copy()
-            duplicate_item['category'] = 'android_engineer'
-            yield duplicate_item
-        else:
-            yield a104Item
+        yield a104Item
 
     def categorize_job(self, job_title):
         job_title = job_title.lower()
