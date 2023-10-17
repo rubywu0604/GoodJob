@@ -36,8 +36,7 @@ jobs:
           export NVM_DIR=~/.nvm
           source ~/.nvm/nvm.sh
           cd /home/ubuntu/project/goodjob
-          git fetch origin feat/website
-          git reset --hard origin/feat/website
+          git stash
           git pull origin feat/website
           npm install
           pm2 restart PM2-Node
