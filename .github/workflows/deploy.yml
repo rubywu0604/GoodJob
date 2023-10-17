@@ -25,7 +25,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
-    # Step 3
+    # Step 3  
     - name: Deploy to prod server
       uses: appleboy/ssh-action@master
       with:
@@ -33,8 +33,9 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_KEY }}
         script: |
-          git clone git@github.com:rubywu0604/GoodJob.git /home/ubuntu/project/goodjob
-          cd /home/ubuntu/project/goodjob
+          export NVM_DIR=~/.nvm
+          source ~/.nvm/nvm.sh
+          cd /home/ubuntu/project/goodjob 
           git stash
           git pull origin feat/website
           npm install
