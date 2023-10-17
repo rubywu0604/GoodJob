@@ -1,4 +1,5 @@
 // ================= node package / middleware =================
+require('dotenv').config();
 const db = require('./database.js')
 const express = require("express");
 const app = express();
