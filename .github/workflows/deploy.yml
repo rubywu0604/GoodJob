@@ -1,6 +1,6 @@
-name: CI/CD Pipeline Deploy to prod - website
+name: CI/CD Pipeline Deploy to AWS/EC2 - website
 
-run-name: ${{ github.actor }} is doing CI/CD on GitHub Actions 🚀
+run-name: ${{ github.actor }} | Deploy to AWS/EC2 🚀
 on:
   push:
     branches: [ feat/website ]
@@ -8,8 +8,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - run: echo "[JOB START] The job was automatically triggered by a ${{ github.event_name }} event."
-
     # Step 1
     - name: Get Github action IP
       id: ip
@@ -17,7 +15,7 @@ jobs:
     
     # Step 2
     - name: Add Github Actions IP to Security group
-      run: |
+      run:
         aws ec2 authorize-security-group-ingress --group-name ${{ secrets.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32    
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -34,12 +32,12 @@ jobs:
         script: |
           export NVM_DIR=~/.nvm
           source ~/.nvm/nvm.sh
-          cd /home/ubuntu/nodejs-ssl-server
+          cd /home/ubuntu/project/goodjob
           git stash
-          git pull origin feature/github-action
+          git pull origin feat/website
           npm install
-          pm2 restart nodejs-ssl-server
-
+          pm2 restart PM2-Node
+          
     # Step 4     
     - name: Remove Github Actions IP from security group
       run: |
