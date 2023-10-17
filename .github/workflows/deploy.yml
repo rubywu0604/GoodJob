@@ -22,7 +22,16 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
-    # Step 3  
+    # Step 3
+    - name: Set up Node.js using nvm
+      run: |
+        export NVM_DIR=$HOME/.nvm
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm install 20.5.0
+        nvm use 20.5.0
+      shell: bash
+
+    # Step 4
     - name: Deploy to prod server
       uses: appleboy/ssh-action@master
       with:
@@ -30,8 +39,6 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_KEY }}
         script: |
-          export NVM_DIR=~/.nvm
-          source ~/.nvm/nvm.sh
           cd /home/ubuntu/project/goodjob
           git stash
           git pull origin feat/website
@@ -39,7 +46,7 @@ jobs:
           npm install
           pm2 restart PM2-Node
 
-    # Step 4     
+    # Step 5    
     - name: Remove Github Actions IP from security group
       run: |
         aws ec2 revoke-security-group-ingress --group-name ${{ secrets.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
