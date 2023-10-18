@@ -1,9 +1,10 @@
 // ================= node package / middleware =================
+require('dotenv').config();
 const db = require('./database.js')
 const express = require("express");
 const app = express();
 const path = require('path');
-const port = 8000;
+const port = process.env.PORT;
 
 app.use(express.static(path.join(__dirname, 'public')));
 
