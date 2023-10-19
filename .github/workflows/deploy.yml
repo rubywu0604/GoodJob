@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - feat/website
+      - feat/refactor
+      - feat/uni_test
   pull_request:
     branches:
       - main
