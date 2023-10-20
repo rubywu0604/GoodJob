@@ -1,93 +1,98 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
     var loader;
     loader = document.getElementById('loader');
     loadNow(1);
-    fetch(`/api/jobs`)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+    fetch('/api/jobs', {
+        method: 'GET'
+    }).then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+            return response.json()
+        } else {
+            var error = new Error(response.statusText)
+            error.response = response
+            throw error
+        }
+    }).then((data) => {
+        const jobDetails = {
+            'iOS Engineer': { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+            'Android Engineer': { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+            'Frontend Engineer': { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+            'Backend Engineer': { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+            'Data Engineer': { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+            'Data Analyst': { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+            'Data Scientist': { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+            'DBA': { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
+        };
+        const experienceCounts = {};
+
+        data.forEach((job) => {
+            let category = job.category;
+            category = category.replace('_', ' ');
+            if (category === 'ios engineer') {
+                category = 'iOS Engineer'
+            } else if (category === 'dba') {
+                category = 'DBA'
+            }else {
+                category = category.replace(/\b\w/g, (char) => char.toUpperCase());
             }
-            return response.json();
-        })
-        .then((data) => {
-            const jobDetails = {
-                "iOS Engineer": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                "Android Engineer": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                "Frontend Engineer": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                "Backend Engineer": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                "Data Engineer": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                "Data Analyst": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                "Data Scientist": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-                "DBA": { counts: 0, avgMinSalary: 0, avgMaxSalary: 0, aryMinSalary: [], aryMaxSalary: [] },
-            };
-            const experienceCounts = {};
+            (jobDetails[category].counts === 0) ? jobDetails[category].counts = 1 : jobDetails[category].counts++;
+            
+            const minMonthlySalary = job.min_monthly_salary;
+            const maxMonthlySalary = job.max_monthly_salary;
+            let experience = job.experience;
+            
+            (experience === 0) ? (experience = '不拘') : (experience = `${experience}年`);
+            experienceCounts.hasOwnProperty(experience) ? experienceCounts[experience]++ : (experienceCounts[experience] = 1);
 
-            data.forEach((job) => {
-                let category = job.category;
-                category = category.replace("_", " ");
-                if (category === "ios engineer") {
-                    category = "iOS Engineer"
-                } else if (category === "dba") {
-                    category = "DBA"
-                }else {
-                    category = category.replace(/\b\w/g, (char) => char.toUpperCase());
+            if (Object.keys(jobDetails).includes(category)) {
+                if (minMonthlySalary > 0) {
+                    jobDetails[category].aryMinSalary.push(Number(minMonthlySalary));
                 }
-                (jobDetails[category].counts === 0) ? jobDetails[category].counts = 1 : jobDetails[category].counts++;
-                
-                const minMonthlySalary = job.min_monthly_salary;
-                const maxMonthlySalary = job.max_monthly_salary;
-                let experience = job.experience;
-                
-                (experience === 0) ? (experience = "不拘") : (experience = `${experience}年`);
-                experienceCounts.hasOwnProperty(experience) ? experienceCounts[experience]++ : (experienceCounts[experience] = 1);
-
-                if (Object.keys(jobDetails).includes(category)) {
-                    if (minMonthlySalary > 0) {
-                        jobDetails[category].aryMinSalary.push(Number(minMonthlySalary));
-                    }
-                    if (maxMonthlySalary > 0) {
-                        jobDetails[category].aryMaxSalary.push(Number(maxMonthlySalary));
-                    };
-                }
-            });
-
-            const jobDetailsValues = Object.values(jobDetails);
-            jobDetailsValues.forEach((value) => {
-                value.avgMinSalary = Math.round(value.aryMinSalary.reduce((sum, salary) => sum + salary, 0) / value.aryMinSalary.length);
-                value.avgMaxSalary = Math.round(value.aryMaxSalary.reduce((sum, salary) => sum + salary, 0) / value.aryMaxSalary.length);
-            });
-
-            drawJobCounts(jobDetails);
-            drawAvgSalary(jobDetails);
-            drawExperience(experienceCounts);
-        })
-        .catch((error) => {
-            console.error("Fetch error:", error);
+                if (maxMonthlySalary > 0) {
+                    jobDetails[category].aryMaxSalary.push(Number(maxMonthlySalary));
+                };
+            }
         });
+
+        const jobDetailsValues = Object.values(jobDetails);
+        jobDetailsValues.forEach((value) => {
+            value.avgMinSalary = Math.round(value.aryMinSalary.reduce((sum, salary) => sum + salary, 0) / value.aryMinSalary.length);
+            value.avgMaxSalary = Math.round(value.aryMaxSalary.reduce((sum, salary) => sum + salary, 0) / value.aryMaxSalary.length);
+        });
+
+        drawJobCounts(jobDetails);
+        drawAvgSalary(jobDetails);
+        drawExperience(experienceCounts);
+    }).catch((error) => {
+        console.error('Fetch error:', error);
+        return error.response.json();
+    })
 });
 
-document.querySelector("form").addEventListener("submit", function (e) {
-    const selectedCategory = document.getElementById("categorySelect").value;
-    const jobResults = document.getElementById("jobResults");
+document.querySelector('form').addEventListener('submit', function (e) {
+    const selectedCategory = document.getElementById('categorySelect').value;
+    const jobResults = document.getElementById('jobResults');
     e.preventDefault();
 
-    jobResults.innerHTML = "";
+    jobResults.innerHTML = '';
 
-    if (selectedCategory !== "none") {
-        fetch(`/api/jobs/${selectedCategory}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                drawCharts(data, selectedCategory);
-                createJobList(data);
-            })
-            .catch((error) => {
-                console.error("Fetch error:", error);
-            });
+    if (selectedCategory !== 'none') {
+        fetch(`/api/jobs/${selectedCategory}`, {
+            method: 'GET'
+        }).then((response) => {
+            if (response.status >= 200 && response.status < 300) {
+                return response.json()
+            } else {
+                var error = new Error(response.statusText)
+                error.response = response
+                throw error
+            }
+        }).then((data) => {
+            drawCharts(data, selectedCategory);
+            createJobList(data);
+        }).catch((error) => {
+            console.error('Fetch error:', error);
+        });
     }
 });
 
@@ -124,7 +129,7 @@ function drawCharts(data, selectedCategory){
         const skills = job.skills;
         const education = job.education;
 
-        if (skills != "Null") {
+        if (skills != 'Null') {
             const skillArray = JSON.parse(skills.replace(/'/g, '"'));
             skillArray.forEach((skill) => {
                 skillCounts.hasOwnProperty(skill) ? skillCounts[skill]++ : (skillCounts[skill] = 1);
@@ -148,11 +153,11 @@ function drawCharts(data, selectedCategory){
 
     });
 
-    selectedCategory = selectedCategory.replace("_", " ");
-    if (selectedCategory === "ios engineer") {
-        selectedCategory = "iOS Engineer";
-    } else if (selectedCategory === "dba") {
-        selectedCategory = "DBA";
+    selectedCategory = selectedCategory.replace('_', ' ');
+    if (selectedCategory === 'ios engineer') {
+        selectedCategory = 'iOS Engineer';
+    } else if (selectedCategory === 'dba') {
+        selectedCategory = 'DBA';
     } else {
         selectedCategory = selectedCategory.replace(/\b\w/g, function (char) {
             return char.toUpperCase();
@@ -193,7 +198,7 @@ function createJobList(data) {
 
     let tbody = document.createElement('tbody');
     data.forEach((job, index) => {
-        let job_title = (job.job_title.length > 50) ? job.job_title.slice(0, 50) + "..." : job.job_title;
+        let job_title = (job.job_title.length > 50) ? job.job_title.slice(0, 50) + '...' : job.job_title;
         let job_link = job.job_link;
         let region = job.location;
         let companyRegex = /[\u4e00-\u9fa5]+公司/;
@@ -222,9 +227,9 @@ function createJobList(data) {
         td2.style.textAlign = 'center';
         td3.textContent = company;
         td3.style.textAlign = 'center';
-        if (minMonthlySalary === "Null") {
-            td4.textContent = "面議($40,000以上)";
-        } else if (maxMonthlySalary === "Above") {
+        if (minMonthlySalary === 'Null') {
+            td4.textContent = '面議($40,000以上)';
+        } else if (maxMonthlySalary === 'Above') {
             td4.textContent = `面議($${parseInt(minMonthlySalary).toLocaleString()}以上)`;
         } else {
             td4.textContent = `$${parseInt(minMonthlySalary).toLocaleString()} ～ $${parseInt(maxMonthlySalary).toLocaleString() }`

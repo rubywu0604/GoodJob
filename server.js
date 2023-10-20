@@ -1,47 +1,26 @@
-// ================= node package / middleware =================
-require('dotenv').config();
-const db = require('./database/database.js')
-const express = require("express");
+const express = require('express');
 const app = express();
-const path = require('path');
+require('dotenv').config();
 const port = process.env.PORT;
 
-app.use(express.static(path.join(__dirname, 'public')));
+const path = require('path');
+app.set('view engine', 'ejs');
 
-// ================= API routes =================
+app.use(express.static(path.join(__dirname, 'views')));
+app.use(express.static(path.join(__dirname, 'models')));
+app.use(express.static(path.join(__dirname, 'controllers')));
+app.use(express.static(path.join(__dirname, 'views', 'static')));
 
-app.get('/', (req, res) => {
-    res.render('index');
-})
+const db = require('./models/database');
+const routeController = require('./controllers/routeController');
 
-app.get('/api/jobs', (req, res) => {
-    db.query('SELECT * FROM job', (err, results) => {
-        if (err) {
-            console.log(err.message);
-            res.status(500).json({ error: 'Internal server error' });
-        } else {
-            res.setHeader('Content-Type', 'application/json');
-            const formattedResponse = JSON.stringify(results, null, 2);
-            res.send(formattedResponse);
-        }
-    });
-});
-
-app.get(`/api/jobs/:category`, (req, res) => {
-    const category = req.params.category;
-    const query = 'SELECT * FROM job WHERE category = ?';
-    db.query(query, [category], (err, results) => {
-        if (err) {
-            console.log(err.message);
-            res.status(500).json({ error: 'Internal server error' });
-        } else {
-            res.setHeader('Content-Type', 'application/json');
-            const formattedResponse = JSON.stringify(results, null, 2);
-            res.send(formattedResponse);
-        }
-    });
-});
+app.get('/', routeController.getpage);
+app.get('/api/jobs', routeController.getAll);
+app.get('/api/jobs/:category', routeController.get);
 
 app.listen(port, () => {
-    console.log(`listen on the port ${port}`);
+    db.connect();
+    console.log(`Listening on port ${port}.`);
 });
+
+module.exports = app;
