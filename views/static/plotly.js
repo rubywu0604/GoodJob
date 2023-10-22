@@ -1,16 +1,9 @@
 function drawJobCounts(jobs) {
-    const jobCountsPair = {}
-    for (const [jobCategory, details] of Object.entries(jobs)) {
-        jobCountsPair[jobCategory] = details.counts
-    }
-    const jobsArray = Object.entries(jobCountsPair);
-    jobsArray.sort((a, b) => a[1] - b[1]);
-    const labels = []
-    const values = []
-    for (var i = 0; i < jobsArray.length; i++) {
-        labels.push(`${jobsArray[i][0]} `);
-        values.push(jobsArray[i][1]);
-    }
+    const jobCountsArray = Object.entries(jobs)
+        .map(([jobCategory, details]) => ({ label: `${jobCategory}`, value: details.counts }))
+        .sort((category, count) => category['value'] - count['value']);
+    const labels = jobCountsArray.map(entry => entry.label);
+    const values = jobCountsArray.map(entry => entry.value);
 
     var data = [{
         y: labels,
@@ -36,7 +29,7 @@ function drawJobCounts(jobs) {
 
     Plotly.newPlot('jobCountsBar', data, layout)
 
-}
+};
 
 function drawAvgSalary(avgSalary) {
     var xValue = [];
@@ -67,7 +60,7 @@ function drawAvgSalary(avgSalary) {
                 width: 1.5
             }
         },
-        name: "平均起薪"
+        name: '平均起薪'
     };
 
     var trace2 = {
@@ -84,7 +77,7 @@ function drawAvgSalary(avgSalary) {
                 width: 1.5
             }
         },
-        name: "平均訖薪"
+        name: '平均訖薪'
     };
 
     var data = [trace1, trace2];
@@ -103,7 +96,7 @@ function drawAvgSalary(avgSalary) {
 
     Plotly.newPlot('avgSalaryBar', data, layout);
 
-}
+};
 
 function drawExperience(experience) {
     const expLabels = [];
@@ -120,7 +113,7 @@ function drawExperience(experience) {
     for (const [expLabel, expValue] of Object.entries(experience)) {
         expLabels.push(expLabel);
         expValues.push(expValue)
-    }
+    };
 
     var data = [{
         values: expValues,
@@ -160,54 +153,47 @@ function drawExperience(experience) {
 
     Plotly.newPlot('experienceDonut', data, layout);
 
-}
+};
 
-function drawSkillsChart(skills) {
-    // Skill World Cloud
+function drawWorldCloud(skills) {
     const chartContainer = document.getElementById('skillWordCloud');
 
     if (chartContainer) {
-        chartContainer.parentNode.removeChild(chartContainer);
+        chartContainer.remove();
     }
 
-    const skillsArray = Object.entries(skills);  // ['ios', 900], ['python', 800]
-    skillsArray.sort((a, b) => b[1] - a[1]);
-    const allSkills = []
-    skillsArray.forEach((skillCount) => {
-        let skillObj = {};
-        skillObj['x'] = skillCount[0];
-        skillObj['value'] = `${skillCount[1]}`;
-        allSkills.push(skillObj);
-    })
-    const chart = anychart.tagCloud(allSkills);
+    const skillsArray = Object.entries(skills)  // ['ios', 900], ['python', 800]
+    skillsArray.sort((skill, value) => value[1] - skill[1]);
+
+    const tagCloudData = skillsArray.map(([skill, value]) => ({ x: skill, value: `${value}` }));
+    const container = document.getElementById('wordCloud');
     const newChartContainer = document.createElement('div');
     newChartContainer.id = 'skillWordCloud';
     newChartContainer.style.width = '550px';
     newChartContainer.style.height = '400px';
-
-    const container = document.getElementById('wordCloud');
     container.appendChild(newChartContainer);
 
-    chart.colorScale(anychart.scales.linearColor().colors(["#45b6fe", "#DE73FF", "#FFC300", "#FF5733"]));
-    chart.title('相關技術').title().fontColor("#000000").fontSize(20);
+    const chart = anychart.tagCloud(tagCloudData);
+    chart.colorScale(anychart.scales.linearColor().colors(['#45b6fe', '#DE73FF', '#FFC300', '#FF5733']));
+    chart.title('相關技術').title().fontColor('#000000').fontSize(20);
     chart.angles([0, 20, 45, -20, -45]);
     chart.colorRange(true);
     chart.colorRange().length('90%');
     chart.container('skillWordCloud');
     chart.draw();
+};
 
-    // Skill Bar Chart
-    const labels = []
-    const values = []
-    for (var i = 0; i < 7; i++) {
-        labels.push(skillsArray[i][0]);
-        values.push(skillsArray[i][1]);
-    }
+function drawSkillsBar(skills) {
+    const skillsArray = Object.entries(skills)
+        .sort((skill, value) => value[1] - skill[1])
+        .slice(0, 7);
+    const barChartLabels = skillsArray.map(([skill]) => skill);
+    const barChartValues = skillsArray.map(([_, value]) => value);
 
     var trace1 = {
         type: 'bar',
-        x: labels,
-        y: values,
+        x: barChartLabels,
+        y: barChartValues,
         marker: {
             color: 'rgba(21, 127, 213 , 0.5)'
         }
@@ -232,7 +218,7 @@ function drawSkillsChart(skills) {
     };
     var config = { responsive: true }
     Plotly.newPlot('skillsBar', data, layout, config);
-}
+};
 
 function drawSalaryChart(salaryCounts) {
     const minSalary = Math.min(...salaryCounts);
@@ -306,11 +292,11 @@ function drawSalaryChart(salaryCounts) {
 
 function drawEducationPie(education) {
     var data = [{
-        type: "pie",
+        type: 'pie',
         values: Object.values(education),
         labels: Object.keys(education),
-        textinfo: "label+percent",
-        insidetextorientation: "radial"
+        textinfo: 'label+percent',
+        insidetextorientation: 'radial'
     }]
     const expColors = [
         'rgba(0, 128, 255, 0.8)',

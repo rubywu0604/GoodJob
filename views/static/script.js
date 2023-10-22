@@ -160,7 +160,8 @@ function drawCharts(data, selectedCategory){
     yearSalary.innerHTML = `平均年薪＄${annualAvgSalary.toLocaleString()}`;
 
     drawSalaryChart(monthlyAvgSalary);
-    drawSkillsChart(skillCounts);
+    drawWorldCloud(skillCounts);
+    drawSkillsBar(skillCounts);
     drawEducationPie(educationCounts);
 }
 
