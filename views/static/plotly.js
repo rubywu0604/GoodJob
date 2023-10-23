@@ -10,7 +10,7 @@ function drawJobCounts(jobs) {
         x: values,
         type: 'bar',
         orientation: 'h'
-    }]
+    }];
 
     var layout = {
         title: '職缺數量排行',
@@ -25,9 +25,9 @@ function drawJobCounts(jobs) {
             l: 120
         },
         width: 600
-    }
+    };
 
-    Plotly.newPlot('jobCountsBar', data, layout)
+    Plotly.newPlot('jobCountsBar', data, layout);
 
 };
 
@@ -112,7 +112,7 @@ function drawExperience(experience) {
     ];
     for (const [expLabel, expValue] of Object.entries(experience)) {
         expLabels.push(expLabel);
-        expValues.push(expValue)
+        expValues.push(expValue);
     };
 
     var data = [{
@@ -160,9 +160,9 @@ function drawWorldCloud(skills) {
 
     if (chartContainer) {
         chartContainer.remove();
-    }
+    };
 
-    const skillsArray = Object.entries(skills)  // ['ios', 900], ['python', 800]
+    const skillsArray = Object.entries(skills);  // ['ios', 900], ['python', 800]
     skillsArray.sort((skill, value) => value[1] - skill[1]);
 
     const tagCloudData = skillsArray.map(([skill, value]) => ({ x: skill, value: `${value}` }));
@@ -197,7 +197,7 @@ function drawSkillsBar(skills) {
         marker: {
             color: 'rgba(21, 127, 213 , 0.5)'
         }
-    }
+    };
 
     var data = [trace1];
     var layout = {
@@ -216,42 +216,34 @@ function drawSkillsBar(skills) {
         bargap: 0.2,
         bargroupgap: 0.2
     };
-    var config = { responsive: true }
+    var config = { responsive: true };
     Plotly.newPlot('skillsBar', data, layout, config);
 };
 
 function drawSalaryChart(salaryCounts) {
-    const minSalary = Math.min(...salaryCounts);
-    const maxSalary = Math.max(...salaryCounts);
-    const salaryValue = Array(11).fill(0);
+    const salaryRange = ['30k以下', '30k~40k', '40k~50k', '50k~60k', '60k~70k', '70k~80k', '80k~90k', '90k~100k', '100k~110k', '110k~120k', '120k以上'];
+    const minSalary = Math.round(Math.min(...salaryCounts));
+    const maxSalary = Math.round(Math.max(...salaryCounts));
+    const salaryValue = Array(salaryRange.length).fill(0);
 
     salaryCounts.forEach((salary) => {
-        if (salary < 30000){
-            salaryValue[0] += 1;
-        } else if (30000 <= salary && salary < 40000) {
-            salaryValue[1] += 1
-        } else if (40000 <= salary && salary < 50000) {
-            salaryValue[2] += 1
-        } else if (50000 <= salary && salary < 60000) {
-            salaryValue[3] += 1
-        } else if (60000 <= salary && salary < 70000) {
-            salaryValue[4] += 1
-        } else if (70000 <= salary && salary < 80000) {
-            salaryValue[5] += 1
-        } else if (80000 <= salary && salary < 90000) {
-            salaryValue[6] += 1
-        } else if (90000 <= salary && salary < 100000) {
-            salaryValue[7] += 1
-        } else if (100000 <= salary && salary < 110000) {
-            salaryValue[8] += 1
-        } else if (110000 <= salary && salary < 120000) {
-            salaryValue[9] += 1
-        } else {
-            salaryValue[10] += 1
-        }
-    })
+        for (let i = 0; i < salaryRange.length - 1; i++) {
+            const lowerBound = i * 10000 + 30000;
+            const upperBound = lowerBound + 10000;
+            if (lowerBound <= salary && salary < upperBound) {
+                salaryValue[i + 1] += 1;
+                break;
+            }else if (salary < 30000) {
+                salaryValue[0] += 1;
+                break;
+            } else if (salary >= 120000) {
+                salaryValue[salaryRange.length - 1] += 1;
+                break;
+            }
+        };
+    });
 
-    var xValue = ['30k以下', '30k~40k', '40k~50k', '50k~60k', '60k~70k', '70k~80k', '80k~90k', '90k~100k', '100k~110k', '110k~120k', '120k以上'];
+    var xValue = salaryRange;
 
     var yValue = salaryValue;
 
@@ -288,7 +280,7 @@ function drawSalaryChart(salaryCounts) {
     };
 
     Plotly.newPlot('salaryBar', data, layout);
-}
+};
 
 function drawEducationPie(education) {
     var data = [{
@@ -297,7 +289,7 @@ function drawEducationPie(education) {
         labels: Object.keys(education),
         textinfo: 'label+percent',
         insidetextorientation: 'radial'
-    }]
+    }];
     const expColors = [
         'rgba(0, 128, 255, 0.8)',
         'rgba(255, 99, 71, 0.8)',
@@ -317,7 +309,7 @@ function drawEducationPie(education) {
         width: 400,
         showlegend: true,
         colorway: expColors
-    }
+    };
 
-    Plotly.newPlot('educationPie', data, layout)
-}
+    Plotly.newPlot('educationPie', data, layout);
+};
