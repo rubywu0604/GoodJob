@@ -11,6 +11,16 @@ from jobscraper.database import DatabaseRDS
 class A518spiderSpider(scrapy.Spider):
     name = '518spider'
     allowed_domains = ['www.518.com.tw']
+    skill_conditions = [
+            'python', 'ios', 'swift', 'android', 'ruby', 'c#', 'c++', 'php', 'jquery', 'aws',
+            'typescript', 'scala', 'julia', 'objective-c', 'numpy', 'pandas', 'tensorflow', 'gcp',
+            'pytorch', 'opencv', 'react', 'angular', 'ruby on rails', '.net', 'hibernate', 'redis', 
+            'express.js', 'rubygems', '.net core', 'django', 'mysql', 'ajax', 'html', 'css', 'kotlin',
+            'postgresql', 'mongodb', 'sqlite', 'cassandra', 'django', 'express.js', 'golang', 'spark', 
+            'flask', 'react', 'vue.js', 'asp.net', 'docker', 'kubernetes', 'flutter', 'restful api',
+            'azure', 'ibm cloud', 'node.js', 'firebase', 'airflow', 'github','arduino', 'power bi',
+            'hadoop', 'kafka', 'elasticsearch', 'tableau', 'splunk', 'scikit-learn'
+        ]
 
     def start_requests(self):
         db = DatabaseRDS()
@@ -20,8 +30,10 @@ class A518spiderSpider(scrapy.Spider):
             '前端工程師', '後端工程師', '資料工程師', 
             '資料分析師', '資料科學家', '資料庫管理'
         ]
+        start_page = 1
+        end_page = 51
         for job_type in job_types:
-            for p in range(1, 51):
+            for p in range(start_page, end_page):
                 url = f'https://www.518.com.tw/job-index-P-{p}.html?ad={job_type}'
                 yield scrapy.Request(url, callback=self.parse)
     
@@ -75,26 +87,8 @@ class A518spiderSpider(scrapy.Spider):
         soup = BeautifulSoup(req.text, 'html.parser')
         job_description = soup.text.lower()
         job_description_cleaned = re.sub(r'\s+', '', job_description)
-        conditions = [
-            'python', 'ios', 'swift', 'android', 'ruby', 'c#', 'c++', 'php', 'jquery', 'aws',
-            'typescript', 'scala', 'julia', 'objective-c', 'numpy', 'pandas', 'tensorflow', 'gcp',
-            'pytorch', 'opencv', 'react', 'angular', 'ruby on rails', '.net', 'hibernate', 'redis', 
-            'express.js', 'rubygems', '.net core', 'django', 'mysql', 'ajax', 'html', 'css', 'kotlin',
-            'postgresql', 'mongodb', 'sqlite', 'cassandra', 'django', 'express.js', 'golang', 'spark', 
-            'flask', 'react', 'vue.js', 'asp.net', 'docker', 'kubernetes', 'flutter', 'restful api',
-            'azure', 'ibm cloud', 'node.js', 'firebase', 'airflow', 'github','arduino', 'power bi',
-            'hadoop', 'kafka', 'elasticsearch', 'tableau', 'splunk', 'scikit-learn', 'javascript'
-        ]
 
-        java_pattern = re.search(r'(java)\W', job_description)
-        special_case_java = java_pattern.group(1) if java_pattern else None
-
-        skill_set = set()
-        for condition in conditions:
-            if condition in job_description_cleaned:
-                skill_set.add(condition)
-            elif special_case_java:
-                skill_set.add(special_case_java)
+        skill_set = self.extract_skills(job_description_cleaned)
 
         a518Item = JobscraperItem()
 
@@ -114,6 +108,7 @@ class A518spiderSpider(scrapy.Spider):
 
     def categorize_job(self, job_title):
         job_title = job_title.lower()
+        
         if 'ios' in job_title or 'flutter' in job_title or 'swift' in job_title:
             return 'ios_engineer'
         elif 'android' in job_title or 'kotlin' in job_title:
@@ -134,3 +129,23 @@ class A518spiderSpider(scrapy.Spider):
                 return 'data_engineer'
         else:
             return 'others'
+
+    def extract_skills(self, job_description_cleaned):
+        skill_set = set()
+
+        for condition in self.skill_conditions:
+            if condition in job_description_cleaned:
+                skill_set.add(condition)
+        
+        java_pattern = re.search(r'(java)\W', job_description_cleaned)
+        javascript_pattern = re.search(r'(?<!without )(javascript)', job_description_cleaned)
+
+        special_case_java = java_pattern.group(1) if java_pattern else None
+        special_case_javascript = javascript_pattern.group(1) if javascript_pattern else None
+        
+        if java_pattern:
+            skill_set.add(java_pattern.group(1))
+        elif javascript_pattern:
+            skill_set.add(javascript_pattern.group(1))
+        
+        return skill_set
