@@ -56,10 +56,10 @@ class JobscraperPipeline:
         return max_salary, min_salary
 
     def _normalize_education(self, education):
-        education_list = {"不拘": 1, "高中": 2, "專科": 3, "大學": 4, "碩士": 5}
-        for value, code in education_list.items():
+        education_list = {1: "不拘", 2: "高中", 3: "專科", 4: "大學", 5: "碩士"}
+        for code, value in education_list.items():
             if value in education:
-                return code
+                return value
         return None
 
     def _copy_item(self, adapter):
