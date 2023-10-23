@@ -21,17 +21,17 @@ function connectToMysql(db) {
             console.log(err.message);
             return;
         };
-        console.log("Database connected.");
+        console.log('Database connected.');
     });
 }
 
 function createDatabase(db) {
-    db.query("CREATE DATABASE goodjob", function (err, result) {
+    db.query('CREATE DATABASE goodjob', function (err, result) {
         if (err) {
             console.log(err.message);
             return;
         };
-        console.log("Database created.");
+        console.log('Database created.');
     });
 }
 

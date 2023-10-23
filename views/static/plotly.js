@@ -1,23 +1,16 @@
 function drawJobCounts(jobs) {
-    const jobCountsPair = {}
-    for (const [jobCategory, details] of Object.entries(jobs)) {
-        jobCountsPair[jobCategory] = details.counts
-    }
-    const jobsArray = Object.entries(jobCountsPair);
-    jobsArray.sort((a, b) => a[1] - b[1]);
-    const labels = []
-    const values = []
-    for (var i = 0; i < jobsArray.length; i++) {
-        labels.push(`${jobsArray[i][0]} `);
-        values.push(jobsArray[i][1]);
-    }
+    const jobCountsArray = Object.entries(jobs)
+        .map(([jobCategory, details]) => ({ label: `${jobCategory}`, value: details.counts }))
+        .sort((category, count) => category['value'] - count['value']);
+    const labels = jobCountsArray.map(entry => entry.label);
+    const values = jobCountsArray.map(entry => entry.value);
 
     var data = [{
         y: labels,
         x: values,
         type: 'bar',
         orientation: 'h'
-    }]
+    }];
 
     var layout = {
         title: '職缺數量排行',
@@ -32,11 +25,11 @@ function drawJobCounts(jobs) {
             l: 120
         },
         width: 600
-    }
+    };
 
-    Plotly.newPlot('jobCountsBar', data, layout)
+    Plotly.newPlot('jobCountsBar', data, layout);
 
-}
+};
 
 function drawAvgSalary(avgSalary) {
     var xValue = [];
@@ -67,7 +60,7 @@ function drawAvgSalary(avgSalary) {
                 width: 1.5
             }
         },
-        name: "平均起薪"
+        name: '平均起薪'
     };
 
     var trace2 = {
@@ -84,7 +77,7 @@ function drawAvgSalary(avgSalary) {
                 width: 1.5
             }
         },
-        name: "平均訖薪"
+        name: '平均訖薪'
     };
 
     var data = [trace1, trace2];
@@ -103,7 +96,7 @@ function drawAvgSalary(avgSalary) {
 
     Plotly.newPlot('avgSalaryBar', data, layout);
 
-}
+};
 
 function drawExperience(experience) {
     const expLabels = [];
@@ -119,8 +112,8 @@ function drawExperience(experience) {
     ];
     for (const [expLabel, expValue] of Object.entries(experience)) {
         expLabels.push(expLabel);
-        expValues.push(expValue)
-    }
+        expValues.push(expValue);
+    };
 
     var data = [{
         values: expValues,
@@ -160,58 +153,51 @@ function drawExperience(experience) {
 
     Plotly.newPlot('experienceDonut', data, layout);
 
-}
+};
 
-function drawSkillsChart(skills) {
-    // Skill World Cloud
+function drawWorldCloud(skills) {
     const chartContainer = document.getElementById('skillWordCloud');
 
     if (chartContainer) {
-        chartContainer.parentNode.removeChild(chartContainer);
-    }
+        chartContainer.remove();
+    };
 
     const skillsArray = Object.entries(skills);  // ['ios', 900], ['python', 800]
-    skillsArray.sort((a, b) => b[1] - a[1]);
-    const allSkills = []
-    skillsArray.forEach((skillCount) => {
-        let skillObj = {};
-        skillObj['x'] = skillCount[0];
-        skillObj['value'] = `${skillCount[1]}`;
-        allSkills.push(skillObj);
-    })
-    const chart = anychart.tagCloud(allSkills);
+    skillsArray.sort((skill, value) => value[1] - skill[1]);
+
+    const tagCloudData = skillsArray.map(([skill, value]) => ({ x: skill, value: `${value}` }));
+    const container = document.getElementById('wordCloud');
     const newChartContainer = document.createElement('div');
     newChartContainer.id = 'skillWordCloud';
     newChartContainer.style.width = '550px';
     newChartContainer.style.height = '400px';
-
-    const container = document.getElementById('wordCloud');
     container.appendChild(newChartContainer);
 
-    chart.colorScale(anychart.scales.linearColor().colors(["#45b6fe", "#DE73FF", "#FFC300", "#FF5733"]));
-    chart.title('相關技術').title().fontColor("#000000").fontSize(20);
+    const chart = anychart.tagCloud(tagCloudData);
+    chart.colorScale(anychart.scales.linearColor().colors(['#45b6fe', '#DE73FF', '#FFC300', '#FF5733']));
+    chart.title('相關技術').title().fontColor('#000000').fontSize(20);
     chart.angles([0, 20, 45, -20, -45]);
     chart.colorRange(true);
     chart.colorRange().length('90%');
     chart.container('skillWordCloud');
     chart.draw();
+};
 
-    // Skill Bar Chart
-    const labels = []
-    const values = []
-    for (var i = 0; i < 7; i++) {
-        labels.push(skillsArray[i][0]);
-        values.push(skillsArray[i][1]);
-    }
+function drawSkillsBar(skills) {
+    const skillsArray = Object.entries(skills)
+        .sort((skill, value) => value[1] - skill[1])
+        .slice(0, 7);
+    const barChartLabels = skillsArray.map(([skill]) => skill);
+    const barChartValues = skillsArray.map(([_, value]) => value);
 
     var trace1 = {
         type: 'bar',
-        x: labels,
-        y: values,
+        x: barChartLabels,
+        y: barChartValues,
         marker: {
             color: 'rgba(21, 127, 213 , 0.5)'
         }
-    }
+    };
 
     var data = [trace1];
     var layout = {
@@ -230,42 +216,34 @@ function drawSkillsChart(skills) {
         bargap: 0.2,
         bargroupgap: 0.2
     };
-    var config = { responsive: true }
+    var config = { responsive: true };
     Plotly.newPlot('skillsBar', data, layout, config);
-}
+};
 
 function drawSalaryChart(salaryCounts) {
-    const minSalary = Math.min(...salaryCounts);
-    const maxSalary = Math.max(...salaryCounts);
-    const salaryValue = Array(11).fill(0);
+    const salaryRange = ['30k以下', '30k~40k', '40k~50k', '50k~60k', '60k~70k', '70k~80k', '80k~90k', '90k~100k', '100k~110k', '110k~120k', '120k以上'];
+    const minSalary = Math.round(Math.min(...salaryCounts));
+    const maxSalary = Math.round(Math.max(...salaryCounts));
+    const salaryValue = Array(salaryRange.length).fill(0);
 
     salaryCounts.forEach((salary) => {
-        if (salary < 30000){
-            salaryValue[0] += 1;
-        } else if (30000 <= salary && salary < 40000) {
-            salaryValue[1] += 1
-        } else if (40000 <= salary && salary < 50000) {
-            salaryValue[2] += 1
-        } else if (50000 <= salary && salary < 60000) {
-            salaryValue[3] += 1
-        } else if (60000 <= salary && salary < 70000) {
-            salaryValue[4] += 1
-        } else if (70000 <= salary && salary < 80000) {
-            salaryValue[5] += 1
-        } else if (80000 <= salary && salary < 90000) {
-            salaryValue[6] += 1
-        } else if (90000 <= salary && salary < 100000) {
-            salaryValue[7] += 1
-        } else if (100000 <= salary && salary < 110000) {
-            salaryValue[8] += 1
-        } else if (110000 <= salary && salary < 120000) {
-            salaryValue[9] += 1
-        } else {
-            salaryValue[10] += 1
-        }
-    })
+        for (let i = 0; i < salaryRange.length - 1; i++) {
+            const lowerBound = i * 10000 + 30000;
+            const upperBound = lowerBound + 10000;
+            if (lowerBound <= salary && salary < upperBound) {
+                salaryValue[i + 1] += 1;
+                break;
+            }else if (salary < 30000) {
+                salaryValue[0] += 1;
+                break;
+            } else if (salary >= 120000) {
+                salaryValue[salaryRange.length - 1] += 1;
+                break;
+            }
+        };
+    });
 
-    var xValue = ['30k以下', '30k~40k', '40k~50k', '50k~60k', '60k~70k', '70k~80k', '80k~90k', '90k~100k', '100k~110k', '110k~120k', '120k以上'];
+    var xValue = salaryRange;
 
     var yValue = salaryValue;
 
@@ -302,16 +280,16 @@ function drawSalaryChart(salaryCounts) {
     };
 
     Plotly.newPlot('salaryBar', data, layout);
-}
+};
 
 function drawEducationPie(education) {
     var data = [{
-        type: "pie",
+        type: 'pie',
         values: Object.values(education),
         labels: Object.keys(education),
-        textinfo: "label+percent",
-        insidetextorientation: "radial"
-    }]
+        textinfo: 'label+percent',
+        insidetextorientation: 'radial'
+    }];
     const expColors = [
         'rgba(0, 128, 255, 0.8)',
         'rgba(255, 99, 71, 0.8)',
@@ -331,7 +309,7 @@ function drawEducationPie(education) {
         width: 400,
         showlegend: true,
         colorway: expColors
-    }
+    };
 
-    Plotly.newPlot('educationPie', data, layout)
-}
+    Plotly.newPlot('educationPie', data, layout);
+};
