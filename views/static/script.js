@@ -189,7 +189,7 @@ function countSkillsByCategory(skills, skillCounts) {
 }
 
 function countEducationByCategory(education, educationCounts) {
-    educationCounts[education] = (educationCounts[education] || 0 + 1);
+    educationCounts.hasOwnProperty(education) ? educationCounts[education]++ : (educationCounts[education] = 1);
 }
 
 function createJobList(data) {
