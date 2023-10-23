@@ -278,3 +278,7 @@ const createTableCell = (text, isLink = false, href = '') => {
     cell.style.textAlign = 'center';
     return cell;
 };
+
+module.exports = {
+    formatCategory
+}
