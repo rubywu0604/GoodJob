@@ -21,10 +21,10 @@ class DatabaseRDS:
                 database=self.RDS_DATABASE,
             )
             self.cur = self.conn.cursor()
-            print("Connected to Database RDS.")
+            print('Connected to Database RDS.')
 
         except pymysql.Error as e:
-            print("Error connecting to RDS:", e)
+            print('Error connecting to RDS:', e)
             self.conn = None
 
     def execute(self, sql, values=None):
@@ -32,7 +32,7 @@ class DatabaseRDS:
             self.cur.execute(sql, values)
             return self.cur
         except pymysql.Error as e:
-            print("Error executing RDS mysql statement:", e)
+            print('Error executing RDS mysql statement:', e)
             return None
 
     def executemany(self, sql, values=None):
@@ -40,19 +40,19 @@ class DatabaseRDS:
             self.cur.executemany(sql, values)
             return self.cur
         except pymysql.Error as e:
-            print("Error executing RDS mysql statement:", e)
+            print('Error executing RDS mysql statement:', e)
             return None
 
     def commit(self):
         return self.conn.commit()
     
     def delete(self):
-        delete_query = "DELETE FROM job WHERE id > 0"
+        delete_query = 'DELETE FROM job WHERE id > 0'
         self.execute(delete_query)
         self.commit()
 
     def reset_auto_increment(self):
-        reset_auto_increment_query = "ALTER TABLE job AUTO_INCREMENT = 1"
+        reset_auto_increment_query = 'ALTER TABLE job AUTO_INCREMENT = 1'
         self.execute(reset_auto_increment_query)
         self.commit()
 
