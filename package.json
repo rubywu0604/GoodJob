@@ -4,7 +4,7 @@
   "description": "This is for my personal project of AppWorks School Batch #21 Data-Engineering Class",
   "main": "server.js",
   "scripts": {
-    "test": "mocha",
+    "test": "nyc mocha",
     "dev": "nodemon server.js",
     "start": "node server.js",
     "prod:start": "pm2-runtime server.js"
@@ -33,6 +33,7 @@
     "chai": "^4.3.10",
     "mocha": "^10.2.0",
     "mocha-jsdom": "^1.2.0",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "nyc": "^15.1.0"
   }
 }
