@@ -1,6 +1,6 @@
-name: CI Unit Test - JavaScript
+name: CI Unit Test - JavaScript 🔍
 
-run-name: ${{ github.actor }} | Testing for JavaScript 🔍
+run-name: ${{ github.actor }} | CI/CD pipeline
 on:
   push:
     branches:

@@ -1,21 +1,16 @@
-name: CD Pipeline Deploy to AWS/EC2 - website
+name: CD Pipeline Deploy to AWS/EC2 - website 🚀
 
-run-name: ${{ github.actor }} | Deploy to AWS/EC2 🚀
+run-name: ${{ github.actor }} | CI/CD pipeline
 on:
-  push:
-    branches:
-      - feat/website
-      - feat/refactor
-      - test
-  pull_request:
-    branches:
-      - main
-      - develop
+  workflow_run:
+    workflows: ["CI Unit Test - JavaScript 🔍"]
+    types:
+      - completed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
     # Step 1
     - name: Checkout to repo
