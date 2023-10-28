@@ -91,7 +91,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
         if: always()
 
-    # Step 5
-    - name: Post-deployment notification
-        run: echo "🎉 Job Deploy ${{ job.status }}."
-        if: success()
+      # Step 5
+      - name: Post-deployment notification
+          run: echo "🎉 Job Deploy ${{ job.status }}."
+          if: success()
