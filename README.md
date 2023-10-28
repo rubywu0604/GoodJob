@@ -2,7 +2,7 @@
 
 
 [![Build Status](https://github.com/networkx/networkx/workflows/test/badge.svg?branch=main)](https://github.com/rubywu0604/GoodJob/actions)
-[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://github.com/your-username/your-repo/releases/tag/v1.0.0)
+![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)
 
 GoodJob is a platform that analyzes job market trends of engineering, offering visualized statistical reports. Futhermore, It serves for engineers seeking job opportunities, assisting them in securing an ideal good job.
 
