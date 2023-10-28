@@ -1,11 +1,9 @@
-name: CI/CD - Test JavaScript and Deploy to AWS
+name: CI/CD - Test for JavaScript / Deploy to AWS-EC2
 
-run-name: ${{ github.actor }} | Deploy to AWS/EC2
+run-name: ${{ github.actor }} | Testing and Deployment processes
 on:
   push:
     branches:
-      - feat/website
-      - feat/refactor
       - test
   pull_request:
     branches:
@@ -14,7 +12,7 @@ on:
 
 jobs:
   test:
-    name: (CI) Test for JavaScript 🔍
+    name: (CI) Testing for JavaScript 🔍
     runs-on: ubuntu-latest
 
     steps:
