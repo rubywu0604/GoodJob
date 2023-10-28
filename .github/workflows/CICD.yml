@@ -1,4 +1,4 @@
-name: CI/CD - Test for JavaScript / Deploy to AWS-EC2
+name: CI/CD - Test JavaScript and Deploy to AWS
 
 run-name: ${{ github.actor }} | Testing and Deployment processes
 on:
