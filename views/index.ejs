@@ -78,6 +78,67 @@
     </footer>
     <script src='/script.js'></script>
     <script src='/plotly.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+                loadNow(1);
+
+                fetch('/api/jobs', { method: 'GET' })
+                    .then(handleResponse)
+                    .then(processData)
+                    .then((result) => {
+                        const { jobDetails, experienceCounts } = result;
+                        drawJobCounts(jobDetails);
+                        drawAvgSalary(jobDetails);
+                        drawExperience(experienceCounts);
+                    }).catch((error) => {
+                        console.error('Error on fetch.', error);
+                    });
+            });
+
+        function loadNow(opacity) {
+            const loader = document.getElementById('loader');
+            if (opacity <= 0) {
+                loader.style.display = 'none';
+                document.getElementById('container').style.display = 'block';
+            } else {
+                loader.style.opacity = opacity;
+                window.setTimeout(function () {
+                    loadNow(opacity - 0.02);
+                }, 50);
+            };
+        };
+
+        window.addEventListener('scroll', function () {
+                const formContainer = document.getElementById('form-container');
+                const scrollY = window.scrollY;
+
+                const threshold = 1100;
+
+                if (scrollY > threshold) {
+                    formContainer.style.position = 'fixed';
+                    formContainer.style.top = '0';
+                } else {
+                    formContainer.style.position = 'sticky';
+                    formContainer.style.top = '0';
+                };
+            });
+
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const selectedCategory = document.getElementById('categorySelect').value;
+            e.preventDefault();
+
+            if (selectedCategory !== 'none') {
+                fetch(`/api/jobs/${selectedCategory}`, { method: 'GET' })
+                    .then(handleResponse)
+                    .then((data) => {
+                        drawCharts(data, selectedCategory);
+                        createJobList(data);
+                    }).catch((error) => {
+                        console.error('Error on fetch.', error);
+                    });
+            };
+        });
+    </script>
 </body>
 
 </html>

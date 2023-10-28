@@ -1,66 +1,92 @@
-name: CI/CD Pipeline Deploy to AWS/EC2 - website
+name: CI/CD - Test JavaScript and Deploy to AWS
 
-run-name: ${{ github.actor }} | Deploy to AWS/EC2 🚀
+run-name: ${{ github.actor }} | Deploy to AWS/EC2
 on:
   push:
     branches:
       - feat/website
       - feat/refactor
-      - feat/uni_test
+      - test
   pull_request:
     branches:
       - main
       - develop
+
 jobs:
-  deploy:
+  test:
+    name: (CI) Test for JavaScript 🔍
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+      
+      - name: Result notification
+        run: echo "✅ Test ${{ job.status }}."
+        if: success()
+  deploy:
+    needs: test
+    name: (CD) Deploy to AWS/EC2 🚀
+    runs-on: ubuntu-latest
+
     steps:
     # Step 1
-    - name: Checkout to repo
-      uses: actions/checkout@v2
+      - name: Checkout to repo
+        uses: actions/checkout@v2
 
-    - name: Get Github action IP
-      id: ip
-      uses: haythem/public-ip@v1.2
-    
-    # Step 2
-    - name: Add Github Actions IP to Security group
-      run:
-        aws ec2 authorize-security-group-ingress --group-name ${{ secrets.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32    
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      - name: Get Github action IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+      
+      # Step 2
+      - name: Add Github Actions IP to Security group
+        run:
+          aws ec2 authorize-security-group-ingress --group-name ${{ secrets.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32    
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
-    # Step 3  
-    - name: Deploy to prod server
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST_IP }}
-        username: ubuntu
-        key: ${{ secrets.SSH_KEY }}
-        script: |
-          export NVM_DIR=~/.nvm
-          source ~/.nvm/nvm.sh
-          pm2 kill
-          cd /home/ubuntu/project/goodjob
-          git stash
-          git pull origin feat/website
-          npm install
-          pm2 start ecosystem.config.js
-          pm2 save
+      # Step 3  
+      - name: Deploy to prod server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_IP }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            pm2 stop all
+            cd /home/ubuntu/project/goodjob
+            git stash
+            git pull origin feat/website
+            npm install
+            pm2 restart ecosystem.config.js
+            pm2 save
 
-    # Step 4     
-    - name: Remove Github Actions IP from security group
-      run: |
-        aws ec2 revoke-security-group-ingress --group-name ${{ secrets.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      if: always()
+      # Step 4     
+      - name: Remove Github Actions IP from security group
+        run: |
+          aws ec2 revoke-security-group-ingress --group-name ${{ secrets.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        if: always()
 
-    # Step 5
-    - name: Post-deployment notification
-      run: echo "🎉 Job Deploy ${{ job.status }}."
-      if: success()
+      # Step 5
+      - name: Post-deployment notification
+        run: echo "🎉 Job Deploy ${{ job.status }}."
+        if: success()

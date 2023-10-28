@@ -1,33 +1,4 @@
 // ========== Before select category ==========
-document.addEventListener('DOMContentLoaded', () => {
-    loadNow(1);
-
-    fetch('/api/jobs', { method: 'GET' })
-        .then(handleResponse)
-        .then(processData)
-        .then((result) => {
-            const { jobDetails, experienceCounts } = result;
-            drawJobCounts(jobDetails);
-            drawAvgSalary(jobDetails);
-            drawExperience(experienceCounts);
-        }).catch((error) => {
-            console.error('Error on fetch.', error);
-        });
-});
-
-function loadNow(opacity) {
-    const loader = document.getElementById('loader');
-    if (opacity <= 0) {
-        loader.style.display = 'none';
-        document.getElementById('container').style.display = 'block';
-    } else {
-        loader.style.opacity = opacity;
-        window.setTimeout(function () {
-            loadNow(opacity - 0.02);
-        }, 50);
-    };
-};
-
 function handleResponse(response) {
     if (response.status >= 200 && response.status < 300) {
         return response.json();
@@ -108,37 +79,6 @@ function calAvgSalaries(jobDetails) {
 };
 
 // ========== After select category ==========
-window.addEventListener('scroll', function () {
-    const formContainer = document.getElementById('form-container');
-    const scrollY = window.scrollY;
-
-    const threshold = 1100;
-
-    if (scrollY > threshold) {
-        formContainer.style.position = 'fixed';
-        formContainer.style.top = '0';
-    } else {
-        formContainer.style.position = 'sticky';
-        formContainer.style.top = '0';
-    };
-});
-
-document.querySelector('form').addEventListener('submit', function (e) {
-    const selectedCategory = document.getElementById('categorySelect').value;
-    e.preventDefault();
-
-    if (selectedCategory !== 'none') {
-        fetch(`/api/jobs/${selectedCategory}`, { method: 'GET' })
-            .then(handleResponse)
-            .then((data) => {
-                drawCharts(data, selectedCategory);
-                createJobList(data);
-            }).catch((error) => {
-                console.error('Error on fetch.', error);
-            });
-    };
-});
-
 function drawCharts(data, selectedCategory){
     const yearSalary = document.getElementById('yearAvgSalary');
     const listCategory = document.getElementById('listCategory');
@@ -163,7 +103,7 @@ function drawCharts(data, selectedCategory){
     drawWorldCloud(skillCounts);
     drawSkillsBar(skillCounts);
     drawEducationPie(educationCounts);
-}
+};
 
 function calAvgSalaryByCategory(min, max, monthlyAvgSalary) {
     if (min > 0 && max > 0) {
@@ -177,7 +117,7 @@ function calAnnualAvgSalary(monthlyAvgSalary) {
     const annualAvgSum = monthlyAvgSalary.reduce((sum, salary) => sum + salary * paymentsPerYear, 0);
     const annualAvg = Math.round(annualAvgSum / monthlyAvgSalary.length);
     return annualAvg;
-}
+};
 
 function countSkillsByCategory(skills, skillCounts) {
     if (skills != 'Null') {
@@ -186,11 +126,13 @@ function countSkillsByCategory(skills, skillCounts) {
             skillCounts[skill] = (skillCounts[skill] || 0) + 1;
         });
     };
-}
+    return skillCounts;
+};
 
 function countEducationByCategory(education, educationCounts) {
     educationCounts.hasOwnProperty(education) ? educationCounts[education]++ : (educationCounts[education] = 1);
-}
+    return educationCounts;
+};
 
 function createJobList(data) {
     const table = document.createElement('table');
@@ -206,7 +148,7 @@ function createJobList(data) {
     jobResults.style.width = 'auto';
     jobResults.style.boxShadow = '0px 3px 5px 0px rgba(0, 0, 0, 0.2)';
     jobResults.appendChild(table);
-}
+};
 
 function createTableHeader() {
     const headerRow = document.createElement('tr');
@@ -223,7 +165,7 @@ function createTableHeader() {
     thead.appendChild(headerRow);
 
     return thead;
-}
+};
 
 function createTableBody(data) {
     const tbody = document.createElement('tbody');
@@ -234,7 +176,7 @@ function createTableBody(data) {
     });
 
     return tbody;
-}
+};
 
 function createTableRow(job, index) {
     const truncatedJobTitle = (job.job_title.length > 50) ? job.job_title.slice(0, 50) + '...' : job.job_title;
@@ -243,6 +185,16 @@ function createTableRow(job, index) {
     const companyMatch = job.company.match(/[\u4e00-\u9fa5]+公司/);
     const companyName = (companyMatch ? companyMatch : job.company.slice(0, 20));
     const salary = formatSalary(job.min_monthly_salary, job.max_monthly_salary);
+    const createTableCell = (text, isLink = false, href = '') => {
+        const cell = isLink ? document.createElement('a') : document.createElement('td');
+        if (isLink) {
+            cell.href = href;
+            cell.target = '_blank';
+        }
+        cell.textContent = text;
+        cell.style.textAlign = 'center';
+        return cell;
+    };
 
     const tr = document.createElement('tr');
     tr.appendChild(createTableCell(index + 1));
@@ -256,7 +208,7 @@ function createTableRow(job, index) {
     }
 
     return tr;
-}
+};
 
 function formatSalary(min, max) {
     if (min === 'Null') {
@@ -268,13 +220,13 @@ function formatSalary(min, max) {
     }
 };
 
-const createTableCell = (text, isLink = false, href = '') => {
-    const cell = isLink ? document.createElement('a') : document.createElement('td');
-    if (isLink) {
-        cell.href = href;
-        cell.target = '_blank';
-    }
-    cell.textContent = text;
-    cell.style.textAlign = 'center';
-    return cell;
+module.exports = {
+    processData,
+    formatCategory,
+    formatExperience,
+    calAvgSalaries,
+    calAvgSalaryByCategory,
+    calAnnualAvgSalary,
+    countSkillsByCategory,
+    countEducationByCategory,
 };
