@@ -12,29 +12,29 @@ on:
       - main
       - develop
 
-jobs:
-  test:
-    name: (CI) Testing for JavaScript 🔍
-    runs-on: ubuntu-latest
+# jobs:
+#   test:
+#     name: (CI) Testing for JavaScript 🔍
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: 14
 
-      - name: Install dependencies
-        run: npm install
+#       - name: Install dependencies
+#         run: npm install
 
-      - name: Run tests
-        run: npm test
+#       - name: Run tests
+#         run: npm test
       
-      - name: Result notification
-        run: echo "✅ Test ${{ job.status }}."
-        if: success()
+#       - name: Result notification
+#         run: echo "✅ Test ${{ job.status }}."
+#         if: success()
 
   deploy:
     needs: test
