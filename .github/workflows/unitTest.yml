@@ -1,6 +1,6 @@
-name: CI Unit Test - JavaScript 🔍
+name: CI Unit Test - JavaScript
 
-run-name: ${{ github.actor }} | CI/CD pipeline
+run-name: ${{ github.actor }} | Testing for JavaScript 🔍
 on:
   push:
     branches:
@@ -34,3 +34,11 @@ jobs:
     - name: Result notification
       run: echo "✅ Test ${{ job.status }}."
       if: success()
+    
+    - name: Trigger CD pipeline
+      run: |
+        curl -X POST \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.everest-preview+json" \
+          https://api.github.com/repos/rubywu0604/GoodJob/dispatches \
+          -d '{"event_type": "trigger-cd-pipeline"}'
