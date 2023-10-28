@@ -14,7 +14,7 @@ on:
 
 jobs:
   test:
-    name: (CI) Testing for JavaScript 🔍
+    name: (CI) Test for JavaScript 🔍
     runs-on: ubuntu-latest
 
     steps:
