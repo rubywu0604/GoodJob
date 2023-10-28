@@ -4,8 +4,7 @@
 [![Build Status](https://github.com/networkx/networkx/workflows/test/badge.svg?branch=main)](https://github.com/rubywu0604/GoodJob/actions)
 [![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://github.com/your-username/your-repo/releases/tag/v1.0.0)
 
-
-> GoodJob is a platform that analyzes job market trends of engineering, offering visualized statistical reports. Futhermore, It serves for engineers seeking job opportunities, assisting them in securing an ideal good job.
+GoodJob is a platform that analyzes job market trends of engineering, offering visualized statistical reports. Futhermore, It serves for engineers seeking job opportunities, assisting them in securing an ideal good job.
 
 - [Website](https://www.get-good-job.com)
 - [Video introduction](https://drive.google.com/file/d/1bH5sI9850xf-Kc5xNKoD5UrVQQ5g55DD/view)
@@ -25,7 +24,7 @@
   
 ## Architecture
 
-<img src="./views/image/architecture.jpg" width="800" >
+![Architecture](views/image/architecture.jpg)
 
 
 _[Top](#table-of-contents)_
@@ -36,28 +35,28 @@ _[Top](#table-of-contents)_
   - Scraping
   - Cleaning
 
-_[Top](#features-overview)_
+_[Top](#table-of-contents)_
 
 ### Database/Storage
   - MySQL
   - S3
 
-_[Top](#features-overview)_
+_[Top](#table-of-contents)_
 
 ### Visualization
   - 
 
-_[Top](#features-overview)_
+_[Top](#table-of-contents)_
 
 ### Scheduling
   - 
-_[Top](#features-overview)_
+_[Top](#table-of-contents)_
   
 ### Monitoring
   - PM2 - server monitor
   - ScrapyOps - data pipeline monitor
 
-_[Top](#features-overview)_
+_[Top](#table-of-contents)_
 
 ### CI/CD
 
