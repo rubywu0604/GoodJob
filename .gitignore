@@ -33,6 +33,8 @@ venv.bak/
 *.zip
 *.tar.gz
 *.rar
+/node_modules/
+**/node_modules/
 
 # python
 **/__pycache__/
