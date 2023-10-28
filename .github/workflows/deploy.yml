@@ -93,5 +93,5 @@ jobs:
 
       # Step 5
       - name: Post-deployment notification
-          run: echo "🎉 Job Deploy ${{ job.status }}."
-          if: success()
+        run: echo "🎉 Job Deploy ${{ job.status }}."
+        if: success()
