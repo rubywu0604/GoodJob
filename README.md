@@ -9,9 +9,11 @@ GoodJob is a platform that analyzes job market trends of engineering, offering v
 - [Website](https://www.get-good-job.com)
 - [Video introduction](https://drive.google.com/file/d/1bH5sI9850xf-Kc5xNKoD5UrVQQ5g55DD/view)
 
-## Table Of Contents
+![Web](views/image/web_banner.jpg)
+
+## Table of Contents
 - [GoodJob](#goodjob)
-  - [Table Of Contents](#table-of-contents)
+  - [Table of Contents](#table-of-contents)
   - [Architecture](#architecture)
   - [Features](#features)
     - [Job API](#job-api)
@@ -25,8 +27,17 @@ GoodJob is a platform that analyzes job market trends of engineering, offering v
   
 ## Architecture
 
+__Overall Architecture__
 ![Architecture](views/image/architecture.jpg)
 
+__Overview__
+- Server A: Configured as a Scrapy pipeline, it uses ETLT (Extract, Transform, Load, Transform) techniques to process data scraped from various websites. All the scraped data is stored in an Amazon S3 bucket during the initial transformation phase. After normalization, the data is finally saved into a MySQL database.
+
+* Server B: Designed to handle frontend website layout, it efficiently manages a high volume of client requests using a Node.js environment. The server is interconnected with the same database utilized by Server A, enabling it to access the database tables and retrieve the required data as responses to client requests.
+
+* Monitor: Oversaw data pipeline and server to log errors. Ensured uninterrupted 100% data pipeline completion during scraping using ScrapeOps. Continuously checked frontend website status by PM2 and auto-sent email notifications if server appears any issues.
+
+* DevOps: Utilized GitHub Actions for Continuous Integration (CI) and Continuous Deployment (CD) to verify error-free code passing unit tests. Upon successful test completion, it triggered the next deployment job to initiate the deployment to an AWS EC2 server.
 
 _[Top](#table-of-contents)_
 
@@ -55,6 +66,13 @@ _[Top](#table-of-contents)_
 _[Top](#table-of-contents)_
 
 ### Data Pipeline
+  The data collection process focus on collecting target index, including job title, location, salary, employing company, required skills, education, and experience criteria.
+
+  * Data Sources: These data are sourced from job postings on 104人力銀行, 1111人力銀行, and 518熊班.
+
+  * Scraping: 
+
+
   - Scraping
   - Cleaning
 
