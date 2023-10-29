@@ -188,7 +188,7 @@ _[Top](#table-of-contents)_
 ### Scheduling
 Linked ScrapeOps through an API connection to schedule the Scrapy job, ensuring the data pipeline initiates the web scraping process __once a day__. This integration allows the Scrapy module to be configured for regular data collection from the source website at defined intervals.
 
-<video src="views/image/scrapeOpsSchedule.gif" controls autoplay loop></video>
+<video src="views/image/scrapeOpsSchedule.mp4" controls autoplay loop></video>
 
 _[Top](#table-of-contents)_
   
@@ -196,18 +196,18 @@ _[Top](#table-of-contents)_
 - **PM2 - Server Monitor**
   
   Real-Time demo of Node.js server
-  <video src="views/image/serverMonit.gif" controls autoplay loop></video>
+  <video src="views/image/serverMonit.mp4" controls autoplay loop></video>
 
 - **ScrapyOps - Data Pipeline Monitor**
 
-  <video src="views/image/scrapeOpsMonit.gif" controls autoplay loop></video>
+  <video src="views/image/scrapeOpsMonit.mp4" controls autoplay loop></video>
 
 _[Top](#table-of-contents)_
 
 ### CI/CD
 Implemented a CI/CD pipeline to enhance the development workflow. This automated process deploys the code to an Amazon EC2 server upon successful tests, ensuring the continuous and uninterrupted operation of the website following code changes.
 
-<video src="views/image/cicd.gif" controls autoplay loop></video>
+<video src="views/image/cicd.mp4" controls autoplay loop></video>
 
 - Tools: GitHub Action
 - Node Version: 14
