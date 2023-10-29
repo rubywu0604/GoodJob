@@ -188,7 +188,7 @@ _[Top](#table-of-contents)_
 ### Scheduling
 Linked ScrapeOps through an API connection to schedule the Scrapy job, ensuring the data pipeline initiates the web scraping process __once a day__. This integration allows the Scrapy module to be configured for regular data collection from the source website at defined intervals.
 
-<video src="views/image/scrapeOpsSchedule.mp4" controls autoplay loop></video>
+<!-- <video src="views/image/scrapeOpsSchedule.mp4" controls autoplay loop></video> -->
 
 _[Top](#table-of-contents)_
   
@@ -196,11 +196,11 @@ _[Top](#table-of-contents)_
 - **PM2 - Server Monitor**
   
   Real-Time demo of Node.js server
-  <video src="views/image/serverMonit.mp4" controls autoplay loop></video>
+  <!-- <video src="views/image/serverMonit.mp4" controls autoplay loop></video> -->
 
 - **ScrapyOps - Data Pipeline Monitor**
 
-  <video src="views/image/scrapeOpsMonit.mp4" controls autoplay loop></video>
+  <!-- <video src="views/image/scrapeOpsMonit.mp4" controls autoplay loop></video> -->
 
 _[Top](#table-of-contents)_
 
