@@ -198,9 +198,6 @@ _[Top](#table-of-contents)_
   Real-Time demo of Node.js server
   <video src="views/image/serverMonit.gif" controls autoplay loop></video>
 
-  Real-Time demo of PM2 self monitor
-  <video src="views/image/pm2Monit.gif" controls autoplay loop></video>
-
 - **ScrapyOps - Data Pipeline Monitor**
 
   <video src="views/image/scrapeOpsMonit.gif" controls autoplay loop></video>
