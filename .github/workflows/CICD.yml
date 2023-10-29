@@ -69,7 +69,7 @@ jobs:
             pm2 stop all
             cd /home/ubuntu/project/goodjob
             git stash
-            git pull origin feat/website
+            git pull origin main
             npm install
             pm2 restart ecosystem.config.js
             pm2 save
