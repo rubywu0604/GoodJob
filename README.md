@@ -135,7 +135,7 @@ _[Top](#table-of-contents)_
 _[Top](#table-of-contents)_
 
 ### Database/Storage
-- MySQL Schema
+- **MySQL Schema**
   
     | Field | Data Type | Description | 
     | :---: | :---: | :--- |
@@ -152,43 +152,43 @@ _[Top](#table-of-contents)_
     | job_link | String | Source website link of the job. |
     | source_website | String | Source website name. |
 
-- S3 Schema
-  - Format: json lines
+- **S3 Schema**
+  - **Format**: json lines
 
 _[Top](#table-of-contents)_
 
 ### Visualization
 To facilitate visual exploration and analysis of various aspects of the job listings data, a set of interactive charts has been created using Plotly in JavaScript. These charts provide valuable insights into the dataset and enhance data visualization.
 
-For Overall Engineer's Job:
-- Ranking of Job Vacancies
-  ![Ranking of Job Vacancies](views/image/1.ranking_of_job_vacancies.jpg)
+- **For Overall Engineer's Job**
+  - Ranking of Job Vacancies
+    ![Ranking of Job Vacancies](views/image/1.ranking_of_job_vacancies.jpg)
 
-- Percentage of Work Experience
-  ![Percentage of Work Experience](views/image/2.work_experience.jpg)
+  - Percentage of Work Experience
+    ![Percentage of Work Experience](views/image/2.work_experience.jpg)
 
-- Average Monthly Income
-  ![Average Monthly Income](views/image/3.average_monthly_income.jpg)
+  - Average Monthly Income
+    ![Average Monthly Income](views/image/3.average_monthly_income.jpg)
   
-For Each Selected Category:
-- Percentage of Educational Background
-  ![Percentage of Educational Background](views/image/4.education.jpg)
+- **For Each Selected Category**
+  - Percentage of Educational Background
+    ![Percentage of Educational Background](views/image/4.education.jpg)
 
-- Relevant Skill Requirements
-  ![Relevant Skill Requirements](views/image/5.skill_word_cloud.jpg)
+  - Relevant Skill Requirements
+    ![Relevant Skill Requirements](views/image/5.skill_word_cloud.jpg)
 
-- Ranking of Skills
-  ![Ranking of Skills](views/image/6.ranking_of_skills.jpg)
+  - Ranking of Skills
+    ![Ranking of Skills](views/image/6.ranking_of_skills.jpg)
 
-- Monthly Income Distribution
-  ![Monthly Income Distribution](views/image/7.monthly_income_distribution.jpg)
+  - Monthly Income Distribution
+    ![Monthly Income Distribution](views/image/7.monthly_income_distribution.jpg)
 
 _[Top](#table-of-contents)_
 
 ### Scheduling
 Linked ScrapeOps through an API connection to schedule the Scrapy job, ensuring the data pipeline initiates the web scraping process __once a day__. This integration allows the Scrapy module to be configured for regular data collection from the source website at defined intervals.
 
-<video src="views/image/scrapeOpsSchedule.gif" controls autoplay loop></video>
+![Demo Schedule](views/image/demo_schedule.gif)
 
 _[Top](#table-of-contents)_
   
@@ -196,26 +196,23 @@ _[Top](#table-of-contents)_
 - **PM2 - Server Monitor**
   
   Real-Time demo of Node.js server
-  <video src="views/image/serverMonit.gif" controls autoplay loop></video>
+  ![Demo Server Monitor](views/image/demo_monit_server.gif)
 
-  Real-Time demo of PM2 self monitor
-  <video src="views/image/pm2Monit.gif" controls autoplay loop></video>
 
 - **ScrapyOps - Data Pipeline Monitor**
-
-  <video src="views/image/scrapeOpsMonit.gif" controls autoplay loop></video>
+![Demo Pipeline Monitor](views/image/demo_monit_pipeline.gif)
 
 _[Top](#table-of-contents)_
 
 ### CI/CD
 Implemented a CI/CD pipeline to enhance the development workflow. This automated process deploys the code to an Amazon EC2 server upon successful tests, ensuring the continuous and uninterrupted operation of the website following code changes.
 
-<video src="views/image/cicd.gif" controls autoplay loop></video>
+![Demo CICD](views/image/demo_cicd.gif)
 
-- Tools: GitHub Action
-- Node Version: 14
+- **Tools**: GitHub Action
+- **Node Version**: 14
   
-- **CI** (Continuous Integration)
+- **CI (Continuous Integration)**
   - Triggered Condition:
     ```
     on:
@@ -231,7 +228,7 @@ Implemented a CI/CD pipeline to enhance the development workflow. This automated
   
   - Achieved test coverage of approximately 57% of the function in one file.  
 
-- **CD** (Continuous Deployment)
+- **CD (Continuous Deployment)**
   - Triggered Condition:
     ```
     deploy:
